@@ -1,0 +1,50 @@
+#!/usr/bin/make -f
+#
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/htgt/projects/htgt-scripts/trunk/bin/htgt-datagen $
+# $LastChangedRevision: 6545 $
+# $LastChangedDate: 2011-12-15 09:42:51 +0000 (Thu, 15 Dec 2011) $
+# $LastChangedBy: rm7 $
+#
+
+TARGETS = mgi_allele_report.csv.gz \
+          synthetic_vectors.gbk.gz \
+          vectors.zip vectors.csv.gz \
+          alleles.zip alleles.csv.gz \
+          display_features.gff.gz
+
+all: $(TARGETS)
+
+mgi_allele_report.csv: FORCE
+	allele_report_for_mgi.pl > $@-t && mv $@-t $@
+
+synthetic_vectors.gbk: FORCE
+	dump_synthetic_targeting_vectors.pl > $@-t && mv $@-t $@
+
+vectors.csv: FORCE
+	make_targvec_dump.pl > $@-t && mv $@-t $@
+
+alleles.csv: FORCE
+	make_epd_dump.pl > $@-t && mv $@-t $@
+
+display_features.gff: FORCE
+	dump_display_features_by_project.pl > $@-t && mv $@-t $@
+
+epd_summary.csv: FORCE
+	epd_summary_report.pl > $@-t && mv $@-t $@
+
+ep_summary.csv: FORCE
+	ep_summary_report.pl > $@-t && mv $@-t $@
+
+FORCE:
+
+%.gz: %
+	gzip -f -c $< > $@-t
+	mv $@-t $@
+
+%.zip: %.csv
+	zip $*.zip-t $<
+	mv $@-t $@
+
+%.zip: %
+	zip $@-t $<
+	mv $@-t $@
