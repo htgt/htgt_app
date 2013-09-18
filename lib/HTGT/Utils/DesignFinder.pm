@@ -7,6 +7,7 @@ use HTGT::Utils::DesignFinder::CandidateCriticalRegion;
 use HTGT::Utils::DesignFinder::CandidateOligoRegion::Standard;
 use HTGT::Utils::DesignFinder::CandidateOligoRegion::FalseIntron;
 use HTGT::Utils::DesignFinder::Helpers qw( exon_3p_utr_length );
+use Const::Fast;
 
 with 'MooseX::Log::Log4perl';
 

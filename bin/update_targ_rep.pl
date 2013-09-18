@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 use warnings FATAL => 'all';
 use strict;
-#use Carp qw/longmess cluck confess/;
 
 use HTGT::Utils::TargRep::Update;
 use HTGT::DBFactory;

@@ -2,17 +2,17 @@ package HTGT::Utils::TargRep::Update;
 
 use Moose;
 use namespace::autoclean;
+use Const::Fast;
 use Try::Tiny;
 use List::MoreUtils qw( uniq any all );
 use HTGT::Constants qw( %RANKED_QC_RESULTS %SPONSOR_FOR %CASSETTES );
 use Data::Dumper::Concise;
 use HTGT::Utils::MutagenesisPrediction::FloxedExons qw( get_floxed_exons );
 use HTGT::Utils::TargRep::Update::Genbank qw( get_targeting_vector_and_allele_seq );
-#use List::Compare;
+use List::Compare;
 use Switch;
-use Data::Dumper;
 
-my %VALIDATION_AND_METHODS = (
+const my %VALIDATION_AND_METHODS => (
     allele => {
         fields => [
             qw(
@@ -278,23 +278,17 @@ sub htgt_to_targ_rep {
 sub process_projects {
     my ( $self, $projects_rs ) = @_;
 
-    my $pager = $projects_rs->pager;
-    my $last_page = $pager->last_page;
+    while ( my $project = $projects_rs->next ) {
+        Log::Log4perl::NDC->remove();
+        Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
+        Log::Log4perl::NDC->push( $project->project_id  );
 
-    for ( my $page = 1; $page <= $last_page; $page++ ) {
-        my $project_page_rs = $projects_rs->page($page);
-        while ( my $project = $project_page_rs->next ) {
-            Log::Log4perl::NDC->remove();
-            Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
-            Log::Log4perl::NDC->push( $project->project_id  );
-
-            try {
-                $self->update_project( $project );
-            }
-            catch {
-                $self->log->error( 'Error processing project: ' . $_ );
-            };
+        try {
+            $self->update_project( $project );
         }
+        catch {
+            $self->log->error( 'Error processing project: ' . $_ );
+        };
     }
 }
 
@@ -459,7 +453,7 @@ sub uniq_ws_rows_by {
 #ALLELES
 #
 {
-    my @ALLELE_UNIQUE_FIELDS = qw(
+    const my @ALLELE_UNIQUE_FIELDS => qw(
         gene.mgi_accession_id
         assembly
         chromosome
@@ -528,7 +522,7 @@ sub update_allele {
 }
 
 {
-    my @ALLELE_CREATE_FIELDS = qw (
+    const my @ALLELE_CREATE_FIELDS => qw (
         chromosome
         cassette
         cassette_start
@@ -739,7 +733,7 @@ sub create_targeting_vector {
 #
 
 {
-    my @ES_CELL_CREATE_FIELDS = qw(
+    const my @ES_CELL_CREATE_FIELDS => qw(
         ikmc_project_id
         name
         allele_id
@@ -847,7 +841,7 @@ sub create_es_cell {
     return $self->create( $es_cell_data, 'es_cell' );
 }
 {
-    my @DISTRIBUTION_QC_CREATE_FIELDS = qw(
+    const my @DISTRIBUTION_QC_CREATE_FIELDS => qw(
         karyotype_high
         karyotype_low
         copy_number
@@ -1034,12 +1028,11 @@ sub get_projects {
         {
             join     => [ 'new_ws_entries' ],
             prefetch => [ 'mgi_gene', 'design', 'new_ws_entries' ],
-            page     => 1,
-            rows     => 1000,
+            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
         }
     );
 
-    $self->log->debug("Fetched ". $projects_rs->pager->total_entries ." projects");
+    $self->log->debug("Fetched ".$projects_rs->count()." projects");
     return $projects_rs;
 }
 
@@ -1074,8 +1067,7 @@ sub get_mgp_only_projects {
         {
             join     => [ 'new_ws_entries' ],
             prefetch => [ 'mgi_gene', 'design', 'new_ws_entries' ],
-            page     => 1,
-            rows     => 1000,
+            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
         }
     );
 
@@ -1084,7 +1076,7 @@ sub get_mgp_only_projects {
 
 {
     # key = name of data field in targ rep, value = name of that field in htgt
-    my %PROJECT_AND_DESIGN_DATA = (
+    const my %PROJECT_AND_DESIGN_DATA => (
         project => {
             'project_id' => 'project_id',
             'cassette'   => 'cassette',
@@ -1134,7 +1126,7 @@ sub get_mgp_only_projects {
 }
 
 {
-    my %WELL_DATA = (
+    const my %WELL_DATA => (
         int_vec_plate                    => 'pcs_plate_name',
         int_vec_well                     => 'pcs_well_name',
         targ_vec_plate                   => 'pgdgr_plate_name',
@@ -1178,7 +1170,7 @@ sub get_mgp_only_projects {
 
 {
 
-    my %DISTRIBUTION_QC_DATA = (
+    const my %DISTRIBUTION_QC_DATA => (
         loa    => 'loa_pass',
         loxp   => 'loxp_pass',
         lacz   => 'lacz_pass',
@@ -1213,20 +1205,20 @@ sub get_mgp_only_projects {
 
 {
 
-    my %COMPUTED_LOXP_RESULTS = (
+    const my %COMPUTED_LOXP_RESULTS => (
         'pass' => 'pass',
         'nd'   => 'no reads detected',
         'fail' => 'not confirmed',
     );
 
-    my %TAQMAN_LOXP_RESULTS = (
+    const my %TAQMAN_LOXP_RESULTS => (
         'pass' => 'pass',
         'fa'   => 'not confirmed',
         'fail' => 'not confirmed',
         'na'   => 'na',
     );
 
-    my %LOXP_QC_RESULT_RANKING = (
+    const my %LOXP_QC_RESULT_RANKING => (
         'na'                  => 1, #set to undef
         'pass'                => 2,
         'no reads detected' => 3,
@@ -1476,7 +1468,7 @@ sub format_project_data {
 }
 
 {
-    my %SPONSORS = (
+    const my %SPONSORS => (
         'KOMP'               => 'KOMP-CSD',
         'EUCOMM'             => 'EUCOMM',
         'EUCOMM-Tools'     => 'EUCOMMTools',
@@ -1512,7 +1504,7 @@ sub format_project_data {
 }
 
 {
-    my %CASSETTE_TYPES = (
+    const my %CASSETTE_TYPES => (
         'ZEN-UB1.GB'                                   => 'Promotor Driven',
         'L1L2_st0'                                     => 'Promotorless',
         'L1L2_NTARU-1'                                 => 'Promotorless',
@@ -1651,7 +1643,7 @@ sub _format_well_names {
 
 {
 
-    my %VALID_TARG_REP_QC_RESULTS = (
+    const my %VALID_TARG_REP_QC_RESULTS => (
         production_qc_five_prime_screen => {
             pass                => qr/^pass$/i,
             'no reads detected' => qr/^nd$/i,
@@ -1786,7 +1778,7 @@ sub format_floating_numbers {
 #GRAB RELEVENT DATA UPFRONT AND STORE IN MEMORY
 #
 {
-    my $REPD_LOA_QC = <<'EOT';
+    const my $REPD_LOA_QC => <<'EOT';
     SELECT
         epd_well.well_id as EPD_WELL_ID,
         loa_well_data.data_value  AS QC_RESULT
@@ -1806,7 +1798,7 @@ sub format_floating_numbers {
         repd_plate.type = 'REPD'
 EOT
 
-    my $REPD_TAQMAN_LOXP_QC = <<'EOT';
+    const my $REPD_TAQMAN_LOXP_QC => <<'EOT';
     SELECT
         epd_well.well_id as EPD_WELL_ID,
         taqman_loxp_well_data.data_value  AS QC_RESULT
@@ -1862,7 +1854,7 @@ EOT
 }
 
 {
-    my $PIQ_QC_RESULTS = <<'EOT';
+    const my $PIQ_QC_RESULTS => <<'EOT';
     SELECT
         piq_well.well_id as PIQ_WELL_ID,
         grandparent_well.well_id as GRANDPARENT_WELL_ID,
@@ -1950,7 +1942,7 @@ EOT
 
 
 {
-    my $ASSEMBLY_SQL = <<'EOT';
+    const my $ASSEMBLY_SQL => <<'EOT';
     SELECT DISTINCT
         id,
         name
@@ -1974,7 +1966,7 @@ EOT
 }
 
 {
-    my $PIPELINE_SQL = <<'EOT';
+    const my $PIPELINE_SQL => <<'EOT';
     SELECT DISTINCT
         id,
         name
