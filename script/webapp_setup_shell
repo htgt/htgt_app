@@ -28,7 +28,13 @@ export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5
 # Sanger authorisation
 export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
 
+# These are required to avoid Datetime column inflation issues in DBIx::Class
+export NLS_DATE_FORMAT=DD-MON-RR
+export NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SSXFF'
+export NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD HH24:MI:SSXFFTZD'
+
 export ORA_NLS11=${ORACLE_HOME}/nls/data 
+
 
 if [[ -z ${TNS_ADMIN} ]] 
 then
