@@ -44,12 +44,12 @@ sub run_bsub_and_wait {
     my $jobspec = sprintf 'qc[1-%d]', scalar @{$targets};
 
     my @bsub_job_array = ( @BSUB,
-                           "-R'select[mem>2000] rusage[mem=2000]'", '-M2000000',
+                           "-R'select[mem>2000] rusage[mem=2000]'", '-M2000',
                            '-o', $outdir->file( '%J.%I.out' ),
                            '-J', $jobspec,
                            $RUN_EXONERATE, $model, $query, @{$targets} );
 
-    DEBUG( "Submitting job array @bsub_job_array" );
+    WARN( "Submitting job array @bsub_job_array" );
     my $res = capturex( @bsub_job_array );
     INFO( $_ ) for split /\n/, $res;
     my ( $job_id ) = $res =~ m/$JOB_SUBMITTED_RX/
@@ -58,9 +58,11 @@ sub run_bsub_and_wait {
     my @bsub_wait = ( @BSUB,
                       '-i', '/dev/null',
                       '-o', '/dev/null',
+                      "-R 'select[mem>100] rusage[mem=100]'", '-M 100',
                       '-w', sprintf( 'ended(%d)', $job_id ),
                       '-K',
                       '/bin/true' );
+    WARN( "Running bsub command:\n" . join(" ", @bsub_wait) );
 
     my $done;
     my $n_attempts = 3;
