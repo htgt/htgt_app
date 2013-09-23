@@ -2,7 +2,8 @@ package HTGT::QC::Action::Misc::KillAndNotify;
 
 use Moose;
 use namespace::autoclean;
-use IPC::Run ();
+use IPC::Run qw( run );
+use Try::Tiny;
 
 extends qw( HTGT::QC::Action );
 
@@ -31,26 +32,25 @@ sub execute {
     my $work_dir = $self->config->basedir->subdir( $self->qc_run_id );
     
     my $out_fh = $work_dir->file( 'failed.out' )->openw();
-    $out_fh->print( "The run has failed because it was marked to be killed.\n" );
+    $out_fh->print( "Running kill and notify, see log file for details.\n" );
 
     #get all the run ids
     my @job_ids = $work_dir->file( "lsf.job_id" )->slurp( chomp => 1 );
 
-    $out_fh->print( "\nKilling jobs [", join(",", @job_ids), "]\n" );
+    $self->log->warn( "\nKilling jobs [", join(",", @job_ids), "]\n" );
 
-    if( $self->kill_everything( \@job_ids, $out_fh ) ) {
+    if( $self->kill_everything( \@job_ids ) ) {
         #we have succeeded, so create ended.out to identify a run as no longer running
-        $out_fh = $work_dir->file( 'ended.out' )->openw();
-        $out_fh->print( "The run was killed successfully.\n" );
+        $work_dir->file( 'ended.out' )->openw->print( "The run was killed successfully.\n" );
     }
     else {
         #this is going into the failed.out file
-        $out_fh->print( "There was an error killing all the jobs.\n" );
+        $self->log->error( "There was an error killing all the jobs.\n" );
     }
 }
 
 sub kill_everything {
-    my ($self, $job_ids, $out_fh) = @_;
+    my ( $self, $job_ids ) = @_;
 
     #kill our bsub tests
     my $kill_output = $self->run_cmd(
@@ -63,20 +63,20 @@ sub kill_everything {
     #hash to hold all jobs that are still alive
     my %waiting = map { $_ => 1 } @{ $job_ids };
 
-    $out_fh->print( "Waiting for jobs to finish.\n" );
+    $self->log->warn( "Waiting for jobs to finish.\n" );
 
-    for ( 0..10 ) {
+    for ( 0 .. 10 ) {
         #sleep first as it takes a bit of time for them to be killed
-        sleep 60; 
+        sleep 20; 
 
-        $self->check_if_done(\%waiting, $out_fh);
+        $self->check_if_done( \%waiting );
         
         #see if there's any jobs left in the hash
-        if ( scalar keys %waiting ) {
-            $out_fh->print( "Still some jobs left alive:\n", join("\n", keys %waiting), "\n" );
+        if ( keys %waiting ) {
+            $self->log->warn( "Still some jobs left alive:\n", join("\n", keys %waiting), "\n" );
         }
         else { 
-            $out_fh->print( "All jobs have been killed.\n" );
+            $self->log->warn( "All jobs have been killed.\n" );
             return 1;
         }
     }
@@ -86,38 +86,46 @@ sub kill_everything {
 }
 
 sub check_if_done {
-    my ( $self, $waiting, $out_fh ) = @_;
+    my ( $self, $waiting ) = @_;
 
-    my $test_output = $self->run_cmd(
+    my $bjobs_output = $self->run_cmd(
         'bjobs',
-        '-G', 'team87-grp',
-        keys %$waiting
+        #'-G', 'team87-grp', # specifying the group seems to make it say job not found. weird
+        keys %{ $waiting } #only get info for the job ids we're interested in
     );
 
-    print $test_output, "\n";
+    $self->log->warn( "Bjobs output:\n" . $bjobs_output . "\n" );
 
-    my @lines = split( /\n/, $test_output );
-    shift @lines; #the top row is just field names, so disgard it
+    my @lines = split( /\n/, $bjobs_output );
 
     #example of what we're dealing with here:
     #
     #JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
     #7219712 ds5     RUN   long       farm2-head1 bc-24-1-10  NA12843.sh Dec  4 12:17
 
-    for ( @lines ) {
+    for my $line ( @lines ) {
+        next if $line =~ /^JOBID\s+/; #skip the header line if it exists
+
         #basically replicate awk to extract the job id and status
-        my @values = split( /\s+/, $_ );
+        my @values = split /\s+/, $line;
         my ( $job_id, $status ) = ( $values[0], $values[2] );
 
+        #farm 3 seems to get rid of jobs immediately from bjobs command, 
+        #so if the job isn't found it means it is no longer alive.
+        if ( $line =~ /Job <(\d+)> is not found$/ ) {
+            $self->log->info( "Job $1 already done."  );
+            ( $job_id, $status ) = ( $1, "DONE" ); 
+        }
+
         #check the values are what we expect
-        $out_fh->print( "Invalid job id: $job_id\nLine: $_\n" ) if $job_id !~ /^([0-9]+)$/;
-        $out_fh->print( "Invalid status: $status\nLine: $_\n" ) if $status !~ /^([A-Z]+)$/;
+        $self->log->warn( "Invalid job id: $job_id (Line: $line)" ) if $job_id !~ /^([0-9]+)$/;
+        $self->log->warn( "Invalid status: $status (Line: $line)" ) if $status !~ /^([A-Z]+)$/;
         
-        next unless $status; #make sure we got a status
-        next unless defined $waiting->{ $job_id }; #has it already been deleted?
+        next unless defined $waiting->{ $job_id }; #skip if it has already been deleted
 
         #if the job has finished remove it from the hash
-        if( $status eq "EXIT" or $status eq "DONE" ) {
+        if ( $status eq "EXIT" or $status eq "DONE" ) {
+            $self->log->warn( "Job $job_id has finished." );
             delete $waiting->{ $job_id };
         }
     }
@@ -128,20 +136,12 @@ sub run_cmd {
     my ( $self, @cmd ) = @_;
 
     my $output;
-    ## no critic (RequireCheckingReturnValueOfEval)
-    eval {
-        IPC::Run::run( \@cmd, '<', \undef, '>&', \$output )
-                or die "$output\n";
-    };
-    if ( my $err = $@ ) {
-        chomp $err;
-        #dont die otherwise the notify will never happen
-        print "Command returned non-zero:\n$err";
-    }
-    ## use critic
+
+    my $success = run \@cmd, '<', \undef, '>&', \$output; #returns true if zero output
+    $self->log->warn( "Command (" . join(" ", @cmd) . ") returned non-zero:\n$output" ) unless $success;
 
     chomp $output;
-    return  $output;
+    return $output;
 }
 
 __PACKAGE__->meta->make_immutable;
