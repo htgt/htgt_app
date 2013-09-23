@@ -8,10 +8,11 @@ with qw( MooseX::Log::Log4perl HTGT::Utils::DesignFinder::Stringify );
 use HTGT::Utils::DesignFinder::Constants qw( :candidate_oligo_region );
 
 use List::MoreUtils qw( all );
+use Const::Fast;
 
 extends 'HTGT::Utils::DesignFinder::CandidateOligoRegion';
 
-my @REQUIRED_PARAMETERS = qw( u5_start u5_end u3_start u3_end
+const my @REQUIRED_PARAMETERS => qw( u5_start u5_end u3_start u3_end
                                      d5_start d5_end d3_start d3_end
                                );
 

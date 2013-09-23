@@ -2,10 +2,12 @@ package HTGT::Utils::TargRep::Update::RegeneronGenbank;
 
 use Moose;
 use namespace::autoclean;
+use Const::Fast;
 use HTGT::Utils::TargRep::Update::Genbank qw( get_regeneron_seq );
 use Data::Dumper::Concise;
 use Try::Tiny;
 use List::MoreUtils qw( uniq any );
+use Const::Fast;
 
 my %REGENERON_CASSETTES = (
     'TM-ZEN-UB1' => 'TM_Zen_Ub1',

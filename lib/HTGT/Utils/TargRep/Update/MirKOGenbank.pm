@@ -2,11 +2,13 @@ package HTGT::Utils::TargRep::Update::MirKOGenbank;
 
 use Moose;
 use namespace::autoclean;
+use Const::Fast;
 use HTGT::Utils::DesignFinder::Gene;
 use HTGT::Utils::TargRep::Update::Genbank qw( get_mirko_seq );
 use Data::Dumper::Concise;
 use Try::Tiny;
 use List::MoreUtils qw( uniq );
+use Const::Fast;
 
 my $MIRKO_CASSETTE = 'PGK_EM7_PuDtk_bGHpA';
 my $MIRKO_BACKBONE = 'PL611';
