@@ -2,13 +2,12 @@ package HTGT::Utils::Design::GetDesignPrimers;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 with 'MooseX::Log::Log4perl';
 
-const my @COLUMN_NAMES         => ('design_id','marker_symbol', 'primer_name', 'sequence');
-const my @SHORT_LOXP_PRIMERS   => ( 'PNFLR', 'LF', 'LR', );
-const my $MAX_PRIMER_NUMBERS   => 3;
-const my $PRIMER_RESULT_PREFIX => 'SRLOXP-';
+my @COLUMN_NAMES         = ('design_id','marker_symbol', 'primer_name', 'sequence');
+my @SHORT_LOXP_PRIMERS   = ( 'PNFLR', 'LF', 'LR', );
+my $MAX_PRIMER_NUMBERS   = 3;
+my $PRIMER_RESULT_PREFIX = 'SRLOXP-';
 
 has schema => (
     is       => 'ro',

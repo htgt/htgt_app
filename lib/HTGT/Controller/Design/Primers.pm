@@ -9,10 +9,9 @@ use HTGT::Utils::TaqMan::Design;
 use HTGT::Utils::DesignQcReports::TaqmanIDs;
 use Try::Tiny;
 use Data::Pageset;
-use Const::Fast;
 use IO::Scalar;
 
-const my @TAQMAN_PLATE_FIELDS => qw( 
+my @TAQMAN_PLATE_FIELDS = qw( 
     well_name
     assay_id
     design_id

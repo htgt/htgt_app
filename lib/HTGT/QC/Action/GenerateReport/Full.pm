@@ -8,7 +8,6 @@ use MooseX::ClassAttribute;
 use List::Util qw( sum );
 use YAML::Any;
 use CSV::Writer;
-use Const::Fast;
 use namespace::autoclean;
 
 extends qw( HTGT::QC::Action::GenerateReport );
@@ -49,7 +48,7 @@ sub generate_report {
         }
     }
 
-    const my @PRIMERS => sort keys %primers;
+    my @PRIMERS = sort keys %primers;
 
     my $csv = CSV::Writer->new( output => $self->output_file->openw );
     $csv->write(

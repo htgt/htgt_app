@@ -2,7 +2,6 @@ package HTGT::QC::Util::SubmitQCFarmJob;
 
 use Moose;
 use Moose::Util::TypeConstraints;
-use Const::Fast;
 use IPC::Run ();
 use HTGT::QC::Exception;
 use namespace::autoclean;
@@ -23,7 +22,7 @@ has memory_required => (
     default  => 2000,
 );
 
-const my $QC_CONFIG => $ENV{HTGT_QC_CONF};
+my $QC_CONFIG = $ENV{HTGT_QC_CONF};
 
 #if you override this you will have to create the output/error directories
 #and run write_job_ids.

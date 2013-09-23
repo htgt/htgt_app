@@ -2,13 +2,12 @@ package HTGT::Utils::FPData;
 
 use strict;
 use warnings FATAL => 'all';
-use Const::Fast;
 
 use Sub::Exporter -setup => {
     exports => [ qw ( get_fp_data ) ]
 };
 
-const my $GET_EPD_WELL_DATA_QUERY => <<'EOT';
+my $GET_EPD_WELL_DATA_QUERY = <<'EOT';
 select well.well_name, well.well_id, well_data.data_value, well_data.data_type
 from mgi_gene
 join project on project.mgi_gene_id = mgi_gene.mgi_gene_id
@@ -26,7 +25,7 @@ and plate.type = 'EPD'
 order by well.well_id
 EOT
 
-const my $GET_LOA_WELL_DATA_QUERY => <<'EOT';
+my $GET_LOA_WELL_DATA_QUERY = <<'EOT';
 select well.well_name, well_data.data_value, well_data.data_type
 from well
 join plate on plate.plate_id = well.plate_id
@@ -39,7 +38,7 @@ and (
 and plate.type = 'REPD'
 EOT
 
-const my $GET_FP_WELL_NAMES_QUERY => <<'EOT';
+my $GET_FP_WELL_NAMES_QUERY = <<'EOT';
 select well.well_name from well
 join plate on plate.plate_id = well.plate_id
 where well.parent_well_id = ?

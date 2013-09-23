@@ -2,13 +2,12 @@ package HTGT::Utils::UpdateLoxpPrimerResults;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 with 'MooseX::Log::Log4perl';
 
 my $PRIMER_NAME_REGEX    = qr/^(PNFLR|LF|LR)[1-3]$/;
-const my $PRIMER_RESULT_PREFIX => 'SRLOXP-';
+my $PRIMER_RESULT_PREFIX = 'SRLOXP-';
 
-const my %VALID_RESULTS => (
+my %VALID_RESULTS = (
     pass     => '',
     fail     => '',
     not_used => '',

@@ -1,6 +1,5 @@
 package HTGT::Controller::Gene::Redesign;
 use Moose;
-use Const::Fast;
 use Try::Tiny;
 use namespace::autoclean;
 
@@ -26,7 +25,7 @@ Catalyst Controller.
 
 =cut
 
-const my %IS_VALID_PIPELINE => map { $_ => 1 } qw( EUCOMM KOMP EUCOMM-Tools );
+my %IS_VALID_PIPELINE = map { $_ => 1 } qw( EUCOMM KOMP EUCOMM-Tools );
 
 has _is_valid_pipeline => (
     traits  => [ 'Hash' ],

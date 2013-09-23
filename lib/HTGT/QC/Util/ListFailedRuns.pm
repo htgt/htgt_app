@@ -4,7 +4,6 @@ use Moose;
 use YAML::Any;
 use List::Util qw( min );
 use Path::Class 'dir';
-use Const::Fast;
 use namespace::autoclean;
 
 with 'MooseX::Log::Log4perl';
@@ -21,7 +20,7 @@ has config => (
     required => 1
 );
 
-const my $OLD_QC_WORK_DIR => '/nfs/team87/data/qc/work';
+my $OLD_QC_WORK_DIR = '/nfs/team87/data/qc/work';
 
 sub get_failed_run_data{
     my ( $self ) = shift;

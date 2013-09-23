@@ -2,7 +2,6 @@ package HTGT::Utils::TaqMan::Design;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use List::MoreUtils qw( uniq );
 use Perl6::Slurp;
 use MooseX::Types::Path::Class;
@@ -15,8 +14,8 @@ use Try::Tiny;
 
 with qw( MooseX::Log::Log4perl HTGT::Utils::TaqMan::DesignsByGene );
 
-const my @REQUIRED_FEATURES        => qw( U5 U3 D5 D3 );
-const my @REQUIRED_FEATURES_NON_KO => qw( U5 D3 );
+my @REQUIRED_FEATURES        = qw( U5 U3 D5 D3 );
+my @REQUIRED_FEATURES_NON_KO = qw( U5 D3 );
 
 has schema => (
     is       => 'ro',

@@ -3,7 +3,6 @@ package HTGT::Utils::TaqMan::Design::Sequence;
 use Moose::Role;
 use namespace::autoclean;
 use HTGT::Utils::EnsEMBL;
-use Const::Fast;
 use List::MoreUtils qw( uniq );
 use CSV::Writer;
 use File::Temp qw( tempfile );
@@ -11,7 +10,7 @@ use Bio::SeqIO;
 use Bio::Seq;
 use Try::Tiny;
 
-const my @OUT_DELETED_COLUMNS => qw(
+my @OUT_DELETED_COLUMNS = qw(
     marker_symbol
     design_id
     has_primer
@@ -30,7 +29,7 @@ const my @OUT_DELETED_COLUMNS => qw(
     3_flank
 );
 
-const my @OUT_CRITICAL_COLUMNS => qw(
+my @OUT_CRITICAL_COLUMNS = qw(
     marker_symbol
     design_id
     has_primer

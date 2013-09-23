@@ -5,9 +5,8 @@ use namespace::autoclean;
 use HTGT::Constants qw( %QC_RESULT_TYPES %RANKED_QC_RESULTS );
 use CSV::Reader;
 use Try::Tiny;
-use Const::Fast;
 
-const my %VALID_DNA_PLATE_TYPES => (
+my %VALID_DNA_PLATE_TYPES = (
    QPCRDNA => 1,
    SBDNA   => 1,
 );

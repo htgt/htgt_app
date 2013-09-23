@@ -11,12 +11,11 @@ BEGIN {
     our %EXPORT_TAGS = ();
 }
 
-use Const::Fast;
 use List::MoreUtils 'zip';
 
-const my @COLUMN_NAMES => ( 'Marker Symbol', 'MGI Accession Id', 'Total Count', 'Conditional Count','Consortium');
+my @COLUMN_NAMES = ( 'Marker Symbol', 'MGI Accession Id', 'Total Count', 'Conditional Count','Consortium');
 
-const my $DIST_TRAP_COUNT_QUERY => <<'EOT';
+my $DIST_TRAP_COUNT_QUERY = <<'EOT';
 select marker_symbol, mgi_accession_id, sum(cond_count) + sum(trap_count), sum(cond_count),
 case 
 when is_komp_csd=1 then 'komp_csd'

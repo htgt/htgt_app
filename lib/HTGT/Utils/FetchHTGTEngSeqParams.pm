@@ -12,7 +12,6 @@ use Sub::Exporter -setup => {
 
 use HTGT::QC::Exception;
 use Data::Dump qw( pp );
-use Const::Fast;
 use YAML::Any;
 use Log::Log4perl qw( :easy );
 use Try::Tiny;
@@ -21,15 +20,15 @@ use HTGT::DBFactory;
 use Data::Dumper;
 $Data::Dumper::Maxdepth = 3;
 
-const my %DEFAULT_CASSETTE_FOR_STAGE => (
+my %DEFAULT_CASSETTE_FOR_STAGE = (
     intermediate => 'pR6K_R1R2_ZP'
 );
 
-const my %DEFAULT_BACKBONE_FOR_STAGE => (
+my %DEFAULT_BACKBONE_FOR_STAGE = (
     intermediate => 'R3R4_pBR_amp'
 );
 
-const my %ASSEMBLY_FOR_ID => (
+my %ASSEMBLY_FOR_ID = (
     11  => 'NCBIM37',
     100 => 'GRCh37',
     101 => 'GRCm38',

@@ -3,11 +3,10 @@ package HTGT::Utils::DesignFinder::CriticalRegionError;
 use Moose;
 use namespace::autoclean;
 use Moose::Util::TypeConstraints;
-use Const::Fast;
 
 extends 'Throwable::Error';
 
-const my %MESSAGE_FOR => (
+my %MESSAGE_FOR = (
     MaxRegionSizeExceeded           => "Region size greater than max permitted region size",
     NoFloxedExons                   => "Region contains no exons",
     NoCodingExons                   => "Region contains no coding exons",

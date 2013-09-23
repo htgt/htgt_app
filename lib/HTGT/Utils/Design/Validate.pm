@@ -2,7 +2,6 @@ package HTGT::Utils::Design::Validate;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use List::Util qw( min max );
 use List::MoreUtils qw( any );
 use HTGT::Utils::Design::Info;
@@ -10,11 +9,11 @@ use HTGT::Utils::Design::Validation::Error;
 
 with 'MooseX::Log::Log4perl';
 
-const my @KO_FEATURES  => qw( G5 U5 U3 D5 D3 G3 );
-const my @INS_FEATURES => qw( G5 U5 D3 G3 );
-const my @DEL_FEATURES => qw( G5 U5 U3 G3 );
+my @KO_FEATURES  = qw( G5 U5 U3 D5 D3 G3 );
+my @INS_FEATURES = qw( G5 U5 D3 G3 );
+my @DEL_FEATURES = qw( G5 U5 U3 G3 );
 
-const my %REQUIRED_FEATURES_FOR => (
+my %REQUIRED_FEATURES_FOR = (
     'KO'           => \@KO_FEATURES,
 #    'Del_Block'    => \@DEL_FEATURES,
 #    'Del_Location' => \@DEL_FEATURES,
@@ -22,7 +21,7 @@ const my %REQUIRED_FEATURES_FOR => (
 #    'Ins_Location' => \@INS_FEATURES
 );
 
-const my %FILTER_REPEATS => (
+my %FILTER_REPEATS = (
     "G5"          => '__check_repeat_overlap',
     "U5"          => '__check_repeat_overlap',
     "U3"          => '__check_repeat_overlap',

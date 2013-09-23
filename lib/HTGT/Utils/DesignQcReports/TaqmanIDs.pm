@@ -2,7 +2,6 @@ package HTGT::Utils::DesignQcReports::TaqmanIDs;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use Try::Tiny;
 
 extends 'HTGT::Utils::DesignQcReports';

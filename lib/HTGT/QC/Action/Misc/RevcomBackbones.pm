@@ -2,7 +2,6 @@ package HTGT::QC::Action::Misc::RevcomBackbones;
 
 use Moose;
 use Path::Class;
-use Const::Fast;
 use Bio::SeqUtils;
 use Bio::SeqIO;
 use List::Util qw( first );
@@ -18,7 +17,7 @@ override abstract => sub {
     'emit a new GenBank (and FASTA) file with the backbone reverse-complemented'
 };
 
-const my %SUFFIX_FOR => (
+my %SUFFIX_FOR = (
     genbank => '.gbk',
     fasta   => '.fasta'
 );

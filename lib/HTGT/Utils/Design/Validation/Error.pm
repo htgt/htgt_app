@@ -2,7 +2,6 @@ package HTGT::Utils::Design::Validation::Error;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use Moose::Util::TypeConstraints;
 
 enum 'HTGT::Utils::Design::Validation::ErrorType'
@@ -15,7 +14,7 @@ enum 'HTGT::Utils::Design::Validation::ErrorType'
              repeat_region
      ) ];
 
-const my %IS_FATAL => map { $_ => 1 } qw( missing_feature invalid_feature feature_order floxed_exon );
+my %IS_FATAL = map { $_ => 1 } qw( missing_feature invalid_feature feature_order floxed_exon );
 
 has is_fatal => (
     is         => 'ro',

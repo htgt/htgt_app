@@ -4,7 +4,6 @@ use strict;
 use warnings FATAL => 'all';
 
 use Moose;
-use Const::Fast;
 use namespace::autoclean;
 
 =head1 Description 
@@ -21,12 +20,12 @@ failing tests by fetching out the results from the 'results' hash.
 =cut
 
 
-const my $ES_CELL_PRODUCTION   => 'es_cell_production';
-const my $ES_CELL_DISTRIBUTION => 'es_cell_distribution';
-const my $ES_CELL_USERS        => 'es_cell_users';
-const my $MOUSE_PRODUCTION     => 'mouse_production';
+my $ES_CELL_PRODUCTION   = 'es_cell_production';
+my $ES_CELL_DISTRIBUTION = 'es_cell_distribution';
+my $ES_CELL_USERS        = 'es_cell_users';
+my $MOUSE_PRODUCTION     = 'mouse_production';
 
-const my %ATTRIBUTE_NAMES => (
+my %ATTRIBUTE_NAMES = (
     $ES_CELL_PRODUCTION => [
         qw(
             production_qc_five_prime_screen 

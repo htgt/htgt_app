@@ -1,6 +1,5 @@
 package HTGT::Controller::Tools::GenotypingPrimers;
 use Moose;
-use Const::Fast;
 use JSON qw( to_json );
 use namespace::autoclean;
 
@@ -24,7 +23,7 @@ Query to retrieve genotyping primers from the features for a given design
 
 =cut
 
-const my $SELECT_FEATURES_SQL => <<'EOT';
+my $SELECT_FEATURES_SQL = <<'EOT';
 select feature_type_dict.description, feature_data.data_item
 from design
 join feature on feature.design_id = design.design_id
@@ -43,7 +42,7 @@ Query to retrieve genotyping primers from the features for a given mirKO design
 
 =cut
 
-const my $SELECT_MIRKO_FEATURES_SQL => <<'EOT';
+my $SELECT_MIRKO_FEATURES_SQL = <<'EOT';
 select feature_type_dict.description, feature_data.data_item
 from design
 join feature on feature.design_id = design.design_id
@@ -60,7 +59,7 @@ EOT
 
 =cut
 
-const my %UNIVERSAL_PRIMERS => (
+my %UNIVERSAL_PRIMERS = (
     LAR3 => 'CACAACGGGTTCTTCTGTTAGTCC',
     RAF5 => 'CACACCTCCCCCTGAACCTGAAAC',
     PNF  => 'ATCCGGGGGTACCGCGTCGAG',
@@ -71,7 +70,7 @@ const my %UNIVERSAL_PRIMERS => (
 
 =cut
 
-const my %UNIVERSAL_MIRKO_PRIMERS => (
+my %UNIVERSAL_MIRKO_PRIMERS = (
     LAR => 'ATAGCATACATTATACGAAGTTATCACTGG', #LR2
     RAF => 'TCTAGAAAGTATAGGAACTTCCATGGTC',  #LR3
 );

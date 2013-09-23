@@ -10,18 +10,17 @@ use HTGT::Utils::DesignFinder::Gene;
 use HTGT::Utils::DesignFinder::Constants qw( $MIN_CONSTRAINED_ELEMENT_SCORE );
 use HTGT::Utils::EnsEMBL;
 use HTGT::Utils::Design::FindConstrainedElements qw( find_constrained_elements );
-use Const::Fast;
 use List::Util qw( max min );
 use namespace::autoclean;
 
 #================================================================================
 
-const my $MINUS_STRAND => -1;
+my $MINUS_STRAND = -1;
 
 # Don't consider genes whose translation is < $MIN_AA aa (avoids
 # potential pseudogenes)
 
-const my $MIN_AA => 100;
+my $MIN_AA = 100;
 
 # Try to insert at a junctionx AG|G or AG|A
 
@@ -30,38 +29,38 @@ my $INSERT_SITE_RX = qr/AG[GA]/;
 # LoxP goes immediately after the stop codon; the distance between
 # the cassette and LoxP must be <= $MAX_CASS_LOXP_DIST bp
 
-const my $MAX_CASS_LOXP_DIST => 1750;
+my $MAX_CASS_LOXP_DIST = 1750;
 
 # Cassette must be at least $MIN_START_CASS_DIST bp into the exon
 
-const my $MIN_START_CASS_DIST => 100;
+my $MIN_START_CASS_DIST = 100;
 
 # If LoxP is inserted in 3' UTR, it must go at least $MIN_3P_UTR_SPACER bp
 # after the stop codon
 
-const my $MIN_3P_UTR_SPACER => 50;
+my $MIN_3P_UTR_SPACER = 50;
 
 # If LoxP is inserted in 3' intergenic region, it must go at least
 # $MIN_3P_GENOMIC_SPACER bp after the gene
 
-const my $MIN_3P_GENOMIC_SPACER => 100;
+my $MIN_3P_GENOMIC_SPACER = 100;
 
 # ...but it should be within $MAX_3P_GENOMIC_SPACER of the gene
 
-const my $MAX_3P_GENOMIC_SPACER => 500;
+my $MAX_3P_GENOMIC_SPACER = 500;
 
 # LoxP should be inserted between constrained elements; look for a
 # space with at least $MIN_CE_SPACER bp either side.
 
-const my $MIN_CE_SPACER => 25;
+my $MIN_CE_SPACER = 25;
 
 # Oligos are $OLIGO_SIZE bp
 
-const my $OLIGO_SIZE => 50;
+my $OLIGO_SIZE = 50;
 
 # The recombineering primers we compute
 
-const my @RECOMBINEERING_PRIMERS => qw( U5 U3 D5 D3 );
+my @RECOMBINEERING_PRIMERS = qw( U5 U3 D5 D3 );
 
 #================================================================================
 
@@ -156,7 +155,7 @@ sub find_candidate_insertion_locations {
 
     my ( $d5_start, $d5_end, $d5_seq, $d3_start, $d3_end, $d3_seq ) = $self->get_loxp_params;
 
-    const my %DESIGN_PARAMS => (
+    my %DESIGN_PARAMS = (
         ensembl_gene_id       => $self->gene->stable_id,
         ensembl_transcript_id => $transcript->stable_id,
         ensembl_exon_id       => $exon->stable_id,

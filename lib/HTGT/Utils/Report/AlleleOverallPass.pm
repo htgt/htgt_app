@@ -1,14 +1,13 @@
 package HTGT::Utils::Report::AlleleOverallPass;
 
 use Moose;
-use Const::Fast;
 use HTGT::Utils::AlleleQCInterpreter;
 use Iterator::Util;
 use namespace::autoclean;
 
 with 'HTGT::Utils::Report::GenericIterator';
 
-const my @IDCC_TARG_REP_ATTRS => qw(
+my @IDCC_TARG_REP_ATTRS = qw(
     pipeline
     ikmc_project_id
     mgi_accession_id
@@ -45,7 +44,7 @@ const my @IDCC_TARG_REP_ATTRS => qw(
     user_qc_comment    
 );
 
-const my @KERMITS_ATTRS => qw(
+my @KERMITS_ATTRS = qw(
     pipeline
     marker_symbol
     consortium 
@@ -67,7 +66,7 @@ const my @KERMITS_ATTRS => qw(
     colony_prefix
 );
 
-const my @QC_ATTRS => qw(
+my @QC_ATTRS = qw(
     indicator
     confirm_locus_targeted
     confirm_structure_targeted_allele
@@ -78,7 +77,7 @@ const my @QC_ATTRS => qw(
     mouse_qc
 );
 
-const my @COLUMNS => qw(
+my @COLUMNS = qw(
     indicator
     colony_prefix
     pipeline

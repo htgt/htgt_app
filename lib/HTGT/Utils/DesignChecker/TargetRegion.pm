@@ -15,13 +15,12 @@ use namespace::autoclean;
 
 use List::MoreUtils qw( uniq any none );
 use Try::Tiny;
-use Const::Fast;
 
 use HTGT::Utils::DesignPhase qw( get_phase_from_design_and_transcript );
 
 with 'HTGT::Utils::DesignCheckRole';
 
-const my @TARGET_REGION_CHECKS => qw(
+my @TARGET_REGION_CHECKS = qw(
 target_gene_matches_project_gene
 target_start_codon_for_transcript
 all_coding_transcripts_targeted

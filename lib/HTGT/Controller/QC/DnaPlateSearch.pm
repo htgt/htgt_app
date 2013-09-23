@@ -4,7 +4,6 @@ use namespace::autoclean;
 
 use HTGT::Utils::DesignQcReports::DnaWells;
 use Try::Tiny;
-use Const::Fast;
 
 BEGIN {extends 'Catalyst::Controller'; }
 

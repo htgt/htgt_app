@@ -3,7 +3,6 @@ package HTGT::Utils::ESDistributionCheck;
 use Moose;
 use HTGT::Utils::RESTClient;
 use namespace::autoclean;
-use Const::Fast;
 use DBI;
 use HTGT::DBFactory;
 
@@ -41,7 +40,7 @@ has imits_db_password => (
     required => 1
 );
 
-const my %STATUS_MAP => (
+my %STATUS_MAP = (
     'Conflict'                          => 'on_hold',
     'Aborted - ES Cell QC Failed'       => 'qc_failed',
     'Assigned - ES Cell QC In Progress' => 'qc_started',
@@ -55,7 +54,7 @@ const my %STATUS_MAP => (
     'Assigned - ES Cell QC Complete'    => 'qc_complete'
 );
 
-const my %ESCELL_PIPELINE_MAP => (
+my %ESCELL_PIPELINE_MAP = (
     1 => 'KOMP_CSD',
     2 => 'KOMP_REGENERON',
     3 => 'NorCOMM',
@@ -66,9 +65,9 @@ const my %ESCELL_PIPELINE_MAP => (
     8 => 'EUCOMMToolsCre'
 );
 
-const my $MAX_GENES_IN_REST_CALL => 5;
-const my @CONSORTIA => ( 'MGP', 'BaSH', 'MRC' );
-const my @GROUPS    => ( 'BCM', 'Harwell', 'WTSI', 'Unspecified',
+my $MAX_GENES_IN_REST_CALL = 5;
+my @CONSORTIA = ( 'MGP', 'BaSH', 'MRC' );
+my @GROUPS    = ( 'BCM', 'Harwell', 'WTSI', 'Unspecified',
                          'MGPinterest', 'WTSI_Blood_A', 'WTSI_Bone_A',
                          'WTSI_Cancer_A', 'WTSI_Cre', 'WTSI_Fat_A',
                          'WTSI_Hear_A', 'WTSI_IBD_A', 'WTSI_Infection_A',

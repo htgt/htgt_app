@@ -23,13 +23,12 @@ use List::MoreUtils qw( uniq firstval any );
 use Try::Tiny;
 use HTGT::QC::Util::CreateSuggestedQcPlateMap qw( create_suggested_plate_map get_sequencing_project_plate_names );
 use IPC::Run ();
-use Const::Fast;
 use namespace::autoclean;
 use JSON;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-const my $LOG_DIR => '/nfs/team87/update_escell_qc';
+my $LOG_DIR = '/nfs/team87/update_escell_qc';
 
 sub auto :Private {
     my ( $self, $c ) = @_;
@@ -802,7 +801,7 @@ sub _validated_download_seq_params {
         format => 'genbank',
     );
 
-    const my %SUFFIX_FOR => ( genbank => '.gbk', fasta => '.fasta' );
+    my %SUFFIX_FOR = ( genbank => '.gbk', fasta => '.fasta' );
 
     if ( my $format = $c->req->param( 'format' ) ) {
         $format =~ s/^\s+//;

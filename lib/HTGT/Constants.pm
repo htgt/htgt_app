@@ -4,7 +4,6 @@ use strict;
 use warnings FATAL => 'all';
 
 use base 'Exporter';
-use Const::Fast;
 
 BEGIN {
     our @EXPORT = ();
@@ -25,7 +24,7 @@ BEGIN {
     our %EXPORT_TAGS = ();
 }
 
-const our %SPONSOR_FOR => (
+our %SPONSOR_FOR = (
     is_komp_csd         => 'KOMP',
     is_eucomm           => 'EUCOMM',
     is_komp_regeneron   => 'REGENERON',
@@ -39,9 +38,9 @@ const our %SPONSOR_FOR => (
     is_tpp              => 'TPP',
 );
 
-const our %SPONSOR_COLUMN_FOR => map { $SPONSOR_FOR{$_} => $_ } keys %SPONSOR_FOR;
+our %SPONSOR_COLUMN_FOR = map { $SPONSOR_FOR{$_} => $_ } keys %SPONSOR_FOR;
 
-const our %RANKED_QC_RESULTS => (
+our %RANKED_QC_RESULTS = (
     na   => 1,
     pass => 2,
     passb => 3,
@@ -49,7 +48,7 @@ const our %RANKED_QC_RESULTS => (
     fa   => 5, #Failed Assay
 );
 
-const our %QC_RESULT_TYPES => (
+our %QC_RESULT_TYPES = (
     LOA => {
         well_data_type    => 'loa_qc_result',
         valid_plate_types => [ 'REPD' ],
@@ -63,7 +62,7 @@ const our %QC_RESULT_TYPES => (
     QPCRDNA => 1,
 );
 
-const our %BACKBONES => (
+our %BACKBONES = (
     'R3R4_pBR_DTA+_Bsd_amp' => {
         full_name      => 'pR3R4 pBR DTA(+) Bsd amp',
         filename       => 'pR3R4 DTA(+) EM7_Bsd.gbk',
@@ -142,7 +141,6 @@ const our %BACKBONES => (
     },
 );
 
-#const our %CASSETTES => (
 our %CASSETTES = (
     Ifitm2_intron_L1L2_Bact_P => {
         full_name => 'Ifitm2_intron_L1L2_Bact_P',
@@ -776,7 +774,7 @@ our %CASSETTES = (
 );
 
 
-const our %PLATE_TYPES => (
+our %PLATE_TYPES = (
     EP    => 'EP',
     EPD   => 'EPD',
     FP    => 'FP',
@@ -802,13 +800,13 @@ const our %PLATE_TYPES => (
     SBDNA   => 'SBDNA',
 );
 
-const our @PIQ_SHIPPING_LOCATIONS => qw(
+our @PIQ_SHIPPING_LOCATIONS = qw(
     BASH
     HARWELL
     MGP
 );
 
-const our @PIQ_HIDE_WELL_DATA => qw(
+our @PIQ_HIDE_WELL_DATA = qw(
     loa_cn
     loa_min_cn
     loa_max_cn
@@ -847,14 +845,14 @@ const our @PIQ_HIDE_WELL_DATA => qw(
     chr11b_confidence
 );
 
-const our $DEFAULT_ANNOTATION_ASSEMBLY_ID => 101;
-const our $DEFAULT_ANNOTATION_BUILD_ID    => 69.38;
+our $DEFAULT_ANNOTATION_ASSEMBLY_ID = 101;
+our $DEFAULT_ANNOTATION_BUILD_ID    = 69.38;
 
-const our %ANNOTATION_ASSEMBLIES => (
+our %ANNOTATION_ASSEMBLIES = (
     101 => 'GRCm38',
 );
 
-const our @ANNOTATION_BUILDS => (
+our @ANNOTATION_BUILDS = (
     69.38
 );
 

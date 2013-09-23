@@ -7,10 +7,9 @@ use Bio::Restriction::EnzymeCollection;
 use Path::Class;
 use namespace::autoclean;
 use version;
-use Const::Fast;
 
 # BioPerl 1.5 can't handle all the Rebase enzymes
-const my $REQUIRED_BIOPERL_VERSION => version->parse( '1.6.1' );
+my $REQUIRED_BIOPERL_VERSION = version->parse( '1.6.1' );
 
 with 'MooseX::Log::Log4perl';
 

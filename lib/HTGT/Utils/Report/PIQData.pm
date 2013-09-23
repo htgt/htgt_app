@@ -7,9 +7,7 @@ use Sub::Exporter -setup => {
     exports => [ qw( get_piq_data ) ]
 };
 
-use Const::Fast;
-
-const my $GET_COLUMNS_QUERY => <<'EOT';
+my $GET_COLUMNS_QUERY = <<'EOT';
 select distinct data_type
 from well_data
 join well on well.well_id = well_data.well_id
@@ -19,7 +17,7 @@ and data_type not in ( 'cassette', 'backbone' )
 order by data_type
 EOT
 
-const my $GET_TAQMAN_DATA => <<'EOT';
+my $GET_TAQMAN_DATA = <<'EOT';
 select DISTINCT design_taqman_assay.design_id, design_taqman_assay.assay_id, design_taqman_assay.deleted_region
 from well
 join plate on well.plate_id = plate.plate_id
@@ -28,7 +26,7 @@ join design_taqman_assay on design_taqman_assay.design_id = design_instance.desi
 where plate.type = 'PIQ'
 EOT
 
-const my $GET_DNA_PLATE_DATA => <<'EOT';
+my $GET_DNA_PLATE_DATA = <<'EOT';
 select parent_well.well_name as parent_well, plate.type plate_type, plate.name plate_name, well.well_name
 from well inner join plate on plate.plate_id = well.plate_id
 join well parent_well on parent_well.well_id = well.parent_well_id
@@ -36,7 +34,7 @@ join plate parent_plate on parent_plate.plate_id = parent_well.plate_id
 where plate.type IN ('SBDNA', 'QPCRDNA')
 EOT
 
-const my $GET_DATA_QUERY => <<'EOT';
+my $GET_DATA_QUERY = <<'EOT';
 select grandparent_well.well_name, well_data.data_type, well_data.data_value, well_data.edit_date, mgi_gene.marker_symbol, design.design_id, coalesce( design.design_type, 'KO' ) as design_type
 from plate
 join well on well.plate_id = plate.plate_id

@@ -15,11 +15,10 @@ use Sub::Exporter -setup => {
 
 use HTGT::Utils::DesignPhase;
 use HTGT::Utils::Plate::Create;
-use Const::Fast;
 
-const my $DESIGNS_PER_ROW   => 12;
-const my $ROWS_PER_PLATE    => 8;
-const my $DESIGNS_PER_PLATE => $ROWS_PER_PLATE * $DESIGNS_PER_ROW;
+my $DESIGNS_PER_ROW   = 12;
+my $ROWS_PER_PLATE    = 8;
+my $DESIGNS_PER_PLATE = $ROWS_PER_PLATE * $DESIGNS_PER_ROW;
 
 sub allocate_designs_to_plate {
     my ( $plate_name, $designs ) = @_;

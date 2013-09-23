@@ -18,7 +18,6 @@ use HTGT::Utils::DesignChecker::DesignQuality;
 use HTGT::Utils::DesignChecker::TargetRegion;
 use HTGT::Utils::DesignChecker::ArtificialIntron;
 use Try::Tiny;
-use Const::Fast;
 
 with 'MooseX::Log::Log4perl';
 with 'HTGT::Role::EnsEMBL';
@@ -248,7 +247,7 @@ has final_status => (
     writer  => 'set_final_status',
 );
 
-const my @DESIGN_CHECK_CLASSES => qw(
+my @DESIGN_CHECK_CLASSES = qw(
 oligo_checker
 design_quality_checker
 target_region_checker

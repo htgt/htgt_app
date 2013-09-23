@@ -2,13 +2,11 @@ package HTGT::Utils::TargRep::Update::MirKOGenbank;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use HTGT::Utils::DesignFinder::Gene;
 use HTGT::Utils::TargRep::Update::Genbank qw( get_norcomm_seq );
 use Data::Dumper::Concise;
 use Try::Tiny;
 use List::MoreUtils qw( uniq any );
-use Const::Fast;
 
 my %NORCOMM_CASSETTES = (
     'L1L2_NTARU-0' => 'L1L2_NTARU-0',

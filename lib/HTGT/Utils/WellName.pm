@@ -8,9 +8,8 @@ use Sub::Exporter -setup => {
 };
 
 use Log::Log4perl qw( :easy );
-use Const::Fast;
 
-const our %ninetySix_to_384 => (
+our %ninetySix_to_384 = (
     'A01_1' => 'A01',
     'A01_2' => 'A02',
     'A01_3' => 'B01',
@@ -397,7 +396,7 @@ const our %ninetySix_to_384 => (
     'H12_4' => 'P24',
 );
 
-const our %threeEightFour_to_96 => reverse %ninetySix_to_384;
+our %threeEightFour_to_96 = reverse %ninetySix_to_384;
 sub to96 {
     my ( $well_name ) = @_;
     return $threeEightFour_to_96{ uc $well_name };

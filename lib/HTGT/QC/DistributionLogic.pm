@@ -7,7 +7,6 @@ use Path::Class;
 use Config::Scoped;
 use Parse::BooleanLogic;
 use HTGT::QC::Exception;
-use Const::Fast;
 
 with qw( MooseX::Log::Log4perl );
 
@@ -78,7 +77,7 @@ has targeted_trap => (
     lazy_build => 1
 );
 
-const my %HANDLERS_FOR => (
+my %HANDLERS_FOR = (
     'GF'    => sub {shift->passes_matching( qr/^primer_band_GF\d$/ ) >= 1 },
     'GR'    => sub {shift->passes_matching( qr/^primer_band_GR\d$/ ) >= 1 },
     'GF>=2' => sub {shift->passes_matching( qr/^primer_band_GF\d$/ ) >= 2 },

@@ -5,7 +5,6 @@ use namespace::autoclean;
 use HTGT::Utils::DesignFinder::Gene;
 use HTGT::Utils::DesignFinder::CandidateOligoRegion::Standard;
 use HTGT::Utils::DesignFinder::Constants qw( $MIN_3P_INTRON_SIZE );
-use Const::Fast;
 
 extends 'HTGT::Utils::DesignFinder';
 

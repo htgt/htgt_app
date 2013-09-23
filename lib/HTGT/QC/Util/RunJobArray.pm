@@ -10,7 +10,6 @@ use Sub::Exporter -setup => {
     }
 };
 
-use Const::Fast;
 use Path::Class;
 use IPC::System::Simple qw( capturex );
 use Log::Log4perl ':easy';
@@ -19,7 +18,7 @@ use HTGT::QC::Exception;
 use HTGT::QC::Util::Which;
 use YAML::Any;
 
-const my @BSUB               => ( which( 'bsub' ), qw( -P team87 -q normal ) );
+my @BSUB               = ( which( 'bsub' ), qw( -P team87 -q normal ) );
 my $JOB_SUBMITTED_RX   = qr/^Job <(\d+)> is submitted to queue <.+>/;
 #const my $NO_MATCHING_JOB_RX => qr/No matching job found. Job not submitted./;
 

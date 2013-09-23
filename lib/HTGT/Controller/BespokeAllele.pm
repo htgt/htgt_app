@@ -4,17 +4,16 @@ use namespace::autoclean;
 use HTGT::Utils::BespokeAlleleCheck;
 use HTGT::Utils::BespokeStatus;
 use HTGT::Utils::BespokeLanguishing;
-use Const::Fast;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
-const my %IMITS_TO_REDMINE_PRIORITY => (
+my %IMITS_TO_REDMINE_PRIORITY = (
     Low    => 'Low',
     Medium => 'Normal',
     High   => 'High'
 );
 
-const my %ADD_SPACES => (
+my %ADD_SPACES = (
     'PreInjectionQCCustom'      => 'Pre Injection QC Custom',
     'PreInjectionQCHT'          => 'Pre Injection QC HT',
     'ModelAcquisitionInitiated' => 'Model Acquisition Initiated',

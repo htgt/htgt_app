@@ -1,11 +1,10 @@
 package HTGT::Controller::Report::ConditionalESCellCountByGene;
 use Moose;
-use Const::Fast;
 use namespace::autoclean;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
-const my $MAX_GENE_IDS => 500;
+my $MAX_GENE_IDS = 500;
 
 #my @GENE_ID_TYPES => (
 #    [ qr/OTT\w+/  => 'vega_gene_id'     ],
@@ -20,7 +19,7 @@ my @GENE_ID_TYPES = (
     [ qr/[\w-]+/  => 'marker_symbol'    ]
 );
 
-const my $QUERY_TMPL => <<'EOT';
+my $QUERY_TMPL = <<'EOT';
 select mgi_gene.marker_symbol, mgi_gene.ensembl_gene_id, mgi_gene.mgi_accession_id, mgi_gene.vega_gene_id,
   count(distinct well.well_id) as conditional_es_cell_count
 from mgi_gene

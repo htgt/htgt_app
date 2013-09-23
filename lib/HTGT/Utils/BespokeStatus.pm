@@ -3,7 +3,6 @@ package HTGT::Utils::BespokeStatus;
 use Moose;
 use DBI;
 use namespace::autoclean;
-use Const::Fast;
 
 with qw( MooseX::SimpleConfig MooseX::Log::Log4perl );
 
@@ -29,7 +28,7 @@ has redmine_db_password => (
     required => 1
 );
 
-const my %REMOVE_SPACES => (
+my %REMOVE_SPACES = (
     'Pre Injection QC Custom'     => 'PreInjectionQCCustom',
     'Pre Injection QC HT'         => 'PreInjectionQCHT',
     'Model Acquisition Initiated' => 'ModelAcquisitionInitiated',

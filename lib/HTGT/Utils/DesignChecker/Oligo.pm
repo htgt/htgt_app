@@ -15,11 +15,10 @@ use namespace::autoclean;
 
 use List::MoreUtils qw( uniq );
 use Try::Tiny;
-use Const::Fast;
 
 with 'HTGT::Utils::DesignCheckRole';
 
-const my @OLIGO_NAMES => qw( G5 U5 U3 D5 D3 G3 );
+my @OLIGO_NAMES = qw( G5 U5 U3 D5 D3 G3 );
 
 sub _build_check_type {
     return 'oligo';

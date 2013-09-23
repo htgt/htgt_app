@@ -5,7 +5,6 @@ use namespace::autoclean;
 use HTGT::Constants qw( %QC_RESULT_TYPES %RANKED_QC_RESULTS );
 use CSV::Reader;
 use Try::Tiny;
-use Const::Fast;
 use Scalar::Util qw(looks_like_number);
 
 with 'HTGT::Utils::UpdateWellDataQc';
@@ -23,7 +22,7 @@ has piq_child_wells => (
     }
 );
 
-const my @PIQ_GROUPED_RESULTS => qw(
+my @PIQ_GROUPED_RESULTS = qw(
     loa
     loxp
     lacz
@@ -36,7 +35,7 @@ const my @PIQ_GROUPED_RESULTS => qw(
     lrpcr
 );
 
-const my %GROUPED_QC_FIELDS => (
+my %GROUPED_QC_FIELDS = (
     cn         => { required => 1, validation_method => '_validate_numeric_value' },
     min_cn     => { required => 1, validation_method => '_validate_numeric_value' },
     max_cn     => { required => 1, validation_method => '_validate_numeric_value' },
@@ -44,7 +43,7 @@ const my %GROUPED_QC_FIELDS => (
     pass       => { required => 1, validation_method => '_validate_result_value' },
 );
 
-const my %PIQ_OVERALL_RESULTS => (
+my %PIQ_OVERALL_RESULTS = (
     chromosome_fail => { required => 0, validation_method => '_validate_chromosome_fail' },
     targeting_pass  => { required => 0, validation_method => '_validate_result_value' },
 );

@@ -1,13 +1,12 @@
 package HTGT::Utils::ParseMutagenesisPredictionReports;
 
 use Moose;
-use Const::Fast;
 use Path::Class;
 use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
-const my $STATIC_FOLDER => '/software/team87/brave_new_world/data/misc';
+my $STATIC_FOLDER = '/software/team87/brave_new_world/data/misc';
 
 sub get_gene_and_transcript_counts{
     my ( $self, $report_filename ) = @_;

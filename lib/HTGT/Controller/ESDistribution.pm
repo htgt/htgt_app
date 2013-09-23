@@ -3,7 +3,6 @@ use Moose;
 use HTGT::Utils::ESDistributionCheck;
 use HTGT::Utils::ESPickLists;
 use namespace::autoclean;
-use Const::Fast;
 use Catalyst qw/
     Session
     Session::Store::FastMmap
@@ -12,7 +11,7 @@ use Catalyst qw/
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-const my %CAT_HEADINGS => (
+my %CAT_HEADINGS = (
     no_clones              => 'QC Not Started - No Clones',
     all_JM8A1_N3_clones    => 'QC Not Started - Only JM8A1.N3 Clones',
     clones_available       => 'QC Not Started - Clones at WTSI',

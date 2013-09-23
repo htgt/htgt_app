@@ -2,7 +2,6 @@ package HTGTDB::MGIGene;
 
 use strict;
 use warnings;
-use Const::Fast;
 use HTGT::Constants qw( %SPONSOR_COLUMN_FOR );
 
 =head1 AUTHOR
@@ -293,7 +292,7 @@ __PACKAGE__->might_have( gene_recovery => 'HTGTDB::GRGeneStatus', 'mgi_gene_id' 
 
 __PACKAGE__->has_many( gene_recovery_history => 'HTGTDB::GRGeneStatusHistory', 'mgi_gene_id' );
 
-const my %VALID_PIPELINE => map { $_ => 1 } qw( EUCOMM KOMP EUCOMM-Tools );
+my %VALID_PIPELINE = map { $_ => 1 } qw( EUCOMM KOMP EUCOMM-Tools );
 
 sub reset_status_to_redesign_requested {
     my $self = shift;

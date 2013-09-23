@@ -9,12 +9,11 @@ use Sub::Exporter -setup => {
     exports => [ qw( cmp_pass_level qc_update_needed ) ]
 };
 
-use Const::Fast;
 use Try::Tiny;
 use Log::Log4perl ':easy';
 use Carp qw( confess );
 
-const my @RANKED_PASS_LEVELS => reverse qw(
+my @RANKED_PASS_LEVELS = reverse qw(
 
     pass
     pass1

@@ -2,12 +2,11 @@ package HTGT::Utils::DesignQcReports::DnaWells;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use Try::Tiny;
 
 extends 'HTGT::Utils::DesignQcReports';
 
-const my %VALID_PLATE_TYPES => (
+my %VALID_PLATE_TYPES = (
     QPCRDNA => 1,
     SBDNA   => 1,
 );

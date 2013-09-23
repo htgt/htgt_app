@@ -15,7 +15,6 @@ use namespace::autoclean;
 
 use List::MoreUtils qw( none );
 use Try::Tiny;
-use Const::Fast;
 
 with 'HTGT::Utils::DesignCheckRole';
 

@@ -9,7 +9,6 @@ use Sub::Exporter -setup => {
 };
 
 use Log::Log4perl qw( :easy );
-use Const::Fast;
 use List::Util qw(sum);
 use HTGT::QC::Util::DesignLocForPlate qw( design_loc_for_plate  design_loc_for_epd_plate );
 use HTGT::Utils::WellName qw ( to384 );
@@ -18,7 +17,7 @@ use HTGT::QC::Config;
 use HTGT::QC::Config::Profile;
 use JSON;
 
-const my $FETCH_RESULTS_SQL => <<'EOT';
+my $FETCH_RESULTS_SQL = <<'EOT';
 select distinct r.plate_name, r.well_name, r.pass, s.design_id, m.marker_symbol,
 a.primer_name, a.pass as PRIMER_PASS, a.score, a.features, a.target_start, a.target_end,
 sr.length as PRIMER_READ_LENGTH,
@@ -35,7 +34,7 @@ where r.qc_run_id = ?
 order by plate_name, well_name, design_id, primer_name
 EOT
 
-const my $FETCH_PRIMER_BAND_DATA_SQL => <<'EOT';
+my $FETCH_PRIMER_BAND_DATA_SQL = <<'EOT';
 select w.well_name, wd.data_type, wd.data_value
 from well_data wd
 join well w on w.well_id = wd.well_id

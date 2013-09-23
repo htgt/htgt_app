@@ -8,11 +8,10 @@ with qw( MooseX::Log::Log4perl HTGT::Utils::DesignFinder::Stringify );
 use HTGT::Utils::DesignFinder::Constants qw( :candidate_oligo_region );
 use List::Util qw( max );
 use List::MoreUtils qw( all );
-use Const::Fast;
 
 extends 'HTGT::Utils::DesignFinder::CandidateOligoRegion';
 
-const my @REQUIRED_PARAMETERS => qw( fivep_block_size fivep_offset fivep_flank threep_block_size threep_offset threep_flank );
+my @REQUIRED_PARAMETERS = qw( fivep_block_size fivep_offset fivep_flank threep_block_size threep_offset threep_flank );
 
 has parameters => (
     traits  => [ 'Hash' ],

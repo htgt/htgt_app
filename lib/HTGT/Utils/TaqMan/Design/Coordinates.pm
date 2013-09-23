@@ -2,12 +2,11 @@ package HTGT::Utils::TaqMan::Design::Coordinates;
 
 use Moose::Role;
 use namespace::autoclean;
-use Const::Fast;
 use File::Temp qw( tempfile );
 use CSV::Writer;
 use List::MoreUtils qw( uniq );
 
-const my @OUT_DELETED_COLUMNS => qw(
+my @OUT_DELETED_COLUMNS = qw(
     marker_symbol
     design_id
     has_primer
@@ -23,7 +22,7 @@ const my @OUT_DELETED_COLUMNS => qw(
     deleted_end
 );
 
-const my @OUT_CRITICAL_COLUMNS => qw(
+my @OUT_CRITICAL_COLUMNS = qw(
     marker_symbol
     design_id
     has_primer

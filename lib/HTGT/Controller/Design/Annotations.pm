@@ -6,7 +6,6 @@ use Try::Tiny;
 use Data::Pageset;
 use HTGT::Utils::DesignAnnotationSearch;
 use HTGT::Utils::UpdateDesign::ProjectGene;
-use Const::Fast;
 use List::MoreUtils qw( uniq );
 use HTGT::Constants qw(
         $DEFAULT_ANNOTATION_ASSEMBLY_ID
@@ -17,7 +16,7 @@ use HTGT::Constants qw(
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-const my %CHECK_TYPE_NAMES => (
+my %CHECK_TYPE_NAMES = (
     oligo_status_id             => 'Oligo',
     target_region_status_id     => 'Target Region',
     design_quality_status_id    => 'Design Quality',

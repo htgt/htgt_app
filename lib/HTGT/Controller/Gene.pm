@@ -6,7 +6,6 @@ use base 'Catalyst::Controller';
 use HTGT::Utils::GeneIDs 'get_gene_ids';
 use DateTime;
 use JSON;
-use Const::Fast;
 use List::MoreUtils qw(any);
 
 =pod

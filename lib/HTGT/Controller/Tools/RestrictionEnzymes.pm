@@ -2,7 +2,6 @@ package HTGT::Controller::Tools::RestrictionEnzymes;
 use Moose;
 use namespace::autoclean;
 use HTGT::Utils::SouthernBlot;
-use Const::Fast;
 use Try::Tiny;
 use UNIVERSAL;
 
@@ -12,7 +11,7 @@ my $VALID_CLONE_NAME_RX = qr/^\w+$/;
 my $VALID_FRAG_SIZE_RX  = qr/^\d+$/;
 my $VALID_TOLERANCE_RX  = qr/^\d{1,2}$/;
 
-const my %VALID_PROBES        => (
+my %VALID_PROBES        = (
     NeoR  => "Probe to Neo",
     LacZ3 => "Probe to 3' half of LacZ",
     LacZ5 => "Probe to 5' half of LacZ"

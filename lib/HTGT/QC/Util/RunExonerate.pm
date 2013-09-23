@@ -10,7 +10,6 @@ use Sub::Exporter -setup => {
     }
 };
 
-use Const::Fast;
 use Path::Class;
 use IPC::System::Simple qw( capturex );
 use Log::Log4perl ':easy';
@@ -18,8 +17,8 @@ use Try::Tiny;
 use HTGT::QC::Exception;
 use HTGT::QC::Util::Which;
 
-const my $RUN_EXONERATE => which( 'run-exonerate-jobarray.pl' );
-const my @BSUB          => ( which( 'bsub' ), qw( -q normal ) );
+my $RUN_EXONERATE = which( 'run-exonerate-jobarray.pl' );
+my @BSUB          = ( which( 'bsub' ), qw( -q normal ) );
 
 my $JOB_SUBMITTED_RX   = qr/Job <(\d+)> is submitted to queue <.+>/;
 #const my $NO_MATCHING_JOB_RX => qr/No matching job found. Job not submitted./;

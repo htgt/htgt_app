@@ -2,20 +2,19 @@ package HTGT::Utils::TaqMan::Upload;
 
 use Moose;
 use namespace::autoclean;
-use Const::Fast;
 use CSV::Reader;
 use List::MoreUtils qw( none );
 use Perl6::Slurp;
 use IO::File;
 
-const my @VALID_DELETED_REGIONS => qw(
+my @VALID_DELETED_REGIONS = qw(
     u
     d
     c
 );
 
 # 1 means required
-const my %CSV_FIELDS => (
+my %CSV_FIELDS = (
     Well               => 1,
     design_id          => 1,
     Assay_ID           => 1,
@@ -26,7 +25,7 @@ const my %CSV_FIELDS => (
     reporter_probe_seq => 0,
 );
 
-const my @TAQMAN_DATA_INPUT_FIELDS => qw(
+my @TAQMAN_DATA_INPUT_FIELDS = qw(
     well_name
     assay_id
     deleted_region
