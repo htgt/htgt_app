@@ -7,14 +7,13 @@ use HTGT::DBFactory;
 use IO::File;
 use Log::Log4perl ':easy';
 use Pod::Usage;
-use Const::Fast;
 use Perl6::Slurp;
 use Try::Tiny;
 use List::MoreUtils qw( uniq );
 
 my $loglevel         = $INFO;
-const my $PLATE_TYPE => 'PC';
-const my $USER       => $ENV{ USER };
+my $PLATE_TYPE = 'PC';
+my $USER       = $ENV{ USER };
 
 GetOptions(
     'help'     => sub { pod2usage( -verbose => 1 ) },

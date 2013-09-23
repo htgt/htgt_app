@@ -10,10 +10,9 @@ use strict;
 use warnings FATAL => 'all';
 
 use HTGT::DBFactory::Lazy;
-use Const::Fast;
 use CSV::Reader;
 
-const my $TARGET_RX => qr/^(.+)([a-z]\d\d)\.(\d+)_/;
+my $TARGET_RX = qr/^(.+)([a-z]\d\d)\.(\d+)_/;
 
 my $csv = CSV::Reader->new( use_header => 1 );
 

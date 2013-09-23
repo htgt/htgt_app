@@ -6,13 +6,12 @@ use Log::Log4perl ':easy';
 use Getopt::Long;
 use Pod::Usage;
 use HTGT::DBFactory;
-use Const::Fast;
 use Try::Tiny;
 use Perl6::Slurp;
 
 use HTGT::Utils::DesignCheckRunner;
 
-const my $DEFAULT_ASSEMBLY => 101;
+my $DEFAULT_ASSEMBLY = 101;
 
 my $loglevel = $INFO;
 my $schema   = HTGT::DBFactory->connect('eucomm_vector');

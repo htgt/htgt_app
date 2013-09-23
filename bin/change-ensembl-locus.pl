@@ -15,9 +15,8 @@ use HTGT::DBFactory;
 use HTGT::Utils::EnsEMBL;
 use Term::Query qw( query );
 use Try::Tiny;
-use Const::Fast;
 
-const my $GENE_BUILD => 'mus_musculus_core_61_37n';
+my $GENE_BUILD = 'mus_musculus_core_61_37n';
 
 GetOptions(
     'help'       => sub { pod2usage( -verbose => 1 ) },

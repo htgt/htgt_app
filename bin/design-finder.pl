@@ -13,9 +13,8 @@ use Log::Log4perl ':easy';
 use Pod::Usage;
 use Try::Tiny;
 use YAML::Syck 'Dump';
-use Const::Fast;
 
-const my $MAX_DESIGNS => 10;
+my $MAX_DESIGNS = 10;
 
 {
     my $log_level = $WARN;

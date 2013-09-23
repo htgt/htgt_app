@@ -6,7 +6,6 @@ use warnings FATAL => 'all';
 use HTGT::DBFactory;
 use Getopt::Long;
 use YAML::Syck;
-use Const::Fast;
 
 GetOptions(
     commit => \my $commit
@@ -17,9 +16,9 @@ my @designs = YAML::Syck::LoadFile( \*STDIN );
 
 my $htgt = HTGT::DBFactory->connect( 'eucomm_vector' );
 
-const my @REQUIRED_OLIGOS      => qw( G5 U5 U3 D5 D3 G3 );
-const my $INCOMPLETE_STATUS_ID => $htgt->resultset( 'DesignStatusDict' )->find( { description => 'Incomplete' } )->design_status_id;
-const my $READY_STATUS_ID      => $htgt->resultset( 'DesignStatusDict' )->find( { description => 'Ready to order' } )->design_status_id;
+my @REQUIRED_OLIGOS      = qw( G5 U5 U3 D5 D3 G3 );
+my $INCOMPLETE_STATUS_ID = $htgt->resultset( 'DesignStatusDict' )->find( { description => 'Incomplete' } )->design_status_id;
+my $READY_STATUS_ID      = $htgt->resultset( 'DesignStatusDict' )->find( { description => 'Ready to order' } )->design_status_id;
 
 $htgt->txn_do(
     sub {

@@ -9,10 +9,9 @@ use Pod::Usage;
 use IPC::Run ();
 use HTGT::DBFactory;
 use Time::HiRes 'gettimeofday';
-use Const::Fast;
 
 {
-    const my $DESIGN_HOME   => dir( '/lustre/scratch103/sanger/team87/designs' );
+    my $DESIGN_HOME   = dir( '/lustre/scratch103/sanger/team87/designs' );
     my $group        = '/team87/design';
     my $max_parallel = 10;
     my $tag          = undef;

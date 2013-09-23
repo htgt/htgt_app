@@ -14,14 +14,13 @@ use warnings FATAL => 'all';
 use Perl6::Slurp 'slurp';
 use Path::Class;
 use Time::HiRes 'gettimeofday';
-use Const::Fast;
 
-const my $DESIGN_HOME   => dir( '/lustre/scratch101/sanger/team87/designs' );
-const my $CREATE_DESIGN => 'create_design.pl';
+my $DESIGN_HOME   = dir( '/lustre/scratch101/sanger/team87/designs' );
+my $CREATE_DESIGN = 'create_design.pl';
 
-const my $PROJECT       => 'team87';
-const my $QUEUE         => 'normal';
-const my $MAX_PARALLEL  => 10;
+my $PROJECT       = 'team87';
+my $QUEUE         = 'normal';
+my $MAX_PARALLEL  = 10;
 
 {
     

@@ -14,10 +14,9 @@ use Pod::Usage;
 use Log::Log4perl qw( :levels );
 use Bio::SeqIO;
 use HTGT::QC::Util::FetchSynVecs;
-use Const::Fast;
 use Path::Class;
 
-const my %SUFFIX_FOR => (
+my %SUFFIX_FOR = (
     genbank => 'gbk',
     fasta   => 'fasta'
 );

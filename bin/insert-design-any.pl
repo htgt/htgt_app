@@ -3,7 +3,6 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Const::Fast;
 use YAML::Any;
 use HTGT::DBFactory;
 use Log::Log4perl ':easy';
@@ -12,12 +11,12 @@ use Getopt::Long;
 
 my $htgt = HTGT::DBFactory->connect( 'eucomm_vector' );
 
-const my $GENE_BUILD_VERSION               => '65.37';
-const my $CREATED_STATUS_ID                => get_design_status ( 'Created' );
-const my $NOTE_TYPE_INFO_ID                => get_design_note_type( 'Info' );
-const my $FALSE_INTRON_COMMENT_CATEGORY_ID => get_design_comment_category( 'Artificial intron design' );
+my $GENE_BUILD_VERSION               = '65.37';
+my $CREATED_STATUS_ID                = get_design_status ( 'Created' );
+my $NOTE_TYPE_INFO_ID                = get_design_note_type( 'Info' );
+my $FALSE_INTRON_COMMENT_CATEGORY_ID = get_design_comment_category( 'Artificial intron design' );
 
-const my %DESIGN_PARAMS => (
+my %DESIGN_PARAMS = (
     primer_length              => 50,
     retrieval_primer_length_3p => 1000,
     retrieval_primer_length_5p => 1000,

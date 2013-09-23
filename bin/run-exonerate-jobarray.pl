@@ -11,11 +11,10 @@ use warnings FATAL => 'all';
 
 use Getopt::Long;
 use Pod::Usage;
-use Const::Fast;
 
-const my @EXONERATE => qw( exonerate --bestn 1 --showcigar yes --showalignment yes );
+my @EXONERATE = qw( exonerate --bestn 1 --showcigar yes --showalignment yes );
 
-const my @BSUB => qw( bsub -R'select[mem>1000] rusage[mem=1000]' -M1000 -P team87 -q normal -o %J.%I.out );
+my @BSUB = qw( bsub -R'select[mem>1000] rusage[mem=1000]' -M1000 -P team87 -q normal -o %J.%I.out );
 
 GetOptions(
     'help'       => sub { pod2usage( -verbose => 1 ) },

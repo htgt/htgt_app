@@ -11,19 +11,18 @@ use warnings FATAL => 'all';
 
 use Getopt::Long;
 use Pod::Usage;
-use Const::Fast;
 use HTGT::QC::Util::ParseCigar;
 use List::Util qw( sum reduce );
 use List::MoreUtils qw( uniq );
 use Log::Log4perl ':easy';
 
 # When counting number of primers that align to a target, ignore alignments shorter than this
-const my $MIN_ALIGN_LENGTH => 200;
+my $MIN_ALIGN_LENGTH = 200;
 
 # The relative score is target score / best score. If the relative
 # score for a target is greater than or equal to this cutoff, the
 # appropriate cigar sequences are output for analysis.
-const my $RELATIVE_SCORE_CUTOFF => 0.8;
+my $RELATIVE_SCORE_CUTOFF = 0.8;
 
 {
 

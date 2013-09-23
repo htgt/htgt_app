@@ -12,9 +12,8 @@ use warnings FATAL => 'all';
 use Getopt::Long;
 use Pod::Usage;
 use HTGT::DBFactory::Lazy 'htgt';
-use Const::Fast;
 
-const my $GRANULARITY => 1000;
+my $GRANULARITY = 1000;
 
 GetOptions(
     'help'        => sub { pod2usage( -verbose => 1 ) },

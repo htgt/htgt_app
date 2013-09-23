@@ -4,7 +4,6 @@ use strict;
 use warnings FATAL => 'all';
 
 use HTGT::DBFactory;
-use Const::Fast;
 use Getopt::Long;
 
 use Smart::Comments;

@@ -9,14 +9,13 @@ use HTGT::DBFactory;
 use HTGT::Utils::UploadQCResults::Simple;
 use HTGT::Utils::UploadQCResults::PIQ;
 use HTGT::Utils::UploadQCResults::DnaPlates;
-use Const::Fast;
 use IO::File;
 use Try::Tiny;
 use HTGT::Constants qw( %QC_RESULT_TYPES );
 
 my $loglevel = $INFO;
 my $schema   = HTGT::DBFactory->connect('eucomm_vector');
-const my $EDIT_USER => $ENV{'USER'};
+my $EDIT_USER = $ENV{'USER'};
 my $skip_header;
 
 GetOptions(

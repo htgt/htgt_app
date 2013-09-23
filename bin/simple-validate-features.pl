@@ -5,13 +5,12 @@ use warnings FATAL => 'all';
 
 use HTGT::DBFactory;
 use Perl6::Slurp;
-use Const::Fast;
 
-const my @KO_FEATURES  => qw( G5 U5 U3 D5 D3 G3 );
-const my @INS_FEATURES => qw( G5 U5 D3 G3 );
-const my @DEL_FEATURES => qw( G5 U5 U3 G3 );
+my @KO_FEATURES  = qw( G5 U5 U3 D5 D3 G3 );
+my @INS_FEATURES = qw( G5 U5 D3 G3 );
+my @DEL_FEATURES = qw( G5 U5 U3 G3 );
 
-const my %REQUIRED_FEATURES_FOR => (
+my %REQUIRED_FEATURES_FOR = (
     'KO'           => \@KO_FEATURES,
     'Del_Block'    => \@DEL_FEATURES,
     'Del_Location' => \@DEL_FEATURES,

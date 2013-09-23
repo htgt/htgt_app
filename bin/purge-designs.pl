@@ -14,10 +14,9 @@ use Pod::Usage;
 use HTGT::DBFactory;
 use HTGT::Utils::Design::Delete 'delete_design';
 use Log::Log4perl ':easy';
-use Const::Fast;
 use Try::Tiny;
 
-const my $MGI_GENE_DESIGN_QUERY => <<'EOT';
+my $MGI_GENE_DESIGN_QUERY = <<'EOT';
 select distinct mgi_gene.mgi_accession_id, design.design_id
 from mig.gnm_gene_build_gene
 join mig.gnm_gene_build
@@ -39,9 +38,9 @@ and design.created_user in ( 'rm7', 'vvi', 'wy1', 'dk3' )
 order by mgi_gene.mgi_accession_id
 EOT
 
-const my $RECENT_DESIGN_TAG    => qr/rm7\.2010-11/;
+my $RECENT_DESIGN_TAG    = qr/rm7\.2010-11/;
 
-const my $AUTOMATIC_DESIGN_TAG => qr/(?:rm7|DAN|design-finder)/; # XXX this needs to be generalized
+my $AUTOMATIC_DESIGN_TAG = qr/(?:rm7|DAN|design-finder)/; # XXX this needs to be generalized
 
 {
     

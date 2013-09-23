@@ -5,7 +5,6 @@ use autodie;
 
 use Path::Class;
 use HTGT::DBFactory;
-use Const::Fast;
 use YAML::Syck;
 use List::MoreUtils qw( uniq );
 use Getopt::Long;

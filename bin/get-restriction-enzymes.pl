@@ -8,7 +8,6 @@ use Log::Log4perl ':easy';
 use Text::Table;
 use Getopt::Long;
 use Pod::Usage;
-use Const::Fast;
 use List::MoreUtils 'zip';
 use Bio::SeqIO;
 

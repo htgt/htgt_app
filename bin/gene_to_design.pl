@@ -8,13 +8,12 @@ use Pod::Usage;
 use HTGT::DBFactory;
 use CSV::Reader;
 use CSV::Writer;
-use Const::Fast;
 use List::MoreUtils qw( uniq );
 
 my $loglevel = $WARN;
 my $schema   = HTGT::DBFactory->connect('eucomm_vector');
 
-const my @OUT_COLUMNS => qw( design_id marker_symbol );
+my @OUT_COLUMNS = qw( design_id marker_symbol );
 
 my ( $critical, $deleted );
 GetOptions(

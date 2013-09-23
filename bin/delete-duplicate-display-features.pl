@@ -14,9 +14,8 @@ use Pod::Usage;
 use HTGT::DBFactory::Lazy;
 use Perl6::Slurp;
 use Log::Log4perl qw( :easy );
-use Const::Fast;
 
-const my $GRCm38_ASSEMBLY_ID => get_assembly_id( 'GRCm38' );
+my $GRCm38_ASSEMBLY_ID = get_assembly_id( 'GRCm38' );
 
 {    
     my $log_level = $WARN;
