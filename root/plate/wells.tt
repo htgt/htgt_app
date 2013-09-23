@@ -579,7 +579,7 @@
     ]);
     
     /* PIQ and LOA QC test results */
-    [% FOR qc_result_field IN [ 'loa_pass', 'loxp_pass', 'lacz_pass', 'chr1_pass', 'chr8a_pass', 'chr8b_pass', 'chr11a_pass', 'chr11b_pass', 'chry_pass', 'sb_pass', 'targeting_pass', 'loa_qc_result', 'taqman_loxp_qc_result' ] %]
+    [% FOR qc_result_field IN [ 'loa_pass', 'loxp_pass', 'lacz_pass', 'chr1_pass', 'chr8a_pass', 'chr8b_pass', 'chr11a_pass', 'chr11b_pass', 'chry_pass', 'sb_pass', 'loa_qc_result', 'taqman_loxp_qc_result' ] %]
         TableKit.Editable.selectInput('[% qc_result_field %]', {}, [
             [% qc_result_selects = [] %]
             [% FOR result IN qc_results -%]
@@ -588,6 +588,14 @@
             ['-','-'],[% qc_result_selects.join(',') %]
         ]);
     [% END -%]
+
+    TableKit.Editable.selectInput('targeting_pass', {}, [
+        [% targeting_pass_qc_result_selects = [] %]
+        [% FOR result IN targeting_pass_qc_results -%]
+            [% targeting_pass_qc_result_selects.push('[\''_ result _'\',\''_ result _'\']') %]
+        [% END -%]
+        ['-','-'],[% targeting_pass_qc_result_selects.join(',') %]
+    ]);
     
     /* PIQ well expansion passage */
     [% FOR passage_field IN [ 'passage_serum', 'passage_2i' ] -%]
