@@ -378,8 +378,10 @@ sub refresh_design : Local {
         $c->stash->{concat_rcmb_primers} = join "", map { $dstrand == -1 ? revcom_as_string($_) : $_ }
             map  { $_->get_seq_str }
             grep {$_}
-            map  { $frs->search( q(feature_type.description) => $_, { join => q(feature_type) } )->first }
-            qw(G5 U5 U3 D5 D3 G3);
+            map  {  $frs->search( { q(feature_type.description) => $_ },
+                                  { join => q(feature_type) }
+                                )->first 
+                 } qw(G5 U5 U3 D5 D3 G3);
 
         $c->stash->{design_info} = $design_info;
         $c->stash->{design_comment_categories}
