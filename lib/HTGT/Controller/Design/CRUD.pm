@@ -46,7 +46,7 @@ sub delete : Local {
     die "programming error - delete called without design_id"; 
   }
 
-  my $design = $c->model('HTGTDB::Design')->search(design_id=>$design_id)->first;
+  my $design = $c->model('HTGTDB::Design')->search({ design_id=>$design_id })->first;
 
   if(!$design){
     die "programming error - could not retrieve design with id: design_id"; 
@@ -84,7 +84,7 @@ sub delete : Local {
     return;
   }
 
-  my @design_intances = $c->model('HTGTDB::DesignInstance')->search(design_id=>$design_id);
+  my @design_intances = $c->model('HTGTDB::DesignInstance')->search({ design_id=>$design_id });
   $c->log->debug("checking design instance ...");
   if(scalar(@design_intances) > 0){
     $c->log->debug("Design is linked to one or more design instances - not allow to delete.");
@@ -94,7 +94,7 @@ sub delete : Local {
   }
    
   # add another check: when the design has been assigned for a project, then should not be deleted
-  my @projects = $c->model('HTGTDB::Project')->search(design_id=>$design_id);
+  my @projects = $c->model('HTGTDB::Project')->search({ design_id=>$design_id });
   $c->log->debug("checking project ...");
   if (scalar(@projects) > 0) {
     $c->log->debug("Design is linked to a project - not deleting");

@@ -51,7 +51,7 @@ sub print_long_range_oligo_orders : Local {
   my @oligo_data;
 
   $c->log->debug("Fetching design instances for plate: $plate");
-  my @design_instances = $c->model('HTGTDB::DesignInstance')->search(plate=>$plate);
+  my @design_instances = $c->model('HTGTDB::DesignInstance')->search({plate => $plate});
   $c->log->debug("Fetched ".@design_instances." instances ");
 
   foreach my $design_instance(@design_instances){

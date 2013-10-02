@@ -45,7 +45,7 @@ sub get_gene_comments : Local {
     my $project = $c->stash->{project};
     my $mgi_gene_id = $project->mgi_gene_id;
     
-    my @gene_comments = $c->model('HTGTDB::GeneComment')->search(mgi_gene_id=>$mgi_gene_id);
+    my @gene_comments = $c->model('HTGTDB::GeneComment')->search({ mgi_gene_id => $mgi_gene_id });
     
     $c->stash->{gene_comments} = \@gene_comments;
     $c->stash->{gnm_gene_id} = $gnm_gene_id;
@@ -115,7 +115,7 @@ sub get_gene_designs : Local {
               $design_info->{comment} = $designComment->design_comment;
         }
     
-        my $status =$design->statuses->search(is_current=>1)->first;
+        my $status =$design->statuses->search({ is_current => 1 })->first;
         if($status){
             # check if need to display run button
             my $gene_build_id = $design->gene_build_id;

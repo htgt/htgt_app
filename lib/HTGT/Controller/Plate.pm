@@ -1166,7 +1166,7 @@ EOT
 
                 # ES Cell line
                 my @es_cell_line
-                    = $pw->parent_well->plate->plate_data->search( data_type => 'es_cell_line' )->get_column( 'data_value' )->all;
+                    = $pw->parent_well->plate->plate_data->search({ data_type => 'es_cell_line' })->get_column( 'data_value' )->all;
                 if ( @es_cell_line ) { $well_data_types{ es_cell_line }++; $well_data{ es_cell_line } = \@es_cell_line; }
 
                 # Prefetch the needed well data (one lookup as opposed to 12)

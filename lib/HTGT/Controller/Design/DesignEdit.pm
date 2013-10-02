@@ -248,11 +248,11 @@ sub refresh_design : Local {
 
     my $design;
     if ($design_id) {
-        $design = $c->model('HTGTDB::Design')->search( design_id => $design_id )->first;
+        $design = $c->model('HTGTDB::Design')->search({ design_id => $design_id })->first;
     }
     elsif ($design_instance_id) {
         my $design_instance
-            = $c->model('HTGTDB::DesignInstance')->search( design_instance_id => $design_instance_id )->first;
+            = $c->model('HTGTDB::DesignInstance')->search({ design_instance_id => $design_instance_id })->first;
         $design = $design_instance->design;
     }
 
@@ -339,7 +339,7 @@ sub refresh_design : Local {
         }
 
         #check if the design has design instance
-        my @design_instances = $c->model('HTGTDB::DesignInstance')->search( design_id => $design_id );
+        my @design_instances = $c->model('HTGTDB::DesignInstance')->search({ design_id => $design_id });
         if ( scalar(@design_instances) > 0 ) {
             $design_info->{design_instance} = 1;
         }
@@ -378,8 +378,10 @@ sub refresh_design : Local {
         $c->stash->{concat_rcmb_primers} = join "", map { $dstrand == -1 ? revcom_as_string($_) : $_ }
             map  { $_->get_seq_str }
             grep {$_}
-            map  { $frs->search( q(feature_type.description) => $_, { join => q(feature_type) } )->first }
-            qw(G5 U5 U3 D5 D3 G3);
+            map  {  $frs->search( { q(feature_type.description) => $_ },
+                                  { join => q(feature_type) }
+                                )->first 
+                 } qw(G5 U5 U3 D5 D3 G3);
 
         $c->stash->{design_info} = $design_info;
         $c->stash->{design_comment_categories}
@@ -395,7 +397,7 @@ sub edit_design : Local {
     my $design_id    = $c->request->param('design_id');
     my $oligo_strand = $c->request->param('oligo_strand');
 
-    my $design = $c->model('HTGTDB::Design')->search( design_id => $design_id )->first;
+    my $design = $c->model('HTGTDB::Design')->search({ design_id => $design_id })->first;
     if ( !$design ) {
         $c->log->debug("Cant find the design to edit.");
         $c->flash->{error_msg} = "Design not found";
@@ -499,7 +501,7 @@ sub export_design : Local {
     my ( $self, $c ) = @_;
     my $design_id    = $c->request->param('design_id');
     my $oligo_strand = $c->request->param('oligo_strand');
-    my $design       = $c->model('HTGTDB::Design')->search( design_id => $design_id )->first;
+    my $design       = $c->model('HTGTDB::Design')->search({ design_id => $design_id })->first;
     if ( !$design ) {
         $c->log->debug("Can't find the design to refresh!");
         $c->stash->{template} = 'design/list.tt';
@@ -800,11 +802,11 @@ sub run_design : Local {
 
             my $design_id = $c->request->param('design_id');
             $design_info->{design_id} = $design_id;
-            $design = $c->model('HTGTDB::Design')->search( design_id => $design_id )->first;
+            $design = $c->model('HTGTDB::Design')->search({ design_id => $design_id })->first;
             my $design_parameter_id = $design->design_parameter_id;
 
             my $design_parameter
-                = $c->model('HTGTDB::DesignParameter')->search( design_parameter_id => $design_parameter_id )->first;
+                = $c->model('HTGTDB::DesignParameter')->search({ design_parameter_id => $design_parameter_id })->first;
 
             $design_parameter->update( { parameter_value => $parameter_string } );
 
@@ -1805,7 +1807,7 @@ sub create_design_info_from_stored_design : Private {
 
     my $design_status = $design->design_statuses->first;
 
-    my @statuses = $design->design_statuses->search( is_current => 1 );
+    my @statuses = $design->design_statuses->search({ is_current => 1 });
     my $status = $statuses[0];
 
     if ($status) {
@@ -1980,7 +1982,7 @@ sub create_design {
 
     $c->log->debug( "created design " . $design->design_id );
 
-    my $design_status_dict = $c->model('HTGTDB::DesignStatusDict')->search( description => 'Created' )->first;
+    my $design_status_dict = $c->model('HTGTDB::DesignStatusDict')->search({ description => 'Created' })->first;
 
     if ( !$design_status_dict ) {
         $c->log->debug("Something is wrong - I cant locate a design_status_dict entry for 'Created'");
