@@ -16,7 +16,7 @@ use JSON;
 use HTGT::Utils::RegeneronGeneStatus;
 use Carp qw(confess);
 use HTGT::Utils::AlterParentWell;
-use HTGT::Constants qw( %RANKED_QC_RESULTS %CASSETTES %PLATE_TYPES @PIQ_SHIPPING_LOCATIONS @PIQ_HIDE_WELL_DATA);
+use HTGT::Constants qw( %RANKED_QC_RESULTS %CASSETTES %PLATE_TYPES @PIQ_SHIPPING_LOCATIONS @PIQ_HIDE_WELL_DATA %TARGETING_PASS_QC_RESULTS );
 use List::MoreUtils qw( uniq );
 
 =head1 NAME
@@ -2141,6 +2141,8 @@ sub wells : Local {
     
     my @qc_results = keys %RANKED_QC_RESULTS;
     $c->stash->{ qc_results } = \@qc_results;
+    my @targeting_pass_qc_results = keys %TARGETING_PASS_QC_RESULTS;
+    $c->stash->{ targeting_pass_qc_results } = \@targeting_pass_qc_results;
 
     # Dave's check for the mismatch design_instance_id must be done prior to this
     $c->flash->{ error_msg } .= $errstr if $errstr;

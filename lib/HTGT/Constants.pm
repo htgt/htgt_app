@@ -20,6 +20,7 @@ BEGIN {
         $DEFAULT_ANNOTATION_BUILD_ID
         @ANNOTATION_BUILDS
         %ANNOTATION_ASSEMBLIES
+        %TARGETING_PASS_QC_RESULTS
     );
     our %EXPORT_TAGS = ();
 }
@@ -46,6 +47,15 @@ our %RANKED_QC_RESULTS = (
     passb => 3,
     fail => 4,
     fa   => 5, #Failed Assay
+);
+
+our %TARGETING_PASS_QC_RESULTS = (
+    na              => 1,
+    pass            => 2,
+    passb           => 3,
+    pass_lrpcr_only => 4,
+    fail            => 5,
+    fa              => 6, #Failed Assay
 );
 
 our %QC_RESULT_TYPES = (

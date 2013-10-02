@@ -2,7 +2,7 @@ package HTGT::Utils::UploadQCResults::PIQ;
 
 use Moose;
 use namespace::autoclean;
-use HTGT::Constants qw( %QC_RESULT_TYPES %RANKED_QC_RESULTS );
+use HTGT::Constants qw( %QC_RESULT_TYPES %RANKED_QC_RESULTS %TARGETING_PASS_QC_RESULTS );
 use CSV::Reader;
 use Try::Tiny;
 use Scalar::Util qw(looks_like_number);
@@ -45,7 +45,7 @@ my %GROUPED_QC_FIELDS = (
 
 my %PIQ_OVERALL_RESULTS = (
     chromosome_fail => { required => 0, validation_method => '_validate_chromosome_fail' },
-    targeting_pass  => { required => 0, validation_method => '_validate_result_value' },
+    targeting_pass  => { required => 0, validation_method => '_validate_targeting_pass' },
 );
 
 sub _build_valid_plate_types {
@@ -142,6 +142,12 @@ sub _validate_result_value {
     return exists $RANKED_QC_RESULTS{lc($result)} ? 1 : 0;
 }
 
+sub _validate_targeting_pass {
+    my ( $self, $result ) = @_;
+
+    return exists $TARGETING_PASS_QC_RESULTS{lc($result)} ? 1 : 0;
+}
+
 sub _validate_numeric_value {
     my ( $self, $result ) = @_;
 
@@ -218,11 +224,11 @@ sub _update_current_targeting_pass_level {
         return 1;
     }
 
-    if ( $RANKED_QC_RESULTS{ lc( $current_targeting_pass->data_value ) }
-        < $RANKED_QC_RESULTS{ lc($new_targeting_pass_value) } && !$self->override )
+    if ( $TARGETING_PASS_QC_RESULTS{ lc( $current_targeting_pass->data_value ) }
+        < $TARGETING_PASS_QC_RESULTS{ lc($new_targeting_pass_value) } && !$self->override )
     {
-        $self->add_log( 'Not updating ' . $well->well_name . ' currently stored result targeting pass'
-                . $current_targeting_pass->data_value . ' is better than the new result '
+        $self->add_log( 'Not updating ' . $well->well_name . ' currently stored result targeting pass value: '
+                . $current_targeting_pass->data_value . ', is better than the new result: '
                 . $new_targeting_pass_value );
         return;
     }
