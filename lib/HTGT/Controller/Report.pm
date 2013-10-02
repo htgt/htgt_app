@@ -180,7 +180,7 @@ then link them to the projects table.
 
 sub gene_search : Local {
     my ( $self, $c ) = @_;
-    
+$DB::single=1;    
     unless ( $c->check_user_roles( q(edit) ) ) {
         $c->response->redirect( $c->uri_for( '/access_denied' ) );
         return 0;
@@ -340,7 +340,7 @@ sub gene_search : Local {
                 page => $c->req->params->{page} ? $c->req->params->{page} : 1
             }
         );
-
+$DB::single=1;
         ### searching projects
         my $project_rs = $c->model('HTGTDB::Project')->search(
           {},
