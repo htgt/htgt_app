@@ -346,8 +346,8 @@ $DB::single=1;
           {},
           {
             order_by  => { -desc => 'status.order_by' },
-            join      => ['status', 'ws_by_di_entries' ],
-            prefetch  => ['status', 'ws_by_di_entries', 'mgi_gene' ]
+#            join      => ['status', 'ws_by_di_entries' ],
+            prefetch  => ['status', 'new_ws_entries', 'mgi_gene' ]
           }
         );
         
@@ -379,6 +379,7 @@ $DB::single=1;
         }
 
         ### about to start iterating over project_rs
+$DB::single=1;
         while ( my $project = $project_rs->next ) {
           unless ( $search_results->{ $project->mgi_gene->marker_symbol }->{projects} ) {
             $search_results->{ $project->mgi_gene->marker_symbol }->{projects} = [];

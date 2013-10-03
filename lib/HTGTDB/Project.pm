@@ -339,7 +339,7 @@ __PACKAGE__->belongs_to( intermediate_vector => 'HTGTDB::Well',                 
 __PACKAGE__->belongs_to( targeting_vector    => 'HTGTDB::Well',                    'targeting_vector_id' );
 __PACKAGE__->belongs_to( publicly_reported   => 'HTGTDB::ProjectPubliclyReported', 'is_publicly_reported');
 
-__PACKAGE__->has_many( ws_by_di_entries => 'HTGTDB::WellSummaryByDI', 'project_id', { cascade_copy => 0 } );
+#__PACKAGE__->has_many( ws_by_di_entries => 'HTGTDB::WellSummaryByDI', 'project_id', { cascade_copy => 0 } );
 __PACKAGE__->has_many( new_ws_entries   => 'HTGTDB::NewWellSummary', 'project_id', { cascade_copy => 0 } );
 
 __PACKAGE__->might_have( primer_band_sizes => 'HTGTDB::PrimerBandSize', 'project_id', { cascade_delete => 0 } );
