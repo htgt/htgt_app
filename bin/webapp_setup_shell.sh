@@ -64,8 +64,8 @@ function devel_or_live {
         export HTGT_ENV=Devel
         esmt
     else
-        export HTGT_MIGRATION_ROOT=/htgt/htgt_root
-        export HTGT_SHARED=/htgt/htgt_root
+        export HTGT_MIGRATION_ROOT=/htgt/live/current/htgt_root
+        export HTGT_SHARED=/htgt/live/current/htgt_root
         export HTGT_ENV=Live
         esmp
     fi
@@ -88,7 +88,9 @@ function htgt_live {
 }
 
 function devel_htgt {
-    if [[ ( "$SAVED_HTGT_DEV_ROOT" )]] ; then
+    if [[ ("$1") && ( -d "$1" ) ]] ; then
+        export HTGT_DEV_ROOT=$1    
+    elif [[ ( "$SAVED_HTGT_DEV_ROOT" )]] ; then
         printf "==> switching to saved HTGT_DEV_ROOT: %s\n" $SAVED_HTGT_DEV_ROOT 
         export HTGT_DEV_ROOT=$SAVED_HTGT_DEV_ROOT 
     else
@@ -99,7 +101,7 @@ function devel_htgt {
 }
 
 function htgt_devel {
-    devel_htgt
+    devel_htgt $1
 }
 
 function htgt_webapp {
@@ -120,8 +122,8 @@ function htgt_webapp {
 }
 
 function htgt_debug {
-    HTGT_DEBUG_COMMAND="perl -d"
-    htgt_webapp
+    HTGT_DEBUG_COMMAND=$HTGT_DEBUG_DEFINITION
+    htgt_webapp $1
     HTGT_DEBUG_COMMAND=
 }
 
@@ -130,7 +132,8 @@ cat <<END
 Summary of commands in the htgt2 environment:
 
     production_htgt  - use the production codebase and database (esmp)
-    devel_htgt       - use the development codebase and test database (esmt)
+    live_htgt        - synonym for production_htgt
+    devel_htgt <dir> - use the development codebase with root at <dir> and test database (esmt)
     esmp             - use the production database with the currently selected codebase
     esmt             - use the test database with the currently selected codebase
 
@@ -139,7 +142,7 @@ Summary of commands in the htgt2 environment:
 
     To set your development codebase root use:
 
-    export HTGT_DEV_ROOT=`pwd`
+    devel_htgt \`pwd\` -or- export HTGT_DEV_ROOT=\`pwd\`
           or some other suitable setting
 
     htgt_webapp       - starts the webapp server on the default port, or the port sepecified in
@@ -147,13 +150,16 @@ Summary of commands in the htgt2 environment:
                       \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desire)
 
     htgt_webapp <port_num> - starts the webapp server on the specified port, overriding the value
-                      specified by \$HTGT_WEBAPP_SERVER_PORT
+          specified by \$HTGT_WEBAPP_SERVER_PORT (default 3131)
 
     htgt_debug        - starts the server using 'perl -d '
+    htgt_show         - show the value of useful HTGT variables
 
     set_colour_prompt - use colours in the prompt and in directory listings
     set_mono_prompt   - don't use any colour in prompt or directory listings
     help_htgt         - displays this help message
+
+    ~/.htgt_local     - sourced near the end of the setjup phase for you own mods
 END
 }
 
@@ -162,16 +168,43 @@ function htgt_help {
     help_htgt
 }
 
-PATH=/bin:/usr/bin
+function htgt_show {
+cat << END
+HTGT useful environment variables:
 
-# QC Farm Job submission path
-if [ -f /usr/local/lsf/conf/profile.lsf ] ; then
-  source /usr/local/lsf/conf/profile.lsf
-fi
+\$HTGT_MIGRATION_ROOT         : $HTGT_MIGRATION_ROOT
+\$HTGT_DEV_ROOT               : $HTGT_DEV_ROOT
+\$HTGT_LIVE_DEPLOYMENT_ROOT   : $HTGT_LIVE_DEPLOYMENT_ROOT
+\$HTGT_DEVEL_DEPLOYMENT_ROOT  : $HTGT_DEVEL_DEPLOYMENT_ROOT
+\$HTGT_WEBAPP_SERVER_PORT     : $HTGT_WEBAPP_SERVER_PORT
+\$HTGT_WEBAPP_SERVER_OPTIONS  : $HTGT_WEBAPP_SERVER_OPTIONS
+\$HTGT_DEBUG_DEFINITION       : $HTGT_DEBUG_DEFINITION
+
+\$PERL5LIB :
+`perl -e 'print( join("\n", split(":", $ENV{PERL5LIB}))."\n")'`
+
+\$PATH :
+`perl -e 'print( join("\n", split(":", $ENV{PATH}))."\n")'`
+
+\$HTGT_DBCONNECT  : $HTGT_DBCONNECT
+\$HTGT_DB         : $HTGT_DB
+\$HTGT_SHORT DB   : $HTGT_SHORT_DB
+\$HTGT_ENV        : $HTGT_ENV
+END
+}
+
+function show_htgt {
+    htgt_show
+}
 
 LSB_DEFAULTGROUP=team87-grp
 
 function set_htgt_paths {
+    export PATH=/bin:/usr/bin
+    # QC Farm Job submission path
+    if [ -f /usr/local/lsf/conf/profile.lsf ] ; then
+      source /usr/local/lsf/conf/profile.lsf
+    fi
     export HTGT_HOME=$HTGT_MIGRATION_ROOT/htgt_app
     export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH"
     export PATH="$PATH:$HTGT_SHARED/Eng-Seq-Builder/bin:$HTGT_SHARED/HTGT-QC-Common/bin:$HTGT_SHARED/LIMS2-REST-Client/bin"
@@ -221,6 +254,14 @@ export HTGT_ENSEMBL_USER=anonymous
 export HTGT_QC_CONF=/software/team87/brave_new_world/conf/qc.conf
 export HTGT_QC_DIST_LOGIC_CONF=/software/team87/brave_new_world/conf/qc-dist-logic.conf
 export HTGT_SUBMITQC_FORCE_RUN=
+export HTGT_WEBAPP_SERVER_OPTIONS="-d"
+export HTGT_WEBAPP_SERVER_PORT=3131
+
+# These are the really important symbols...
+export HTGT_DEVEL_DEPLOYMENT_ROOT=/htgt/devel/current
+export HTGT_LIVE_DEPLOYMENT_ROOT=/htgt/live/current
+
+export HTGT_DEBUG_DEFINITION="perl -d"
 
 function set_colour_ls {
 #
@@ -234,10 +275,24 @@ alias ls='ls -FqC --color'
 export KERMITS_DB=external_mi_esmt
 export VECTOR_QC_DB=vector_qc_esmt
 
-devel_or_live
-set_prompt
 printf "Environment setup for htgt2. Type help_htgt for help on commands.\n"
 if [[ -f $HOME/.htgt_local ]] ; then
     printf "Sourcing local mods to htgt2 environment\n"
     source $HOME/.htgt_local
 fi
+
+if [[ !"$HTGT_DEV_ROOT" ]] ; then
+    printf "WARNING: you have not set HTGT_DEV_ROOT to the root of your checkout\n"
+    if [[ (-d htgt_app ) && ( -d perl5 ) && ( -d htgt_batch ) ]] ; then
+        printf "==> you appear to have a valid checkout to run the webserver and batch in this directory\n"
+        printf "==> setting HTGT_DEV_ROOT to the current directory\n"
+        export HTGT_DEV_ROOT=`pwd`
+    else
+        printf "WARNING: setting HTGT_DEV_ROOT to \$HTGT_DEVEL_DEPLOYMENT_ROOT: $HTGT_DEVEL_DEPLOYMENT_ROOT\n"
+        printf "WARNING: this is almost certainly not what you want... but at least its not live\n"
+        export HTGT_DEV_ROOT="$HTGT_DEVEL_DEPLOYMENT_ROOT"
+    fi
+fi
+devel_or_live
+set_prompt
+
