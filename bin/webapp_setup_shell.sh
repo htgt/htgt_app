@@ -69,6 +69,7 @@ function devel_or_live {
         export HTGT_ENV=Live
         esmp
     fi
+    set_htgt_paths
 }
 
 function production_htgt {
@@ -76,6 +77,14 @@ function production_htgt {
     export HTGT_DEV_ROOT=
     printf "==> saved your HTGT_DEV_ROOT setting, use 'devel_htgt' command to switch back.\n"
     devel_or_live
+}
+
+function live_htgt {
+    production_htgt
+}
+
+function htgt_live {
+    production_htgt
 }
 
 function devel_htgt {
@@ -87,6 +96,10 @@ function devel_htgt {
         export HTGT_DEV_ROOT=`pwd`;
     fi
     devel_or_live
+}
+
+function htgt_devel {
+    devel_htgt
 }
 
 function htgt_webapp {
@@ -158,27 +171,31 @@ fi
 
 LSB_DEFAULTGROUP=team87-grp
 
-export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH";
-export PATH="$PATH:$HTGT_SHARED/Eng-Seq-Builder/bin:$HTGT_SHARED/HTGT-QC-Common/bin:$HTGT_SHARED/LIMS2-REST-Client/bin"
-export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_ROOT/perl5;
-export PERL_MB_OPT="--install_base $HTGT_MIGRATION_ROOT/perl5";
-export PERL_MM_OPT="INSTALL_BASE=$HTGT_MIGRATION_ROOT/perl5";
-export PERL5LIB="$HTGT_MIGRATION_ROOT/htgt_app/lib:$HTGT_MIGRATION_ROOT/perl5/lib/perl5"
-export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
-export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl-compara/modules"
+function set_htgt_paths {
+    export HTGT_HOME=$HTGT_MIGRATION_ROOT/htgt_app
+    export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH"
+    export PATH="$PATH:$HTGT_SHARED/Eng-Seq-Builder/bin:$HTGT_SHARED/HTGT-QC-Common/bin:$HTGT_SHARED/LIMS2-REST-Client/bin"
+    export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_ROOT/perl5;
+    export PERL_MB_OPT="--install_base $HTGT_MIGRATION_ROOT/perl5";
+    export PERL_MM_OPT="INSTALL_BASE=$HTGT_MIGRATION_ROOT/perl5";
+    export PERL5LIB="$HTGT_MIGRATION_ROOT/htgt_app/lib:$HTGT_MIGRATION_ROOT/perl5/lib/perl5"
+    export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
+    export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl-compara/modules"
 #source /software/oracle-ic-11.2/etc/profile.oracle-ic-11.2
 # Oracle setup copied from the above because I can't locate append_path function
-export LD_LIBRARY_PATH=
-export CLASSPATH=
-export ORACLE_HOME=/software/oracle-ic-11.2
-export CLASSPATH=$CLASSPATH:${ORACLE_HOME}/ojdbc14.jar:./
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ORACLE_HOME}
-export PATH=$PATH:${ORACLE_HOME}
-export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5
+    export LD_LIBRARY_PATH=
+    export CLASSPATH=
+    export ORACLE_HOME=/software/oracle-ic-11.2
+    export CLASSPATH=$CLASSPATH:${ORACLE_HOME}/ojdbc14.jar:./
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${ORACLE_HOME}
+    export PATH=$PATH:${ORACLE_HOME}
+    export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5
 #export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5:/nfs/WWWdev/SHARED_docs/lib/core
 
 # Sanger authorisation
-export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
+    export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
+
+}
 
 # These are required to avoid Datetime column inflation issues in DBIx::Class
 export NLS_DATE_FORMAT=DD-MON-RR
@@ -193,11 +210,10 @@ then
     export TNS_ADMIN=/etc
 fi
 
-export HTGT_HOME=$HTGT_MIGRATION_ROOT/htgt_app
 export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 
-# Other HTGT local setup
+# Other HTGT local setup not dependent on HTGT_MIGRATION_ROOT
 export HTGT_CACHE_ROOT=/var/tmp/htgt-cache.$USER
 export HTGT_DBCONNECT=/software/team87/brave_new_world/conf/dbconnect.cfg
 export HTGT_ENSEMBL_HOST=ensembldb.ensembl.org
@@ -218,5 +234,10 @@ alias ls='ls -FqC --color'
 export KERMITS_DB=external_mi_esmt
 export VECTOR_QC_DB=vector_qc_esmt
 
+devel_or_live
 set_prompt
 printf "Environment setup for htgt2. Type help_htgt for help on commands.\n"
+if [[ -f $HOME/.htgt_local ]] ; then
+    printf "Sourcing local mods to htgt2 environment\n"
+    source $HOME/.htgt_local
+fi
