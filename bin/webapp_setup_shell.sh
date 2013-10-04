@@ -64,8 +64,8 @@ function devel_or_live {
         export HTGT_ENV=Devel
         esmt
     else
-        export HTGT_MIGRATION_ROOT=/htgt/live/current/htgt_root
-        export HTGT_SHARED=/htgt/live/current/htgt_root
+        export HTGT_MIGRATION_ROOT=/htgt/live/current
+        export HTGT_SHARED=/htgt/live/current
         export HTGT_ENV=Live
         esmp
     fi
@@ -124,7 +124,7 @@ function htgt_webapp {
 function htgt_debug {
     HTGT_DEBUG_COMMAND=$HTGT_DEBUG_DEFINITION
     htgt_webapp $1
-    HTGT_DEBUG_COMMAND=
+    unset HTGT_DEBUG_COMMAND
 }
 
 function help_htgt {
@@ -174,6 +174,7 @@ cat << END
 HTGT useful environment variables:
 
 \$HTGT_MIGRATION_ROOT         : $HTGT_MIGRATION_ROOT
+\$HTGT_MIGRATION_NFS_ROOT     : $HTGT_MIGRATION_NFS_ROOT
 \$HTGT_DEV_ROOT               : $HTGT_DEV_ROOT
 \$SAVED_HTGT_DEV_ROOT         : $SAVED_HTGT_DEV_ROOT 
 \$HTGT_LIVE_DEPLOYMENT_ROOT   : $HTGT_LIVE_DEPLOYMENT_ROOT
@@ -209,6 +210,10 @@ function htgt_cpanm {
 
 LSB_DEFAULTGROUP=team87-grp
 
+function set_batch_paths {
+    export _HTGT_BATCH=false
+}
+
 function set_htgt_paths {
     export PATH=/bin:/usr/bin
     # QC Farm Job submission path
@@ -238,6 +243,7 @@ function set_htgt_paths {
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
 
+    set_batch_paths
 }
 
 # These are required to avoid Datetime column inflation issues in DBIx::Class
