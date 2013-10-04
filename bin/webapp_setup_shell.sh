@@ -160,7 +160,7 @@ Summary of commands in the htgt2 environment:
     set_mono_prompt   - don't use any colour in prompt or directory listings
     help_htgt         - displays this help message
 
-    ~/.htgt_local     - sourced near the end of the setjup phase for you own mods
+    ~/.htgt_local     - sourced near the end of the setup phase for you own mods
 END
 }
 
