@@ -14,16 +14,16 @@ function set_colour_prompt {
     Cyan='\e[0;36m'         # Cyan
     White='\e[0;37m'        # White
     if [[ $HTGT_SHORT_DB == esmt ]] ; then
-        PS1="\[$Green\]\u@\h-\w-[$HTGT_ENV - \[$Cyan\]$HTGT_SHORT_DB\[$Green\]]>\[$White\] "
+        PS1="\[$Green\]\u@\h-\w-[$HTGT_ENV/\[$Cyan\]$HTGT_SHORT_DB\[$Green\]]>\[$White\] "
     else
-        PS1="\[$Green\]\u@\h-\w-[$HTGT_ENV - \[$Yellow\]$HTGT_SHORT_DB\[$Green\]]>\[$White\] "
+        PS1="\[$Green\]\u@\h-\w-[$HTGT_ENV/\[$Yellow\]$HTGT_SHORT_DB\[$Green\]]>\[$White\] "
     fi
     export HTGT_COLOURS=1
 }
 
 function set_mono_prompt {
     export HTGT_COLOURS=
-    PS1="\u@\h-\w-[$HTGT_ENV - $HTGT_SHORT_DB]> "
+    PS1="\u@\h-\w-[$HTGT_ENV/$HTGT_SHORT_DB]> "
 
 }
 
@@ -74,7 +74,7 @@ function devel_or_live {
 
 function production_htgt {
     export SAVED_HTGT_DEV_ROOT="$HTGT_DEV_ROOT"
-    export HTGT_DEV_ROOT=
+    unset HTGT_DEV_ROOT
     printf "==> saved your HTGT_DEV_ROOT setting, use 'devel_htgt' command to switch back.\n"
     devel_or_live
 }
@@ -147,13 +147,14 @@ Summary of commands in the htgt2 environment:
 
     htgt_webapp       - starts the webapp server on the default port, or the port sepecified in
                       \$HTGT_WEBAPP_SERVER_PORT with the options specified in
-                      \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desire)
+                      \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desired)
 
     htgt_webapp <port_num> - starts the webapp server on the specified port, overriding the value
-          specified by \$HTGT_WEBAPP_SERVER_PORT (default 3131)
+          specified by \$HTGT_WEBAPP_SERVER_PORT (default $HTGT_WEBAPP_SERVER_PORT)
 
     htgt_debug        - starts the server using 'perl -d '
     htgt_show         - show the value of useful HTGT variables
+    htgt_cpanm        - installs a CPAN module to the correct lib location
 
     set_colour_prompt - use colours in the prompt and in directory listings
     set_mono_prompt   - don't use any colour in prompt or directory listings
@@ -174,6 +175,7 @@ HTGT useful environment variables:
 
 \$HTGT_MIGRATION_ROOT         : $HTGT_MIGRATION_ROOT
 \$HTGT_DEV_ROOT               : $HTGT_DEV_ROOT
+\$SAVED_HTGT_DEV_ROOT         : $SAVED_HTGT_DEV_ROOT 
 \$HTGT_LIVE_DEPLOYMENT_ROOT   : $HTGT_LIVE_DEPLOYMENT_ROOT
 \$HTGT_DEVEL_DEPLOYMENT_ROOT  : $HTGT_DEVEL_DEPLOYMENT_ROOT
 \$HTGT_WEBAPP_SERVER_PORT     : $HTGT_WEBAPP_SERVER_PORT
@@ -195,6 +197,14 @@ END
 
 function show_htgt {
     htgt_show
+}
+
+function htgt_cpanm {
+    if [[ "$1" ]] ; then
+        $HTGT_MIGRATION_ROOT/htgt_app/bin/cpanm -l $PERL_LOCAL_LIB_ROOT $1
+    else
+        printf "ERROR: no module specified: htgt_cpanm <module>"
+    fi
 }
 
 LSB_DEFAULTGROUP=team87-grp
@@ -281,7 +291,7 @@ if [[ -f $HOME/.htgt_local ]] ; then
     source $HOME/.htgt_local
 fi
 
-if [[ !"$HTGT_DEV_ROOT" ]] ; then
+if [[ -z "$HTGT_DEV_ROOT" ]] ; then
     printf "WARNING: you have not set HTGT_DEV_ROOT to the root of your checkout\n"
     if [[ (-d htgt_app ) && ( -d perl5 ) && ( -d htgt_batch ) ]] ; then
         printf "==> you appear to have a valid checkout to run the webserver and batch in this directory\n"
