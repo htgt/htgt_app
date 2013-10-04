@@ -206,7 +206,7 @@ function set_htgt_paths {
       source /usr/local/lsf/conf/profile.lsf
     fi
     export HTGT_HOME=$HTGT_MIGRATION_ROOT/htgt_app
-    export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH"
+    export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH"
     export PATH="$PATH:$HTGT_SHARED/Eng-Seq-Builder/bin:$HTGT_SHARED/HTGT-QC-Common/bin:$HTGT_SHARED/LIMS2-REST-Client/bin"
     export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_ROOT/perl5;
     export PERL_MB_OPT="--install_base $HTGT_MIGRATION_ROOT/perl5";
