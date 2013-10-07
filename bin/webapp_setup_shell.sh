@@ -1,5 +1,32 @@
 #! /bin/bash
 
+function htgt {
+    if [[ ! "$1" ]] ; then
+        htgt_help
+    elif [[ $1 == "esmp" ]] ; then
+        esmp
+    elif [[ $1 == "esmt" ]] ; then
+        esmt
+    elif [[ ( $1 == "production" ) || ( $1 == "live" ) ]] ; then
+        production_htgt
+    elif [[ $1 == "devel" ]] ; then
+        devel_htgt $2
+    elif [[ $1 == "webapp" ]] ; then
+        htgt_webapp $2
+    elif [[ $1 == "debug" ]] ; then
+        htgt_debug $2
+    elif [[ $1 == "help" ]] ; then
+        htgt_help
+    elif [[ $1 == "show" ]] ; then
+        htgt_show
+    elif [[ $1 == "cpanm" ]] ; then
+        htgt_cpanm $1
+    else 
+        printf "ERROR: unrecongnized htgt command\n"
+    fi
+
+
+}
 
 function set_colour_prompt {
     #
@@ -131,35 +158,37 @@ function help_htgt {
 cat <<END
 Summary of commands in the htgt2 environment:
 
-    production_htgt  - use the production codebase and database (esmp)
-    live_htgt        - synonym for production_htgt
-    devel_htgt <dir> - use the development codebase with root at <dir> and test database (esmt)
-    esmp             - use the production database with the currently selected codebase
-    esmt             - use the test database with the currently selected codebase
+htgt <command> <optional parameter>
+commands avaiable:
+    production  - use the production codebase and database (esmp)
+    live        - synonym for production_htgt
+    devel <dir> - use the development codebase with root at <dir> and test database (esmt)
+    esmp        - use the production database with the currently selected codebase
+    esmt        - use the test database with the currently selected codebase
 
-    note: production_htgt saves the development codebase root so that you can switch back
-          with devel_htgt
+    note: 'htgt production' saves the development codebase root so that you can switch back
+          with 'htgt devel'
 
     To set your development codebase root use:
 
-    devel_htgt \`pwd\` -or- export HTGT_DEV_ROOT=\`pwd\`
+    htgt devel \`pwd\` -or- export HTGT_DEV_ROOT=\`pwd\`
           or some other suitable setting
 
-    htgt_webapp       - starts the webapp server on the default port, or the port sepecified in
-                      \$HTGT_WEBAPP_SERVER_PORT with the options specified in
-                      \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desired)
+    webapp       - starts the webapp server on the default port, or the port sepecified in
+                 \$HTGT_WEBAPP_SERVER_PORT with the options specified in
+                 \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desired)
 
-    htgt_webapp <port_num> - starts the webapp server on the specified port, overriding the value
-          specified by \$HTGT_WEBAPP_SERVER_PORT (default $HTGT_WEBAPP_SERVER_PORT)
+    webapp <port_num> - starts the webapp server on the specified port, overriding the value
+                 specified by \$HTGT_WEBAPP_SERVER_PORT (default $HTGT_WEBAPP_SERVER_PORT)
 
-    htgt_debug        - starts the server using 'perl -d '
-    htgt_show         - show the value of useful HTGT variables
-    htgt_cpanm        - installs a CPAN module to the correct lib location
+    debug        - starts the server using 'perl -d '
+    show         - show the value of useful HTGT variables
+    cpanm        - installs a CPAN module to the correct lib location
 
     set_colour_prompt - use colours in the prompt and in directory listings
     set_mono_prompt   - don't use any colour in prompt or directory listings
-    help_htgt         - displays this help message
-
+    help         - displays this help message
+Files:
     ~/.htgt_local     - sourced near the end of the setup phase for you own mods
 END
 }
@@ -202,7 +231,7 @@ function show_htgt {
 
 function htgt_cpanm {
     if [[ "$1" ]] ; then
-        $HTGT_MIGRATION_ROOT/htgt_app/bin/cpanm -l $PERL_LOCAL_LIB_ROOT $1
+        $HTGT_MIGRATION_ROOT/bin/cpanm -l $HTGT_MIGRATION_ROOT/perl5 $1
     else
         printf "ERROR: no module specified: htgt_cpanm <module>"
     fi
@@ -295,6 +324,12 @@ printf "Environment setup for htgt2. Type help_htgt for help on commands.\n"
 if [[ -f $HOME/.htgt_local ]] ; then
     printf "Sourcing local mods to htgt2 environment\n"
     source $HOME/.htgt_local
+fi
+
+# This runs at first startup, so check the saved deve root and transfer to htgt_dev_root so that
+# we start in the correct dev location
+if [[ ( -z "$HTGT_DEV_ROOT" ) && (! -z "$SAVED_HTGT_DEV_ROOT" )]] ; then
+    export HTGT_DEV_ROOT=$SAVED_HTGT_DEV_ROOT
 fi
 
 if [[ -z "$HTGT_DEV_ROOT" ]] ; then
