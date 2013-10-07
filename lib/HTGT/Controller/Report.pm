@@ -439,10 +439,10 @@ sub gene_report : Local {
 
         my $well_summ_by_di_rs;
         if ( $c->req->params->{epd_well_name} )  { 
-            $well_summ_by_di_rs = $c->model('HTGTDB::WellSummaryByDI')->search( { epd_well_name => $c->req->params->{epd_well_name} } ); 
+            $well_summ_by_di_rs = $c->model('HTGTDB::NewWellSummary')->search( { epd_well_name => $c->req->params->{epd_well_name} } ); 
         }
         elsif ( $c->req->params->{epd_well_id} ) { 
-            $well_summ_by_di_rs = $c->model('HTGTDB::WellSummaryByDI')->search( { epd_well_id => $c->req->params->{epd_well_id} } ); 
+            $well_summ_by_di_rs = $c->model('HTGTDB::NewWellSummary')->search( { epd_well_id => $c->req->params->{epd_well_id} } ); 
         }
 
         my $project_rs = $well_summ_by_di_rs->related_resultset('project')->search( {},{ distinct => 1 } );
@@ -1711,7 +1711,7 @@ sub get_mig_microinjection_info : Local {
 
     $xml->dataElement('epd_id',$epd_id);
 
-    my $well_summary_rs = $c->model('HTGTDB::WellSummaryByDI')->search( { epd_well_name => $epd_id } );
+    my $well_summary_rs = $c->model('HTGTDB::NewWellSummary')->search( { epd_well_name => $epd_id } );
     
     if ( $well_summary_rs->count == 0 ) {
       $xml->dataElement('message','No EPD well found for input EPD_ID');
@@ -1728,7 +1728,7 @@ sub get_mig_microinjection_info : Local {
       }
       else {
 
-        $ws_row = $c->model('HTGTDB::WellSummaryByDI')->search(
+        $ws_row = $c->model('HTGTDB::NewWellSummary')->search(
           { epd_well_name => $epd_id },
           {
             prefetch => [

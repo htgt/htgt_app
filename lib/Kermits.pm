@@ -566,7 +566,7 @@ sub parse_oracle_date {
 sub get_all_allele_names {
   my ( $self, $params ) = @_;
   
-  my $clone_allele_rs = $self->htgt_schema->resultset('WellSummaryByDI')->search(
+  my $clone_allele_rs = $self->htgt_schema->resultset('NewWellSummary')->search(
     { epd_well_name => { '!=', undef }, allele_name => { '!=', undef } },
     { columns => [ 'epd_well_name', 'allele_name' ], distinct => 1 }
   );

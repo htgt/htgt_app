@@ -101,7 +101,7 @@ I<well_summary_by_di> rows for the active projects for this gene.
 sub wsdi_active_project_rs {
     my $self = shift;
 
-    $self->schema->resultset( 'WellSummaryByDI' )->search_rs(
+    $self->schema->resultset( 'NewWellSummary' )->search_rs(
         {
             project_id => $self->active_project_ids
         }
@@ -119,7 +119,7 @@ a Bl6/J BAC strain..
 sub wsdi_active_bl6_project_rs {
     my $self = shift;
 
-    $self->schema->resultset( 'WellSummaryByDI' )->search_rs(
+    $self->schema->resultset( 'NewWellSummary' )->search_rs(
         {
             project_id => $self->active_bl6_project_ids
         }
