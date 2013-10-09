@@ -327,7 +327,7 @@ projects for this gene B<regardless of BAC strain>.
 
 has _wsdi_active_projects => (
     is         => 'ro',
-    isa        => 'ArrayRef[HTGTDB::WellSummaryByDI]',
+    isa        => 'ArrayRef[HTGTDB::NewWellSummary]',
     lazy_build => 1,
     traits     => [ 'Array' ],
     handles    => {
@@ -351,7 +351,7 @@ projects for this gene B<with a Bl6/J BAC strain>.
 
 has _wsdi_active_bl6_projects => (
     is         => 'ro',
-    isa        => 'ArrayRef[HTGTDB::WellSummaryByDI]',
+    isa        => 'ArrayRef[HTGTDB::NewWellSummary]',
     lazy_build => 1,
     traits     => [ 'Array' ],
     handles    => {

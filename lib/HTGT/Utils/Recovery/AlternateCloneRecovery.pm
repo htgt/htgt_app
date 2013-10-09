@@ -459,7 +459,7 @@ sub get_well_data {
 
     ### get_well_data: $well_id
 
-    my $ws = $self->schema->resultset('HTGTDB::WellSummaryByDI')->search(
+    my $ws = $self->schema->resultset('HTGTDB::NewWellSummary')->search(
         { pgdgr_well_id => $well_id },
         { prefetch => { project => 'mgi_gene' } }
     )->first;

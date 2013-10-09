@@ -148,7 +148,7 @@ Get all of the cached info required for allele name formation.
 
 sub allele_info_for_epd_well {
     my $w    = shift;
-    my $wsdi = $w->result_source->schema->resultset( 'WellSummaryByDI' )->find(
+    my $wsdi = $w->result_source->schema->resultset( 'NewWellSummary' )->find(
         { epd_well_id => $w->well_id },
         {
             key      => 'unique_epd_well_id',

@@ -183,9 +183,9 @@ sub get_es_cell_info {
     # Retrieve the project info...
     my $project = $c->stash->{project};
     
-    # Collect the EPD entries from WellSummaryByDI
+    # Collect the EPD entries from NewWellSummary
     
-    my $allele_rs = $c->model('HTGTDB::WellSummaryByDI')->search(
+    my $allele_rs = $c->model('HTGTDB::NewWellSummary')->search(
         { project_id => $project->project_id },
         { distinct => '1' }
     );

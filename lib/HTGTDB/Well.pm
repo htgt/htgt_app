@@ -186,8 +186,6 @@ sub stringify {
     sprintf( '%s[%s]', $self->plate->name || 'UNKNOWN PLATE', $self->well_name || 'UNNAMED WELL' );
 }
 
-#__PACKAGE__->has_many(well_summary_rows => 'HTGTDB::WellSummaryByDI', 'epd_well_id' );
-
 # Utility functions:
 
 =head2 well_data_value()

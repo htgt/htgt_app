@@ -143,7 +143,7 @@ sub glt_mice_report : Local {
 
     my $info_by_clone_h_ref = {};
 
-    my $well_summary_rs = $c->model( 'HTGTDB::WellSummaryByDI' )->search(
+    my $well_summary_rs = $c->model( 'HTGTDB::NewWellSummary' )->search(
       { epd_well_name => [ keys %{ $epd_name_h_ref } ] },
       { prefetch => 'project' }
     );
