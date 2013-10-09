@@ -812,7 +812,8 @@ sub get_cassette_vector_seq {
     my $seq = $seqio->next_seq;
     $seq->alphabet(q(DNA));
     for ( $seq->get_SeqFeatures ) {
-        if ( my @n = $_->get_tag_values(q(note)) ) {
+        if ( $_->has_tag(q(note)) ) {
+            my @n = $_->get_tag_values(q(note));
             if ( $_->primary_tag eq q(misc_feature) ) {
                 if ( join( " ", @n ) =~ /(LRPCR )?(LAR|RAF)/i ) {
                     $_->primary_tag(q(LRPCR_primer));
@@ -1036,7 +1037,8 @@ sub rich_l1l2_gpr {
     $seq->alphabet(q(DNA));
     my ( $trunc_start, $trunc_end );
     for ( $seq->get_SeqFeatures ) {
-        if ( my @n = $_->get_tag_values(q(note)) ) {
+        if ( $_->has_tag(q(note)) ) {
+            my @n = $_->get_tag_values(q(note));
             if ( $_->primary_tag eq q(misc_feature) ) {
                 if ( join( " ", @n ) =~ /primer/i ) {
                     $_->primary_tag(q(primer_bind))
