@@ -1069,7 +1069,7 @@ Huge report that shows the status of all genes that have gone into electroporati
 
 =cut
 
-my $CSV_DIR = dir( '/software/team87/brave_new_world/data/generated' );
+my $CSV_DIR = dir( $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/data/generated' );
     
 sub ep_summary : Local {
     my ( $self, $c ) = @_;

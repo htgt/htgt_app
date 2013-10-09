@@ -7,7 +7,7 @@ use FCGI::Engine::Manager;
 use Pod::Usage;
 use Getopt::Long;
 
-my $config = '/software/team87/brave_new_world/conf/fastcgi.yml';
+my $config = $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/config/fastcgi.yml';
 
 GetOptions(
     'help'     => sub { pod2usage( -verbose => 1 ) },
@@ -56,7 +56,7 @@ Utility script to start/stop/restart/reload or query the status of a FastCGI pro
 
 =head1 FILES
 
-The default configuration file can be found in C</software/team87/brave_new_world/conf/fastcgi.yml>
+The default configuration file can be found in C<... config/fastcgi.yml>
 
 =head1 SEE ALSO
 

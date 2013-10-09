@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 with qw( MooseX::Log::Log4perl );
 
-my $STATIC_FOLDER = '/software/team87/brave_new_world/data/misc';
+my $STATIC_FOLDER = $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/data/misc';
 
 sub get_gene_and_transcript_counts{
     my ( $self, $report_filename ) = @_;

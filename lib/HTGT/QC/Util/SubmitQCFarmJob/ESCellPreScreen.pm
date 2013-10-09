@@ -129,7 +129,7 @@ override 'persist' => sub {
     #qc persist-prescreen-htgtdb 
     #--analysis-dir /lustre/scratch109/sanger/team87/prescreen_qc/B65A5CC8-8187-11E2-A995-F01BE5C3F087/prescreen 
     #--run-id B65A5CC8-8187-11E2-A995-F01BE5C3F087 
-    #--config /software/team87/brave_new_world/conf/qc.conf 
+    #--config qc.conf
     #--debug
 
     #create bsub dependancy. make it a proper function inside SubmitQCFarmJob

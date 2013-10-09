@@ -62,7 +62,7 @@ has sequence => (
 has preferred_enzymes_file => (
     is         => 'ro',
     isa        => 'Str',
-    default    => '/software/team87/brave_new_world/conf/southern-enzymes.conf'
+    default    => $ENV{HTGT_MIGRATION_ROOT} . '/config/southern-enzymes.conf'
 );
 
 has preferred_enzymes => (

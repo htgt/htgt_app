@@ -12,7 +12,7 @@ use Path::Class;
 use Readonly;
 use Text::CSV_XS;
 
-Readonly my $CSV_DIR => dir( '/software/team87/brave_new_world/data/generated/recovery_reports' );
+Readonly my $CSV_DIR => dir( $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/data/generated/recovery_reports' );
 
 sub default : Path {
     my ( $self, $c, $report_name ) = @_;

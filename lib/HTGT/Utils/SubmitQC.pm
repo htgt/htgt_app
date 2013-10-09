@@ -34,7 +34,7 @@ Readonly my %ALLELE_QC_OPT => (
     R => '-fponly',
 );
 
-Readonly my $DEFAULT_CONFIG_PATH => '/software/team87/brave_new_world/conf/submit_qc.conf';
+Readonly my $DEFAULT_CONFIG_PATH => $ENV{HTGT_MIGRATION_ROOT} . '/config/submit_qc.conf';
 
 # EPD0527_5.EPD00527_5_A.2010-04-28T09:19:05.out
 Readonly my $OUT_FILE_RX => qr/

@@ -16,7 +16,7 @@ use Config::General;
 use DBI;
 use Readonly;
 
-Readonly my $DEFAULT_CONFIG => '/software/team87/brave_new_world/conf/dbconnect.cfg';
+Readonly my $DEFAULT_CONFIG => $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/conf/dbconnect.cfg';
 
 __PACKAGE__->mk_classdata( 'ConfigFile' => $ENV{ HTGT_DBCONNECT } || $DEFAULT_CONFIG );
 
@@ -222,7 +222,7 @@ it will be ignored by this module's C<dbi_connect> and C<dbi_connect_cached> met
 
 =head1 FILES
 
-The default configuration file is C</software/team87/brave_new_world/conf/dbconnect.cfg>.
+The default configuration file is C<.../dbconnect.cfg>.
 
 =head1 ENVIRONMENT
 

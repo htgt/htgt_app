@@ -293,11 +293,11 @@ export VISUAL=$EDITOR
 
 # Other HTGT local setup not dependent on HTGT_MIGRATION_ROOT
 export HTGT_CACHE_ROOT=/var/tmp/htgt-cache.$USER
-export HTGT_DBCONNECT=/software/team87/brave_new_world/conf/dbconnect.cfg
+export HTGT_DBCONNECT=$HTGT_MIGRATION_ROOT/config/dbconnect.cfg
 export HTGT_ENSEMBL_HOST=ensembldb.ensembl.org
 export HTGT_ENSEMBL_USER=anonymous
-export HTGT_QC_CONF=/software/team87/brave_new_world/conf/qc.conf
-export HTGT_QC_DIST_LOGIC_CONF=/software/team87/brave_new_world/conf/qc-dist-logic.conf
+export HTGT_QC_CONF=$HTGT_MIGRATION_ROOT/config/qc.conf
+export HTGT_QC_DIST_LOGIC_CONF=$HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
 export HTGT_SUBMITQC_FORCE_RUN=
 export HTGT_WEBAPP_SERVER_OPTIONS="-d"
 export HTGT_WEBAPP_SERVER_PORT=3131
