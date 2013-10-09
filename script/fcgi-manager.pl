@@ -7,7 +7,7 @@ use FCGI::Engine::Manager;
 use Pod::Usage;
 use Getopt::Long;
 
-my $config = $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/config/fastcgi.yml';
+my $config = $ENV{HTGT_MIGRATION_ROOT} . '/config/fastcgi.yml';
 
 GetOptions(
     'help'     => sub { pod2usage( -verbose => 1 ) },

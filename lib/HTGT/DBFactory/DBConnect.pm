@@ -16,7 +16,7 @@ use Config::General;
 use DBI;
 use Readonly;
 
-Readonly my $DEFAULT_CONFIG => $ENV{HTGT_MIGRATION_ROOT} . '/htgt_app/conf/dbconnect.cfg';
+Readonly my $DEFAULT_CONFIG => $ENV{HTGT_MIGRATION_ROOT} . '/config/dbconnect.cfg';
 
 __PACKAGE__->mk_classdata( 'ConfigFile' => $ENV{ HTGT_DBCONNECT } || $DEFAULT_CONFIG );
 
