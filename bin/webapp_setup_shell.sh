@@ -237,6 +237,17 @@ function htgt_cpanm {
     fi
 }
 
+function perlmodver () {
+        test -n "$1" || { echo 'Usage: perlmodver MODULE' >&2; return; }
+        perl -m"$1" -le 'print $ARGV[0]->VERSION' "$1"
+}
+
+function perlmodpath () {
+        test -n "$1" || { echo 'Usage: perlmodpath MODULE' >&2; return; }
+        perl -m"$1" -le '$ARGV[0]=~s/::/\//g; print $INC{"$ARGV[0].pm"}' "$1"
+}
+
+
 LSB_DEFAULTGROUP=team87-grp
 
 function set_batch_paths {
