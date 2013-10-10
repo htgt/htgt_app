@@ -260,6 +260,8 @@ function set_htgt_paths {
     if [ -f /usr/local/lsf/conf/profile.lsf ] ; then
       source /usr/local/lsf/conf/profile.lsf
     fi
+    # This is where all symbols should go that depend on HTGT_MIGRATION_ROOT
+    # This function gets called when the user switches between live and devel environments
     export HTGT_HOME=$HTGT_MIGRATION_ROOT/htgt_app
     export PATH="/software/perl-5.14.4/bin:$HTGT_MIGRATION_ROOT/perl5/bin:$HTGT_MIGRATION_ROOT/bin:$HTGT_MIGRATION_ROOT/htgt_app/bin:$PATH"
     export PATH="$PATH:$HTGT_SHARED/Eng-Seq-Builder/bin:$HTGT_SHARED/HTGT-QC-Common/bin:$HTGT_SHARED/LIMS2-REST-Client/bin"
@@ -269,6 +271,10 @@ function set_htgt_paths {
     export PERL5LIB="$HTGT_MIGRATION_ROOT/htgt_app/lib:$HTGT_MIGRATION_ROOT/perl5/lib/perl5"
     export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
     export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl-compara/modules"
+    # config file locations all depend on HTGT_MIGRATION_ROOT
+    export HTGT_DBCONNECT=$HTGT_MIGRATION_ROOT/config/dbconnect.cfg
+    export HTGT_QC_CONF=$HTGT_MIGRATION_ROOT/config/qc.conf
+    export HTGT_QC_DIST_LOGIC_CONF=$HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
 #source /software/oracle-ic-11.2/etc/profile.oracle-ic-11.2
 # Oracle setup copied from the above because I can't locate append_path function
     export LD_LIBRARY_PATH=
@@ -303,17 +309,16 @@ export EDITOR=/usr/bin/vim
 export VISUAL=$EDITOR
 
 # Other HTGT local setup not dependent on HTGT_MIGRATION_ROOT
+# Don't put anything here that depends on HTGT_MIGRATION_ROOT as the sumbols
+# will not be reset when user switches between live and devel environments
 export HTGT_CACHE_ROOT=/var/tmp/htgt-cache.$USER
-export HTGT_DBCONNECT=$HTGT_MIGRATION_ROOT/config/dbconnect.cfg
 export HTGT_ENSEMBL_HOST=ensembldb.ensembl.org
 export HTGT_ENSEMBL_USER=anonymous
-export HTGT_QC_CONF=$HTGT_MIGRATION_ROOT/config/qc.conf
-export HTGT_QC_DIST_LOGIC_CONF=$HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
 export HTGT_SUBMITQC_FORCE_RUN=
 export HTGT_WEBAPP_SERVER_OPTIONS="-d"
 export HTGT_WEBAPP_SERVER_PORT=3131
 
-# These are the really important symbols...
+# These are the *really* important symbols...
 export HTGT_DEVEL_DEPLOYMENT_ROOT=/htgt/devel/current
 export HTGT_LIVE_DEPLOYMENT_ROOT=/htgt/live/current
 
