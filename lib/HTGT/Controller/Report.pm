@@ -180,7 +180,6 @@ then link them to the projects table.
 
 sub gene_search : Local {
     my ( $self, $c ) = @_;
-$DB::single=1;    
     unless ( $c->check_user_roles( q(edit) ) ) {
         $c->response->redirect( $c->uri_for( '/access_denied' ) );
         return 0;
@@ -340,7 +339,6 @@ $DB::single=1;
                 page => $c->req->params->{page} ? $c->req->params->{page} : 1
             }
         );
-$DB::single=1;
         ### searching projects
         my $project_rs = $c->model('HTGTDB::Project')->search(
           {},
@@ -379,7 +377,6 @@ $DB::single=1;
         }
 
         ### about to start iterating over project_rs
-$DB::single=1;
         while ( my $project = $project_rs->next ) {
           unless ( $search_results->{ $project->mgi_gene->marker_symbol }->{projects} ) {
             $search_results->{ $project->mgi_gene->marker_symbol }->{projects} = [];
@@ -1857,7 +1854,7 @@ given a mgi_gene id, get a list of the gene identifiers
 
 sub get_gene_identifiers : Private {
     my ( $self, $c, $mgi_gene_id ) = @_;
-    
+$DB::single=1;    
     # get  mgi_gene
     my $mgi_gene = $c->model('HTGTDB::MGIGene')->find( { mgi_gene_id => $mgi_gene_id } );
     

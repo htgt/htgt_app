@@ -82,30 +82,44 @@ function synthesize_htgt_db {
     export HTGT_DB=eucomm_vector_$HTGT_SHORT_DB
 }
 
+function check_and_set {
+    if [[ ! -f $2 ]] ; then
+        printf "WARNING: $2 does not exist but you are setting $1 to its location\n"
+    fi
+    export $1=$2
+}
+
+function check_and_set_dir {
+    if [[ ! -d $2 ]] ; then
+        printf "WARNING: directory $2 does not exist but you are setting $1 to its location\n"
+    fi
+    export $1=$2
+}
+
 function eng_seq_devel {
-    export ENG_SEQ_BUILDER_CONF=$HTGT_MIGRATION_ROOT/conf/eng-seq-builder.devel.yaml
+    check_and_set ENG_SEQ_BUILDER_CONF $HTGT_MIGRATION_ROOT/config/eng-seq-builder.devel.yaml
 }
 
 function eng_seq_live {
-    export ENG_SEQ_BUILDER_CONF=$HTGT_MIGRATION_ROOT/conf/eng-seq-builder.yaml
+    check_and_set ENG_SEQ_BUILDER_CONF $HTGT_MIGRATION_ROOT/config/eng-seq-builder.yaml
 }
 
 function lims_rest_client_devel {
-    export LIMS2_REST_CLIENT=$HTGT_MIGRATION_ROOT/conf/lims2-rest-client.devel.conf
+    check_and_set LIMS2_REST_CLIENT $HTGT_MIGRATION_ROOT/config/lims2-rest-client.devel.conf
 }
 
 function lims_rest_client_live {
-    export LIMS2_REST_CLIENT=$HTGT_MIGRATION_ROOT/conf/lims2-rest-client.conf
+    check_and_set LIMS2_REST_CLIENT $HTGT_MIGRATION_ROOT/config/lims2-rest-client.conf
 }
 
 function tarmits_live {
     # Tarmits setup
-    export TARMITS_CLIENT_CONF=$HTGT_MIGRATION/config/tarmits-client-live.yml
+    check_and_set TARMITS_CLIENT_CONF $HTGT_MIGRATION_ROOT/config/tarmits-client-live.yml
 }
 
 function tarmits_devel {
     # Tarmits setup
-    export TARMITS_CLIENT_CONF=$HTGT_MIGRATION/config/tarmits-client-test.yml
+    check_and_set TARMITS_CLIENT_CONF $HTGT_MIGRATION_ROOT/config/tarmits-client-test.yml
 }
 
 
@@ -254,6 +268,8 @@ HTGT useful environment variables:
 
 \$HTGT_DBCONNECT       : $HTGT_DBCONNECT
 \$ENG_SEQ_BUILDER_CONF : $ENG_SEQ_BUILDER_CONF
+\$TARMITS_CLIENT_CONF  : $TARMITS_CLIENT_CONF
+\$LIMS2_REST_CLIENT    : $LIMS2_REST_CLIENT
 \$HTGT_DB              : $HTGT_DB
 \$HTGT_SHORT DB        : $HTGT_SHORT_DB
 \$HTGT_ENV             : $HTGT_ENV
@@ -307,12 +323,12 @@ function set_htgt_paths {
     export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
     export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl-compara/modules"
     # config file locations all depend on HTGT_MIGRATION_ROOT
-    export HTGT_DBCONNECT=$HTGT_MIGRATION_ROOT/config/dbconnect.cfg
-    export HTGT_QC_CONF=$HTGT_MIGRATION_ROOT/config/qc.conf
-    export HTGT_QC_DIST_LOGIC_CONF=$HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
-    export LIMS2_REST_CLIENT_CONF=$HTGT_MIGRATION_ROOT/config/lims2-rest-client.conf
+    check_and_set HTGT_DBCONNECT $HTGT_MIGRATION_ROOT/config/dbconnect.cfg
+    check_and_set HTGT_QC_CONF $HTGT_MIGRATION_ROOT/config/qc.conf
+    check_and_set HTGT_QC_DIST_LOGIC_CONF $HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
+    check_and_set LIMS2_REST_CLIENT_CONF $HTGT_MIGRATION_ROOT/config/lims2-rest-client.conf
     # data file locations all depend on HTGT_MIGRATION_ROOT
-    export GLOBAL_SYNTHVEC_DATADIR=$HTGT_MIGRATION_ROOT/data/mutant_sequences
+    check_and_set_dir GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_ROOT/data/mutant_sequences
     # Oracle setup
     export LD_LIBRARY_PATH=
     export CLASSPATH=

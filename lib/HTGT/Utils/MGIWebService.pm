@@ -40,7 +40,7 @@ Readonly my %ATTRIBUTE_TO_RESPONSE => (
 #output method for ensemble, vega and both
 sub get_mgi_gene_info {
     my ( $self, $gene_id, @requested_attributes  ) = @_;
-    
+$DB::single=1;    
     return unless $gene_id;
     my $attributes = $self->_set_attributes(\@requested_attributes);
     return unless $attributes;
@@ -89,7 +89,7 @@ sub _set_attributes {
 
 sub _create_request {
     my ( $self, $gene_id, $attributes ) = @_;
-    
+$DB::single=1;    
     # mgi is already returned by default so cant pass with value in request
     my @attributes = grep{!/mgi/} @$attributes;
 
@@ -131,6 +131,7 @@ sub _create_request {
 
 sub _dispatch_request {
     my ( $self, $request, $soap, $attributes ) = @_;
+$DB::single=1;
 
     # submit the request to the submitDocument method
     my $result = $soap->submitDocument($request);
