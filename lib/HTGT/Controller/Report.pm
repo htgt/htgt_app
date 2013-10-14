@@ -1854,7 +1854,6 @@ given a mgi_gene id, get a list of the gene identifiers
 
 sub get_gene_identifiers : Private {
     my ( $self, $c, $mgi_gene_id ) = @_;
-$DB::single=1;    
     # get  mgi_gene
     my $mgi_gene = $c->model('HTGTDB::MGIGene')->find( { mgi_gene_id => $mgi_gene_id } );
     
