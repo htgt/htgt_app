@@ -128,16 +128,27 @@ function devel_or_live {
 # Check for the HTGT_DEV_ROOT variable setting and use that for HTGT_MIGRATION_ROOT, otherwise
 # use the standard lcoation
     if [[ ( "$HTGT_DEV_ROOT" ) && ( -d "$HTGT_DEV_ROOT" ) ]] ; then
-        export HTGT_MIGRATION_ROOT=$HTGT_DEV_ROOT
-        export HTGT_SHARED=$HTGT_DEV_ROOT
+        check_and_set_dir HTGT_MIGRATION_ROOT $HTGT_DEV_ROOT
+        check_and_set_dir HTGT_SHARED $HTGT_DEV_ROOT
         export HTGT_ENV=Devel
         lims_rest_client_devel
         eng_seq_devel
         tarmits_devel
         esmt
     else
-        export HTGT_MIGRATION_ROOT=/htgt/live/current
-        export HTGT_SHARED=/htgt/live/current
+        if [[ -d /htgt/live/current ]] ; then
+            check_and_set_dir HTGT_MIGRATION_ROOT /htgt/live/current
+            check_and_set_dir HTGT_SHARED /htgt/live/current
+        elif [[ (! -z "$HTGT_NFS_STARTUP_DIR" ) && ( $HOSTNAME =~ farm3-head ) ]] ; then
+            # This is for batch processing on farm3 - HTGT_MIGRATION_NFS_ROOT must already have been set
+            check_and_set_dir HTGT_MIGRATION_ROOT $HTGT_NFS_STARTUP_DIR
+            check_and_set_dir HTGT_SHARED $HTGT_NFS_STARTUP_DIR
+        elif [[ $HOSTNAME =~ farm3-head ]] ; then
+            printf "ERROR: On farm3 you must set the symbol HTGT_STARTUP_DIR\n"
+            printf "==> using standard location: /nfs/team87/htgt/htgt_root\n"
+            check_and_set_dir HTGT_MIGRATION_ROOT /nfs/team87/htgt/htgt_root
+            check_and_set_dir HTGT_SHARED /nfs/team87/htgt/htgt_root
+        fi
         export HTGT_ENV=Live
         lims_rest_client_live
         eng_seq_live
@@ -299,7 +310,6 @@ function perlmodpath () {
 }
 
 
-LSB_DEFAULTGROUP=team87-grp
 
 function set_batch_paths {
     export _HTGT_BATCH=false
@@ -341,7 +351,7 @@ function set_htgt_paths {
 
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
-
+    export LSB_DEFAULTGROUP=team87-grp
     set_batch_paths
 }
 
@@ -395,7 +405,8 @@ if [[ -f $HOME/.htgt_local ]] ; then
     source $HOME/.htgt_local
 fi
 
-# This runs at first startup, so check the saved deve root and transfer to htgt_dev_root so that
+function init_interactive_developer {
+# This runs at first startup, so check the saved dev root and transfer to htgt_dev_root so that
 # we start in the correct dev location
 if [[ ( -z "$HTGT_DEV_ROOT" ) && (! -z "$SAVED_HTGT_DEV_ROOT" )]] ; then
     export HTGT_DEV_ROOT=$SAVED_HTGT_DEV_ROOT
@@ -412,6 +423,13 @@ if [[ -z "$HTGT_DEV_ROOT" ]] ; then
         printf "WARNING: this is almost certainly not what you want... but at least its not live\n"
         export HTGT_DEV_ROOT="$HTGT_DEVEL_DEPLOYMENT_ROOT"
     fi
+fi
+}
+
+if [[ ! $HOSTNAME =~ farm3-head ]] ; then
+    init_interactive_developer
+else
+    printf "Setting up for batch session on $HOSTNAME\n"
 fi
 devel_or_live
 set_prompt
