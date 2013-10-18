@@ -47,6 +47,7 @@ our %RANKED_QC_RESULTS = (
     passb => 3,
     fail => 4,
     fa   => 5, #Failed Assay
+    nd   => 6, #Not done
 );
 
 our %TARGETING_PASS_QC_RESULTS = (
@@ -56,6 +57,7 @@ our %TARGETING_PASS_QC_RESULTS = (
     pass_lrpcr_only => 4,
     fail            => 5,
     fa              => 6, #Failed Assay
+    nd              => 7, #Not done
 );
 
 our %QC_RESULT_TYPES = (
