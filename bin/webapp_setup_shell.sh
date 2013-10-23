@@ -20,7 +20,13 @@ function htgt {
     elif [[ $1 == "show" ]] ; then
         htgt_show
     elif [[ $1 == "cpanm" ]] ; then
-        htgt_cpanm $1
+        htgt_cpanm $2
+    elif [[ $1 == "service" ]] ; then
+        htgt_service $2
+    elif [[ $1 == "apache" ]] ; then
+        htgt_apache $2
+    elif [[ $1 == "fcgi" ]] ; then
+        htgt_fcgi $2
     else 
         printf "ERROR: unrecongnized htgt command\n"
     fi
@@ -295,7 +301,33 @@ function htgt_cpanm {
     if [[ "$1" ]] ; then
         $HTGT_MIGRATION_ROOT/bin/cpanm -l $HTGT_MIGRATION_ROOT/perl5 $1
     else
-        printf "ERROR: no module specified: htgt_cpanm <module>"
+        printf "ERROR: no module specified: htgt_cpanm <module>\n"
+    fi
+}
+
+function htgt_apache {
+    if [[ "$1" ]] ; then
+        /usr/sbin/apachectl -f $HTGT_MIGRATION_ROOT/htgt_app/conf/apache.conf -k $1
+    else
+        printf "ERROR: must supply start|stop|restart to htgt apache command\n"
+    fi
+}
+
+function htgt_fcgi {
+    if [[ "$1" ]] ; then
+        $HTGT_MIGRATION_ROOT/htgt_app/conf/htgt $1
+    else
+        printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
+    fi
+}
+
+
+function htgt_service {
+    if [[ "$1" ]] ; then
+        htgt_apache $1
+        htgt_service $1
+    else
+        printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
     fi
 }
 
@@ -352,6 +384,10 @@ function set_htgt_paths {
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
     export LSB_DEFAULTGROUP=team87-grp
+
+# Fast CGI setup
+    export FCGI_INSTANCE='htgt'
+    export DESC='HTGT (htgt2) FastCGI server'
     set_batch_paths
 }
 

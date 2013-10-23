@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+
+#set -e
+
+# Compute basename
+#NAME="${0##*/}"
+# Strip leading run-parts prefix (if any)
+#NAME=${NAME#[0-9][0-9]-}
+
+#source "${TEAM87_BASE}/conf/defaults/${NAME}"
+#source /lib/lsb/init-functions
+
+#TEAM87UID=$(getent passwd team87 | cut -f 3 -d:)
+
+#test ${EUID} -eq ${TEAM87UID} || { log_failure_msg "Service script must be invoked by team87"; exit 2; }
+
+#test "${HTGT_ENV}" = "$ENVIRONMENT" || exec htgt-env.pl --environment="$ENVIRONMENT" -- $0 "$@"
+
+#test "${ENABLED}" = "yes" || { log_warning_msg "${DESC} not enabled"; exit; }
+
+# Limit virtual memory to 1.5G
+ulimit -v $((3*1024*1024/2))
+
+exec fcgi-manager.pl "$1" "$FCGI_INSTANCE"

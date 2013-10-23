@@ -1,0 +1,27 @@
+#
+# Configuration for HTGT FCGI::Engine::Manager
+#
+#
+---
+- name:            "htgt"
+  server_class:    "FCGI::Engine::Manager::Server::HTGT"
+  scriptname:      "/htgt/live/current/htgt_app/bin/htgt_fastcgi.pl"
+  nproc:            10
+  pidfile:         "/var/tmp/htgt/htgt-fastcgi.pid"
+  socket:          "/var/tmp/htgt/htgt-fastcgi.sock"
+  max_requests:    30
+- name:            "htgt-staging"
+  server_class:    "FCGI::Engine::Manager::Server::HTGT"
+  scriptname:      "/htgt/devel/current/htgt_app/bin/htgt_fastcgi.pl"
+  nproc:            5
+  pidfile:         "/var/tmp/htgt/htgt-fastcgi.staging.pid"
+  socket:          "/var/tmp/htgt/htgt-fastcgi.staging.sock"
+  max_requests:    30
+- name:            "htgt-dp10"
+  server_class:    "FCGI::Engine::Manager::Server::HTGT"
+  scriptname:      "/nfs/users/nfs_d/dp10/git-checkout/htgt_root/htgt_app/bin/htgt_fastcgi.pl"
+  nproc:            10
+  pidfile:         "/var/tmp/htgt/htgt-fastcgi-dp10.pid"
+  socket:          "/var/tmp/htgt/htgt-fastcgi-dp10.sock"
+  max_requests:    30
+

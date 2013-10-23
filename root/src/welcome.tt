@@ -25,7 +25,7 @@
 </style>
 
 
-<h3>High Throughput Gene Targeting</h3>
+<h3>High Throughput Gene Targeting (htgt2)</h3>
 [% IF c.check_user_roles("edit") %]
     <div id="htgt_search">
         <form id="gene_search_main" method="get" action="[% c.uri_for('/report/gene_search') %]">
