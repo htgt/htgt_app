@@ -315,6 +315,10 @@ function htgt_apache {
 
 function htgt_fcgi {
     if [[ "$1" ]] ; then
+        # Fast CGI setup
+        export FCGI_INSTANCE='htgt'
+        export DESC='HTGT (htgt2) FastCGI server'
+        check_and_set_dir LOG4PERL $HTGT_MIGRATION_ROOT/htgt_app/conf/log4perl-htgt.conf;
         $HTGT_MIGRATION_ROOT/htgt_app/conf/htgt $1
     else
         printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
@@ -385,9 +389,6 @@ function set_htgt_paths {
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
     export LSB_DEFAULTGROUP=team87-grp
 
-# Fast CGI setup
-    export FCGI_INSTANCE='htgt'
-    export DESC='HTGT (htgt2) FastCGI server'
     set_batch_paths
 }
 
