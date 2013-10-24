@@ -30,13 +30,13 @@ use Catalyst qw/
 
 extends 'Catalyst';
 
-use Catalyst::Log::Log4perl;
+use Log::Log4perl::Catalyst;
 
 if ( defined $ENV{LOG4PERL} ) {
-    __PACKAGE__->log( Catalyst::Log::Log4perl->new( $ENV{LOG4PERL} ) );
+    __PACKAGE__->log( Log::Log4perl::Catalyst->new( $ENV{LOG4PERL} ) );
 }
 else {
-    __PACKAGE__->log( Catalyst::Log::Log4perl->new() );
+    __PACKAGE__->log( Log::Log4perl::Catalyst->new() );
 }
 
 #Session::Store::FastMmap
