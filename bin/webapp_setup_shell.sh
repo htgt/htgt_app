@@ -318,7 +318,7 @@ function htgt_fcgi {
         # Fast CGI setup
         export FCGI_INSTANCE='htgt'
         export DESC='HTGT (htgt2) FastCGI server'
-        check_and_set_dir LOG4PERL $HTGT_MIGRATION_ROOT/htgt_app/conf/log4perl-htgt.conf;
+        check_and_set LOG4PERL $HTGT_MIGRATION_ROOT/htgt_app/conf/log4perl-htgt.conf;
         $HTGT_MIGRATION_ROOT/htgt_app/conf/htgt $1
     else
         printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
