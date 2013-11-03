@@ -1454,120 +1454,111 @@ sub generate_bacs_order_1 : Private {
 
     $file .= $bac_plate . "_BAC1\n\n";
     $file .= " ,01,02,03,04,05,06,07,08,09,10,11,12\n";
-    $file
-        .= "A" . ","
-        . $bacs{"A01"} . ","
-        . $bacs{"A02"} . ","
-        . $bacs{"A03"} . ","
-        . $bacs{"A04"} . ","
-        . $bacs{"A05"} . ","
-        . $bacs{"A06"} . ","
-        . $bacs{"A07"} . ","
-        . $bacs{"A08"} . ","
-        . $bacs{"A09"} . ","
-        . $bacs{"A10"} . ","
-        . $bacs{"A11"} . ","
-        . $bacs{"A12"} . "\n";
-    $file
-        .= "B" . ","
-        . $bacs{"B01"} . ","
-        . $bacs{"B02"} . ","
-        . $bacs{"B03"} . ","
-        . $bacs{"B04"} . ","
-        . $bacs{"B05"} . ","
-        . $bacs{"B06"} . ","
-        . $bacs{"B07"} . ","
-        . $bacs{"B08"} . ","
-        . $bacs{"B09"} . ","
-        . $bacs{"B10"} . ","
-        . $bacs{"B11"} . ","
-        . $bacs{"B12"} . "\n";
-    $file
-        .= "C" . ","
-        . $bacs{"C01"} . ","
-        . $bacs{"C02"} . ","
-        . $bacs{"C03"} . ","
-        . $bacs{"C04"} . ","
-        . $bacs{"C05"} . ","
-        . $bacs{"C06"} . ","
-        . $bacs{"C07"} . ","
-        . $bacs{"C08"} . ","
-        . $bacs{"C09"} . ","
-        . $bacs{"C10"} . ","
-        . $bacs{"C11"} . ","
-        . $bacs{"C12"} . "\n";
-    $file
-        .= "D" . ","
-        . $bacs{"D01"} . ","
-        . $bacs{"D02"} . ","
-        . $bacs{"D03"} . ","
-        . $bacs{"D04"} . ","
-        . $bacs{"D05"} . ","
-        . $bacs{"D06"} . ","
-        . $bacs{"D07"} . ","
-        . $bacs{"D08"} . ","
-        . $bacs{"D09"} . ","
-        . $bacs{"D10"} . ","
-        . $bacs{"D11"} . ","
-        . $bacs{"D12"} . "\n";
-    $file
-        .= "E" . ","
-        . $bacs{"E01"} . ","
-        . $bacs{"E02"} . ","
-        . $bacs{"E03"} . ","
-        . $bacs{"E04"} . ","
-        . $bacs{"E05"} . ","
-        . $bacs{"E06"} . ","
-        . $bacs{"E07"} . ","
-        . $bacs{"E08"} . ","
-        . $bacs{"E09"} . ","
-        . $bacs{"E10"} . ","
-        . $bacs{"E11"} . ","
-        . $bacs{"E12"} . "\n";
-    $file
-        .= "F" . ","
-        . $bacs{"F01"} . ","
-        . $bacs{"F02"} . ","
-        . $bacs{"F03"} . ","
-        . $bacs{"F04"} . ","
-        . $bacs{"F05"} . ","
-        . $bacs{"F06"} . ","
-        . $bacs{"F07"} . ","
-        . $bacs{"F08"} . ","
-        . $bacs{"F09"} . ","
-        . $bacs{"F10"} . ","
-        . $bacs{"F11"} . ","
-        . $bacs{"F12"} . "\n";
-    $file
-        .= "G" . ","
-        . $bacs{"G01"} . ","
-        . $bacs{"G02"} . ","
-        . $bacs{"G03"} . ","
-        . $bacs{"G04"} . ","
-        . $bacs{"G05"} . ","
-        . $bacs{"G06"} . ","
-        . $bacs{"G07"} . ","
-        . $bacs{"G08"} . ","
-        . $bacs{"G09"} . ","
-        . $bacs{"G10"} . ","
-        . $bacs{"G11"} . ","
-        . $bacs{"G12"} . "\n";
-    $file
-        .= "H" . ","
-        . $bacs{"H01"} . ","
-        . $bacs{"H02"} . ","
-        . $bacs{"H03"} . ","
-        . $bacs{"H04"} . ","
-        . $bacs{"H05"} . ","
-        . $bacs{"H06"} . ","
-        . $bacs{"H07"} . ","
-        . $bacs{"H08"} . ","
-        . $bacs{"H09"} . ","
-        . $bacs{"H10"} . ","
-        . $bacs{"H11"} . ","
-        . $bacs{"H12"}
-        . "\n\n\n";
 
+    my @rows = ('A','B','C','D','E','F','G','H');
+    my @cols = ('01','02','03','04','05','06','07','08','09','10','11','12');
+    foreach my $row (@rows){
+	    $file .= "$row,";
+	    foreach my $col (@cols){
+		my $bac = $bacs{$row.$col};
+		my @pieces = split '-', $bac;
+		my $lib = $pieces[0]; #e.g. RP24
+		$file .= "$lib,";
+	    }
+	    $file .= "\n";
+	    $file .= ",";
+	    foreach my $col (@cols){
+		my $bac = $bacs{$row.$col};
+		my @pieces = split '-', $bac;
+		my $name = $pieces[1]; #e.g. 12345H01
+		$file .= "$name,";
+	    }
+	    $file .= "\n";
+    }
+    $file .= "\n\n";
+
+    #A - RP24
+#    $file
+#        .= "A" . ","
+#        . $bacs{"A01"} . "," . $bacs{"A02"} . "," . $bacs{"A03"} . "," . $bacs{"A04"} . "," . $bacs{"A05"} . "," . $bacs{"A06"} . ","
+#        . $bacs{"A07"} . "," . $bacs{"A08"} . "," . $bacs{"A09"} . "," . $bacs{"A10"} . "," . $bacs{"A11"} . "," . $bacs{"A12"} . "\n"
+#    #A - Bac names
+#        .= "A" . ","
+#        . $bacs{"A01"} . "," . $bacs{"A02"} . "," . $bacs{"A03"} . "," . $bacs{"A04"} . "," . $bacs{"A05"} . "," . $bacs{"A06"} . ","
+#        . $bacs{"A07"} . "," . $bacs{"A08"} . "," . $bacs{"A09"} . "," . $bacs{"A10"} . "," . $bacs{"A11"} . "," . $bacs{"A12"} . "\n";
+#
+#    #B - RP24
+#    $file
+#        .= "B" . ","
+#        . $bacs{"B01"} . "," . $bacs{"B02"} . "," . $bacs{"B03"} . "," . $bacs{"B04"} . "," . $bacs{"B05"} . "," . $bacs{"B06"} . ","
+#        . $bacs{"B07"} . "," . $bacs{"B08"} . "," . $bacs{"B09"} . "," . $bacs{"B10"} . "," . $bacs{"B11"} . "," . $bacs{"B12"} . "\n"
+#    #B - Bac names
+#        .= "B" . ","
+#        . $bacs{"B01"} . "," . $bacs{"B02"} . "," . $bacs{"B03"} . "," . $bacs{"B04"} . "," . $bacs{"B05"} . "," . $bacs{"B06"} . ","
+#        . $bacs{"B07"} . "," . $bacs{"B08"} . "," . $bacs{"B09"} . "," . $bacs{"B10"} . "," . $bacs{"B11"} . "," . $bacs{"B12"} . "\n";
+#
+#    #C - RP24
+#    $file
+#        .= "C" . ","
+#        . $bacs{"C01"} . "," . $bacs{"C02"} . "," . $bacs{"C03"} . "," . $bacs{"C04"} . "," . $bacs{"C05"} . "," . $bacs{"C06"} . ","
+#        . $bacs{"C07"} . "," . $bacs{"C08"} . "," . $bacs{"C09"} . "," . $bacs{"C10"} . "," . $bacs{"C11"} . "," . $bacs{"C12"} . "\n"
+#    #C - Bac names
+#        .= "C" . ","
+#        . $bacs{"C01"} . "," . $bacs{"C02"} . "," . $bacs{"C03"} . "," . $bacs{"C04"} . "," . $bacs{"C05"} . "," . $bacs{"C06"} . ","
+#        . $bacs{"C07"} . "," . $bacs{"C08"} . "," . $bacs{"C09"} . "," . $bacs{"C10"} . "," . $bacs{"C11"} . "," . $bacs{"C12"} . "\n";
+#
+#    #D - RP24
+#    $file
+#        .= "D" . ","
+#        . $bacs{"D01"} . "," . $bacs{"D02"} . "," . $bacs{"D03"} . "," . $bacs{"D04"} . "," . $bacs{"D05"} . "," . $bacs{"D06"} . ","
+#        . $bacs{"D07"} . "," . $bacs{"D08"} . "," . $bacs{"D09"} . "," . $bacs{"D10"} . "," . $bacs{"D11"} . "," . $bacs{"D12"} . "\n"
+#    #D - Bac names
+#        .= "D" . ","
+#        . $bacs{"D01"} . "," . $bacs{"D02"} . "," . $bacs{"D03"} . "," . $bacs{"D04"} . "," . $bacs{"D05"} . "," . $bacs{"D06"} . ","
+#        . $bacs{"D07"} . "," . $bacs{"D08"} . "," . $bacs{"D09"} . "," . $bacs{"D10"} . "," . $bacs{"D11"} . "," . $bacs{"D12"} . "\n";
+#
+#    #E - RP24
+#    $file
+#        .= "E" . ","
+#        . $bacs{"E01"} . "," . $bacs{"E02"} . "," . $bacs{"E03"} . "," . $bacs{"E04"} . "," . $bacs{"E05"} . "," . $bacs{"E06"} . ","
+#        . $bacs{"E07"} . "," . $bacs{"E08"} . "," . $bacs{"E09"} . "," . $bacs{"E10"} . "," . $bacs{"E11"} . "," . $bacs{"E12"} . "\n"
+#    #E - Bac names
+#        .= "E" . ","
+#        . $bacs{"E01"} . "," . $bacs{"E02"} . "," . $bacs{"E03"} . "," . $bacs{"E04"} . "," . $bacs{"E05"} . "," . $bacs{"E06"} . ","
+#        . $bacs{"E07"} . "," . $bacs{"E08"} . "," . $bacs{"E09"} . "," . $bacs{"E10"} . "," . $bacs{"E11"} . "," . $bacs{"E12"} . "\n";
+#
+#    #F - RP24
+#    $file
+#        .= "F" . ","
+#        . $bacs{"F01"} . "," . $bacs{"F02"} . "," . $bacs{"F03"} . "," . $bacs{"F04"} . "," . $bacs{"F05"} . "," . $bacs{"F06"} . ","
+#        . $bacs{"F07"} . "," . $bacs{"F08"} . "," . $bacs{"F09"} . "," . $bacs{"F10"} . "," . $bacs{"F11"} . "," . $bacs{"F12"} . "\n"
+#    #F - Bac names
+#        .= "F" . ","
+#        . $bacs{"F01"} . "," . $bacs{"F02"} . "," . $bacs{"F03"} . "," . $bacs{"F04"} . "," . $bacs{"F05"} . "," . $bacs{"F06"} . ","
+#        . $bacs{"F07"} . "," . $bacs{"F08"} . "," . $bacs{"F09"} . "," . $bacs{"F10"} . "," . $bacs{"F11"} . "," . $bacs{"F12"} . "\n";
+#
+#    #G - RP24
+#    $file
+#        .= "G" . ","
+#        . $bacs{"G01"} . "," . $bacs{"G02"} . "," . $bacs{"G03"} . "," . $bacs{"G04"} . "," . $bacs{"G05"} . "," . $bacs{"G06"} . ","
+#        . $bacs{"G07"} . "," . $bacs{"G08"} . "," . $bacs{"G09"} . "," . $bacs{"G10"} . "," . $bacs{"G11"} . "," . $bacs{"G12"} . "\n"
+#    #G - Bac names
+#        .= "G" . ","
+#        . $bacs{"G01"} . "," . $bacs{"G02"} . "," . $bacs{"G03"} . "," . $bacs{"G04"} . "," . $bacs{"G05"} . "," . $bacs{"G06"} . ","
+#        . $bacs{"G07"} . "," . $bacs{"G08"} . "," . $bacs{"G09"} . "," . $bacs{"G10"} . "," . $bacs{"G11"} . "," . $bacs{"G12"} . "\n";
+#
+#    #H - RP24
+#    $file
+#        .= "H" . ","
+#        . $bacs{"H01"} . "," . $bacs{"H02"} . "," . $bacs{"H03"} . "," . $bacs{"H04"} . "," . $bacs{"H05"} . "," . $bacs{"H06"} . ","
+#        . $bacs{"H07"} . "," . $bacs{"H08"} . "," . $bacs{"H09"} . "," . $bacs{"H10"} . "," . $bacs{"H11"} . "," . $bacs{"H12"}
+#        . "\n"
+#    #H - Bac names
+#        .= "H" . ","
+#        . $bacs{"H01"} . "," . $bacs{"H02"} . "," . $bacs{"H03"} . "," . $bacs{"H04"} . "," . $bacs{"H05"} . "," . $bacs{"H06"} . ","
+#        . $bacs{"H07"} . "," . $bacs{"H08"} . "," . $bacs{"H09"} . "," . $bacs{"H10"} . "," . $bacs{"H11"} . "," . $bacs{"H12"}
+#        . "\n\n\n";
+#
     return $file;
 }
 
