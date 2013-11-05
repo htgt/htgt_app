@@ -277,18 +277,26 @@ sub htgt_to_targ_rep {
 sub process_projects {
     my ( $self, $projects_rs ) = @_;
 
-    while ( my $project = $projects_rs->next ) {
-        Log::Log4perl::NDC->remove();
-        Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
-        Log::Log4perl::NDC->push( $project->project_id  );
+    my $pager = $projects_rs->pager;
+    my $total_pages = $pager->last_page;
 
-        try {
-            $self->update_project( $project );
+    for my $page ( ( 1 .. $total_pages ) ) {
+        my $rs = $projects_rs->page( $page );
+        while ( my $project = $rs->next ) {
+            Log::Log4perl::NDC->remove();
+            Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
+            Log::Log4perl::NDC->push( $project->project_id  );
+
+            try {
+                $self->update_project( $project );
+            }
+            catch {
+                $self->log->error( 'Error processing project: ' . $_ );
+            };
         }
-        catch {
-            $self->log->error( 'Error processing project: ' . $_ );
-        };
+
     }
+
 }
 
 sub hide_non_distributable_products {
@@ -1027,11 +1035,11 @@ sub get_projects {
         {
             join     => [ 'new_ws_entries' ],
             prefetch => [ 'mgi_gene', 'design', 'new_ws_entries' ],
-            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
+            rows     => 5000,
+            page     => 1,
         }
     );
 
-    $self->log->debug("Fetched ".$projects_rs->count()." projects");
     return $projects_rs;
 }
 
@@ -1066,7 +1074,8 @@ sub get_mgp_only_projects {
         {
             join     => [ 'new_ws_entries' ],
             prefetch => [ 'mgi_gene', 'design', 'new_ws_entries' ],
-            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
+            rows     => 5000,
+            page     => 1,
         }
     );
 
