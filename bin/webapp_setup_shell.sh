@@ -1,37 +1,58 @@
 #! /bin/bash
 
 function htgt {
-    if [[ ! "$1" ]] ; then
-        htgt_help
-    elif [[ $1 == "esmp" ]] ; then
+case $1 in
+    esmp)
         esmp
-    elif [[ $1 == "esmt" ]] ; then
+        ;;
+    esmt)
         esmt
-    elif [[ ( $1 == "production" ) || ( $1 == "live" ) ]] ; then
+        ;;
+    production|live)
         production_htgt
-    elif [[ $1 == "devel" ]] ; then
+        ;;
+    devel)
         devel_htgt $2
-    elif [[ $1 == "webapp" ]] ; then
+        ;;
+    webapp)
         htgt_webapp $2
-    elif [[ $1 == "debug" ]] ; then
+        ;;
+    debug)
         htgt_debug $2
-    elif [[ $1 == "help" ]] ; then
+        ;;
+    help)
         htgt_help
-    elif [[ $1 == "show" ]] ; then
+        ;;
+    show)
         htgt_show
-    elif [[ $1 == "cpanm" ]] ; then
+        ;;
+    cpanm)
         htgt_cpanm $2
-    elif [[ $1 == "service" ]] ; then
+        ;;
+    service)
         htgt_service $2
-    elif [[ $1 == "apache" ]] ; then
+        ;;
+    apache)
         htgt_apache $2
-    elif [[ $1 == "fcgi" ]] ; then
+        ;;
+    fcgi)
         htgt_fcgi $2
-    else 
-        printf "ERROR: unrecongnized htgt command\n"
-    fi
-
-
+        ;;
+    t87perl)
+        htgt_t87perl
+        ;;
+    colour)
+        set_colour_prompt
+        set_colour_ls
+        ;;
+    mono)
+        set_mono_prompt
+        set_mono_ls
+        ;;
+    *) 
+        printf "Usage: htgt sub-command [option]\n"
+        printf "see 'htgt help' for commands and options\n"
+esac
 }
 
 function set_colour_prompt {
@@ -243,15 +264,20 @@ commands avaiable:
                  \$HTGT_WEBAPP_SERVER_PORT with the options specified in
                  \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desired)
 
-    webapp <port_num> - starts the webapp server on the specified port, overriding the value
+    webapp <port_num> - starts the catalyst server on the specified port, overriding the value
                  specified by \$HTGT_WEBAPP_SERVER_PORT (default $HTGT_WEBAPP_SERVER_PORT)
 
-    debug        - starts the server using 'perl -d '
+    debug        - starts the catalyst server using 'perl -d '
     show         - show the value of useful HTGT variables
     cpanm        - installs a CPAN module to the correct lib location
 
-    set_colour_prompt - use colours in the prompt and in directory listings
-    set_mono_prompt   - don't use any colour in prompt or directory listings
+    server start|stop|restart      - manages apache and fcgi together
+     -- or --
+    fcgi start|stop|restart        - manages the fcgi server
+    apache start|stop|restart      - manages the apache webserver     
+
+    colour       - use colours in the prompt and in directory listings
+    mono         - don't use any colour in prompt or directory listings
     help         - displays this help message
 Files:
     ~/.htgt_local     - sourced near the end of the setup phase for you own mods
@@ -259,7 +285,6 @@ END
 }
 
 function htgt_help {
-    printf "Perhaps you meant 'help_htgt'...\n\n"
     help_htgt
 }
 
@@ -329,10 +354,14 @@ function htgt_fcgi {
 function htgt_service {
     if [[ "$1" ]] ; then
         htgt_apache $1
-        htgt_service $1
+        htgt_fcgi $1
     else
         printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
     fi
+}
+
+function htgt_t87perl {
+    sudo -u t87perl -Hi
 }
 
 function perlmodver () {
@@ -431,6 +460,14 @@ function set_colour_ls {
 LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lz=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:*.oga=00;36:*.spx=00;36:*.xspf=00;36:';
 export LS_COLORS
 alias ls='ls -FqC --color'
+}
+
+function set_mono_ls {
+#
+# Directory colouring:
+#
+unset LS_COLORS
+alias ls='ls -FqC'
 }
 
 export KERMITS_DB=external_mi_esmt
