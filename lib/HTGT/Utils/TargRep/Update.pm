@@ -277,24 +277,17 @@ sub htgt_to_targ_rep {
 sub process_projects {
     my ( $self, $projects_rs ) = @_;
 
-    my $pager = $projects_rs->pager;
-    my $total_pages = $pager->last_page;
+    while ( my $project = $projects_rs->next ) {
+        Log::Log4perl::NDC->remove();
+        Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
+        Log::Log4perl::NDC->push( $project->project_id  );
 
-    for my $page ( ( 1 .. $total_pages ) ) {
-        my $rs = $projects_rs->page( $page );
-        while ( my $project = $rs->next ) {
-            Log::Log4perl::NDC->remove();
-            Log::Log4perl::NDC->push( $project->mgi_gene->marker_symbol  );
-            Log::Log4perl::NDC->push( $project->project_id  );
-
-            try {
-                $self->update_project( $project );
-            }
-            catch {
-                $self->log->error( 'Error processing project: ' . $_ );
-            };
+        try {
+            $self->update_project( $project );
         }
-
+        catch {
+            $self->log->error( 'Error processing project: ' . $_ );
+        };
     }
 
 }
@@ -1034,9 +1027,8 @@ sub get_projects {
         $search_criteria,
         {
             join     => [ 'new_ws_entries' ],
-            prefetch => [ 'mgi_gene', 'design', 'new_ws_entries' ],
-            rows     => 5000,
-            page     => 1,
+            prefetch => [ 'mgi_gene', 'design' ],
+            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
         }
     );
 
