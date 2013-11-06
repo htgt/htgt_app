@@ -180,10 +180,12 @@ then link them to the projects table.
 
 sub gene_search : Local {
     my ( $self, $c ) = @_;
+    $c->debug("Before check_user_roles\n");
     unless ( $c->check_user_roles( q(edit) ) ) {
         $c->response->redirect( $c->uri_for( '/access_denied' ) );
         return 0;
     }
+    $c->debug("After check_user_roles");
 
     # Strip whitespace from the end/beginning of the search term
     my $search_term = $c->req->params->{query};
@@ -202,6 +204,7 @@ sub gene_search : Local {
         },
         { order_by => { -asc => 'me.marker_symbol' } }
     );
+    $c->debug("After MGI gene lookup");
 
     # See if this gives us any results, if not expand it to the longer 'marker_name'
     if ( $mgi_gene_rs->count == 0 ) {
@@ -212,6 +215,7 @@ sub gene_search : Local {
         );
 
     }
+    $c->debug("After MGI gene marker_symbol");
 
     # If that doesn't give any results, move the search out to the mgi_sanger table...
     if ( $mgi_gene_rs->count == 0 ) {
@@ -221,6 +225,7 @@ sub gene_search : Local {
             { order_by => { -asc => 'me.marker_symbol' }, join => [ 'mgi_sanger_genes' ] }
         );
     }
+    $c->debug("After mgi_sanger_genes");
     
     # How about a project id?
     if ( $mgi_gene_rs->count == 0 ) {
@@ -241,6 +246,7 @@ sub gene_search : Local {
             );
         }
     }
+    $c->debug("After project_ids ");
     
     # Finally, if that doesn't give any results, move the search out to the well_summary_by_di table...
     my $clone_search = 'no';
@@ -290,6 +296,7 @@ sub gene_search : Local {
         }
 
     }
+    $c->debug("After well_summary search");
 
     # This is an 'if all else fails' for getting the TRAP data.
     if ( $mgi_gene_rs->count == 0 ) {
@@ -310,8 +317,11 @@ sub gene_search : Local {
             }
         );
     }
+    $c->debug("After gene_trap search");
+
 
     if ( !$c->req->params->{called_elswhere} ) {
+    	$c->debug("in called_elsewhere branch");
 
         # If we only have a single search result and we're not being used as part of
         # an ajax call - redirect straight to the gene_report page...
@@ -478,6 +488,7 @@ sub gene_report : Local {
             }
         );
 
+
         # Do we have multiple projects?
         if ( $project_rs->count > 1 ) {
 
@@ -519,7 +530,6 @@ sub gene_report : Local {
         );
 
         $c->stash->{gnm_gene_id} = $c->req->params->{gene_id};
-      
         
         # Do we have multiple projects?
         if ( $project_rs->count > 1 ) {
@@ -1872,7 +1882,7 @@ sub get_gene_identifiers : Private {
     }
     
     # get gene id from mgi website (if unavailable falls back to mgi_sanger table)
-    push @gene_identifiers, get_gene_ids($mgi_gene);
+    # push @gene_identifiers, get_gene_ids($mgi_gene);
     @gene_identifiers = uniq @gene_identifiers;
     return \@gene_identifiers;
 }
