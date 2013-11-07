@@ -1027,11 +1027,12 @@ sub get_projects {
         $search_criteria,
         {
             join     => [ 'new_ws_entries' ],
-            prefetch => [ 'mgi_gene', 'design' ],
-            order_by => [ qw( mgi_gene.mgi_accession_id ) ],
+            prefetch => [ 'design' ],
+            order_by => [ qw( me.mgi_gene_id ) ],
         }
     );
 
+    $self->log->debug("Fetched ".$projects_rs->count()." projects");
     return $projects_rs;
 }
 
