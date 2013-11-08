@@ -249,16 +249,6 @@ sub get_default_well_names {
             }
             return @wells;
         }
-        elsif ( $pt eq 'PIQ' ) { # 24 well plate
-            my @wells;
-            foreach my $col ( 1 .. 6 ) {
-                foreach my $row ( q(A) .. q(D) ) {
-                    my $name = $row . ( sprintf "%02d", $col );
-                    push( @wells, $name );
-                }
-            }
-            return @wells;
-        }
         elsif ( $pt eq 'PIQFP' || $pt eq 'PIQS' ){
             return map{ sprintf("%02d", $_) } (1..96);
         }
@@ -279,14 +269,9 @@ sub get_default_well_names {
             map { $r . $_ } map { sprintf "%02d", $_ } 1 .. 5
         } q(A) .. q(E) if $pt eq q(EP);
 
-        return map {
-            my $r = $_;
-            map { $r . $_ } map { sprintf "%02d", $_ } 1 .. 6
-        } q(A) .. q(D) if $pt eq q(PIQ);
-
         return map{ sprintf("%02d", $_) } (1..96) if $pt eq 'PIQS' || $pt eq 'PIQFP';
 
-        foreach (qw(DESIGN REPD EPD RS GR GRD PGD PGG FP PCS PGR PIQFP PIQS VTP)) {
+        foreach (qw(DESIGN REPD EPD RS GR GRD PGD PGG FP PCS PGR PIQ PIQFP PIQS VTP)) {
             return map {
                 my $r = $_;
                 map { $r . $_ } map { sprintf "%02d", $_ } 1 .. 12

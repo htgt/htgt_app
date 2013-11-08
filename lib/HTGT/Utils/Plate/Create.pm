@@ -63,7 +63,7 @@ Readonly my $PLATE_WELL_RX => qr{
 # include_plate - include the plate name in the well name
 
 Readonly my %SPEC_FOR => (
-    PIQ  => { wells => 24, inherit => [ 'cassette' ], include_plate => 1 },
+    PIQ  => { wells => 96, inherit => [ 'cassette' ], include_plate => 1 },
     EP   => { wells => 25, inherit => [ 'cassette' ], include_plate => 1 },
     EPD  => { wells => 96, inherit => [ 'cassette' ], include_plate => 1 },
     REPD => { wells => 96, inherit => [ 'cassette' ], include_plate => 1 },
@@ -263,10 +263,6 @@ sub well_name_iterator {
     elsif ( $num_wells == 25 ) {
         $last_row = 'E';
         $last_col = 5;
-    }
-    elsif ( $num_wells == 24 ) {
-        $last_row = 'D';
-        $last_col = 6;
     }
     elsif ( $num_wells == 96 ) {
         $last_row = 'H';
