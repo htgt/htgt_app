@@ -8,7 +8,7 @@ session:
   dbi_dbh: HTGTDB
   dbi_table: sessions
 
-design_home: '/lustre/scratch109/sanger/team87/designs'
+design_home: '/lustre/scratch110/sanger/team87/designs'
 
 designurl:
   migp_ha: 'http://migsrv1a.internal.sanger.ac.uk:8083'
