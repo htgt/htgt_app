@@ -260,7 +260,7 @@ commands avaiable:
     htgt devel \`pwd\` -or- export HTGT_DEV_ROOT=\`pwd\`
           or some other suitable setting
 
-    webapp       - starts the webapp server on the default port, or the port sepecified in
+    webapp       - starts the webapp server on the default port, or the port specified in
                  \$HTGT_WEBAPP_SERVER_PORT with the options specified in
                  \$HTGT_WEBAPP_SERVER_OPTIONS (-d, -r etc as desired)
 
@@ -312,6 +312,9 @@ HTGT useful environment variables:
 \$ENG_SEQ_BUILDER_CONF : $ENG_SEQ_BUILDER_CONF
 \$TARMITS_CLIENT_CONF  : $TARMITS_CLIENT_CONF
 \$LIMS2_REST_CLIENT    : $LIMS2_REST_CLIENT
+\$HTGT_ENSEMBL_HOST    : $HTGT_ENSEMBL_HOST
+\$HTGT_ENSEMBL_USER    : $HTGT_ENSEMBL_USER
+
 \$HTGT_DB              : $HTGT_DB
 \$HTGT_SHORT DB        : $HTGT_SHORT_DB
 \$HTGT_ENV             : $HTGT_ENV
