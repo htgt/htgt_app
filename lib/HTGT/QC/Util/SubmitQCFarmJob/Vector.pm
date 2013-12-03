@@ -123,3 +123,5 @@ override 'get_seq_read_files' => sub {
 
     return '--seq-reads', $self->qc_run->workdir->file( 'reads.fasta' );
 };
+
+1;

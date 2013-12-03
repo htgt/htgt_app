@@ -10,15 +10,6 @@ my $QC_CONFIG = $ENV{HTGT_QC_CONF};
 #we will only get seq reads for primers in this array
 my @valid_primers = ( 'R2R', 'LR', 'LFR' );
 
-#
-#TODO:
-    #call the persist step, and create its done dependency like in normal es cell,
-    #i.e. dependant on ALL previous jobs. 
-    #change QC final step to be the PrescreenHTGTDB
-    #do a run through. 
-    #CHECK thruogh the es cell new way. dlete the old shit way.
-#
-
 #override the MAIN function of SubmitQCFarmJob unlike ESCell and Vector
 override 'run_qc_on_farm' => sub {
     my ( $self ) = @_;
@@ -125,19 +116,9 @@ override 'persist' => sub {
 
     my ( $out_file, $err_file ) = $self->get_log_filenames( "persist_htgt" );
 
-    #ive been running:
-    #qc persist-prescreen-htgtdb 
-    #--analysis-dir /lustre/scratch110/sanger/team87/prescreen_qc/B65A5CC8-8187-11E2-A995-F01BE5C3F087/prescreen 
-    #--run-id B65A5CC8-8187-11E2-A995-F01BE5C3F087 
-    #--config qc.conf
-    #--debug
-
     #create bsub dependancy. make it a proper function inside SubmitQCFarmJob
     #as its now needed twice.
     #USE HANDY NEW BSUB OPTION
-    #looks good to me. once over tmz.
-
-    #we'll then be golden.
 
     my @args = (
         '--analysis-dir', $self->qc_run->workdir->subdir( 'prescreen' ),
@@ -149,3 +130,5 @@ override 'persist' => sub {
 
     return $self->run_bsub_cmd( \@previous_job_ids, $out_file, $err_file, @cmd );
 };
+
+1;

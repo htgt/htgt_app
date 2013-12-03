@@ -90,7 +90,7 @@ sub fetch_reads_for_project {
             my $original_id = $bio_seq->id; #store this so we can substitute each time
 
             #loop through the array ref of what to split this primer into.
-            #split_primers is formatted like: { L1 => ['L1I', 'L1E'] }
+            #split_primers is formatted like: { L1 = ['L1I', 'L1E'] }
             #so we want to duplicate the sequence for each renamed primer.
             for my $split_primer ( @{ $self->profile->get_split_primers( $primer ) } ) {
                 ( my $new_id = $original_id ) =~  s/$primer([a-z]?)$/$split_primer$1/;

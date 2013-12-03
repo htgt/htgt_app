@@ -55,6 +55,7 @@ has eng_seq_builder => (
             deletion_allele_seq
             insertion_allele_seq
             targeted_trap_allele_seq
+            crispr_vector_seq
       )
     ]
 );

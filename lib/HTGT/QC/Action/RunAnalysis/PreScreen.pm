@@ -39,6 +39,17 @@ has output_file => (
 sub _build_alignments {
     my $self = shift;
 
+    my $registry = 'Bio::EnsEMBL::Registry';
+
+    $registry->load_registry_from_db(
+        -host     => 'ensembldb.ensembl.org',
+        -user     => 'anonymous',
+        -NO_CACHE => 1 #we need this otherwise duplicate slices return no genes.
+    );
+
+    #this won't work cause we need the registry. isn't there a mixin class for this?
+    my $slice_adaptor = $registry->get_adaptor( 'Mus musculus', 'Core', 'Slice' );
+
     #create iterator for alignments
     my $it = HTGT::QC::Util::CigarParser->new(
         strict_mode => 0
@@ -47,32 +58,44 @@ sub _build_alignments {
     my %alignments; 
 
     while ( my $cigar = $it->next ) {
-        #extract the plate & well 
-        ( $cigar->{ plate }, $cigar->{ well } ) = $cigar->{ query_well } =~ /^(.+)_\d(\w{3})/;
+        my $query_id = delete $cigar->{ query_id };
+        $self->log->debug( 'Processing ' . $query_id );
 
         #extract the chromosome number (or letter) from the target_name (this comes from the genome.fa file)
-        ( $cigar->{ chromosome } ) = $cigar->{ target_id } =~ /chromosome:GRCm\d+:(\w+):/;
-
-        #sometimes the match is in a scaffold instead of a chromosome,
-        #if that is the case we just ignore the match (it shouldnt happen v often)
-        next unless $cigar->{ chromosome }; 
-
-        #i hope this will be the same as using the target values.
-        $cigar->{ length } = $cigar->{ query_end } - $cigar->{ query_start };
+        if ( $cigar->{ target_id } =~ /chromosome:GRCm\d+:(\w+):/ ) {
+            $cigar->{ chromosome } = $1;
+        }
+        else {
+            #sometimes the match is in a scaffold instead of a chromosome,
+            #if that is the case we just ignore the match (it shouldnt happen v often)
+            next;
+        }
 
         #delete the fields we don't want with a hash slice as they add clutter to the output
         delete @{ $cigar }{ qw(op_str operations raw) };
+        
+        #extract the plate & well 
+        ( $cigar->{ plate }, $cigar->{ well } ) = $cigar->{ query_well } =~ /^(.+)_\d{1,2}(\w{3})/;
+        $cigar->{ length } = $cigar->{ query_end } - $cigar->{ query_start };
+
+        my $slice = $slice_adaptor->fetch_by_region( 
+                                        'chromosome', 
+                                        $cigar->{ chromosome }, 
+                                        $cigar->{ target_start }, 
+                                        $cigar->{ target_end }
+                                    );
+
+        #get the external gene name. note: ensembl name could be different to ours
+        $cigar->{ genes } = $self->get_genes( $slice );
+
+        #finally add the whole sequence
+        $cigar->{ sequence } = $self->seq_reads->{ $query_id }->seq;
+
+        #we might get more than one alignment, so store them all
 
         #use the query_id as the id for this whole cigar
-        my $query_id = delete $cigar->{ query_id };
-
-        #if two alignments had the same score we will get more than one entry.
-        #when that happens append the target_start to the key to keep it unique
-        if ( exists $alignments{ $query_id } ) {
-            $query_id .= "_" . $cigar->{ target_start };
-        }
-
-        $alignments{ $query_id } = $cigar;
+        
+        push @{ $alignments{$query_id} }, $cigar;
     }
 
     return \%alignments;
@@ -91,37 +114,6 @@ sub execute {
 
     my $output_dir = $self->output_file->parent;
     $output_dir->mkpath unless -e $output_dir; 
-
-    my $registry = 'Bio::EnsEMBL::Registry';
-
-    $registry->load_registry_from_db(
-        -host     => 'ensembldb.ensembl.org',
-        -user     => 'anonymous',
-        -NO_CACHE => 1 #we need this otherwise duplicate slices return no genes.
-    );
-
-    #get a slice adaptor for the mouse core database
-    my $slice_adaptor = $registry->get_adaptor( 'Mus musculus', 'Core', 'Slice' );
-
-    #loop through all the cigars and get a slice for that region
-    while ( my ( $query_id, $cigar ) = each(%{ $self->alignments }) ) {
-        $self->log->debug( 'Processing ' . $query_id );
-        my $slice = $slice_adaptor->fetch_by_region( 
-                                        'chromosome', 
-                                        $cigar->{ chromosome }, 
-                                        $cigar->{ target_start }, 
-                                        $cigar->{ target_end }
-                                    );
-
-        #get the external gene name. note: ensembl name could be different to ours
-        $cigar->{ genes } = $self->get_genes( $slice );
-
-        
-        #remove anytrailing numbers we added due to multiple matches
-        $query_id =~ s/_(\d+)$//; 
-        #finally add the whole sequence
-        $cigar->{ sequence } = $self->seq_reads->{ $query_id }->seq;
-    }
 
     YAML::Any::DumpFile( $self->output_file, $self->alignments );
 }

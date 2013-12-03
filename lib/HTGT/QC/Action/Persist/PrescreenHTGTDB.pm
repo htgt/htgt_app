@@ -2,6 +2,7 @@ package HTGT::QC::Action::Persist::PrescreenHTGTDB;
 
 use Moose;
 use HTGT::DBFactory;
+use List::Util qw( first );
 use List::MoreUtils qw ( uniq );
 use YAML::Any;
 use namespace::autoclean;
@@ -135,13 +136,26 @@ sub get_well_data {
     my %wells;
     for my $file ( $self->analysis_dir->children ) {
         my $yaml_data = YAML::Any::LoadFile( $file );
-        #design_id is something like HEPD0855_2_A_1a03.p1kLR
-        while ( my ( $design_id, $cigar ) = each %{ $yaml_data } ) {
+        #query_id is something like HEPD0855_2_A_1a03.p1kLR
+        while ( my ( $query_id, $cigars ) = each %{ $yaml_data } ) {
+            #make sure the highest score is first
+            my @sorted = sort { $b->{score} <=> $a->{score} } @{ $cigars };
+            if ( @{ $cigars } > 1 ) {
+                #if the first entry is iftim2 and we have more than one alignment, remove the Ifitm2 one.
+                if ( first { $_ eq "Ifitm2" } @{ $sorted[0]->{genes} } ) {
+                    $self->log->debug( "Ignoring Ifitm2 in $query_id" );
+                    shift @sorted;
+                }
+            }
+
+            #take the cigar with the best score
+            my $cigar = shift @sorted;
+
             #the epd plates get split into _A, _B, _Z etc., but they are the same plate,
             #so we need to extract the unsplit name,
             #i.e. reduce HEPD0855_2_A_1A03 to HEPD0855_2_A03
             #or HEPD0855_2_A_1_1A03
-            my ( $plate_name, $plate_well ) = $cigar->{ query_well } =~ /(\w+_\d)_\w_.*\w(\w{3})/;
+            my ( $plate_name, $plate_well ) = $cigar->{ query_well } =~ /(\w+_\d{1,2})_\w_.*\w(\w{3})/;
 
             my $adjusted_well_name = $plate_name . "_" . $plate_well;
 
