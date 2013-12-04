@@ -97,6 +97,31 @@ sub kill_lims2_qc :Path('/api/kill_lims2_qc') {
     };
 }
 
+sub badger_seq_projects :Path('/api/badger_seq_projects') {
+	my ($self, $c ) = @_;
+	
+	my $data = $c->req->data;
+	
+	return unless $self->_authenticate_user( $c, $data->{ username }, $data->{ password } );
+	
+	my $term = $data->{term};
+
+	try {
+	    my $projects = $c->model('BadgerRepository')->search( $term );
+        $self->status_ok(
+            $c,
+            entity => { badger_seq_projects => $projects }, 
+        );
+	}
+	catch {
+		# Just return empty list if there was a problem with the BadgerRepository query
+		$self->status_ok(
+		    $c,
+		    entity => { badger_seq_projects => [] }, 
+		);
+	};
+}
+
 sub _authenticate_user {
     my ( $self, $c, $user, $pass ) = @_;
 
