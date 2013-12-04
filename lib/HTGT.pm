@@ -55,6 +55,20 @@ __PACKAGE__->config(
     authentication => {
         default_realm => 'ssso',
         realms        => {
+        	lims2 => {
+        		credential => {
+        			class          => 'LIMS2Cookie',
+        			username_field => 'auth_user_name',
+        		},
+                store => {
+                    class         => 'DBIx::Class',
+                    user_model    => 'HTGTDB::AuthUser',
+                    id_field      => 'auth_user_name',
+                    role_relation => 'roles',
+                    role_field    => 'auth_role_name',
+                    ignore_fields_in_find => [ 'id' ]
+                },
+        	},
             ssso => {
                 credential => {
                     class          => 'SangerSSO',

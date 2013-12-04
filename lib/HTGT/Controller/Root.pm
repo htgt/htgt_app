@@ -156,7 +156,9 @@ sub auto : Private {    #should this go in auto?
     }
 
     unless ( $c->user_exists ) {
-        $c->authenticate( {}, "ssso" ) || $c->authenticate( {}, "ssso_fallback" );
+    	$c->log->debug("Attempting to authenticate");
+    	$c->authenticate( {}, "lims2" );
+        #$c->authenticate( {}, "ssso" ) || $c->authenticate( {}, "ssso_fallback" );
     }
     
     $c->log->debug( "Username: " . ( $c->user ? $c->user->id : '<undef>' ) );

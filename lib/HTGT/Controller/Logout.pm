@@ -26,6 +26,16 @@ sub index :Path :Args(0) {
 
     my $redirect_to_sanger_logout = $c->user_in_realm( 'ssso' ) || $c->user_in_realm( 'ssso_fallback' );
     
+    # If we are logged in using LIMS2 cookie then clear user from this
+    my $cookie = $c->request->cookie('LIMS2Auth');
+    if ($cookie){
+     	$c->response->cookies->{LIMS2Auth} = { 
+     		value   => {}, 
+     		expires => '+1h',
+     		domain  => '.internal.sanger.ac.uk'
+     	};
+    }
+    
     $c->logout;
 
     if ( $redirect_to_sanger_logout ) {
