@@ -75,9 +75,7 @@ sub _build_seq_read_sequencing_project {
     my %data;
 
     for my $seq_proj ( $self->sequencing_projects ) {
-        map { chomp; $data{$_} = $seq_proj } capturex(
-            HTGT::QC::Action::FetchSeqReads::TraceArchive->fetch_seq_reads_cmd
-            ,$seq_proj, '--list-only' );
+        map { chomp; $data{$_} = $seq_proj } $self->seq_read_ids;
     }
 
     return \%data;

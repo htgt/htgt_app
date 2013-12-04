@@ -135,7 +135,7 @@ override '_final_steps' => sub {
 
     #get a list of all the actual plate names by stripping trailing character
     #for example, HEPD0848_1_R -> HEPD0848_1
-    my @all_plates = uniq( map { $_ =~ /(\w+_\d)_\w$/ } @{ $self->qc_run->sequencing_projects } );
+    my @all_plates = uniq( map { $_ =~ /(\w+_\d{1,2})_\w$/ } @{ $self->qc_run->sequencing_projects } );
 
     #now for each plate run update-escell-plate-qc, and keep all the job_ids
     my @job_ids;
@@ -166,3 +166,5 @@ override 'get_seq_read_files' => sub {
     }
     return @seq_reads;
 };
+
+1;

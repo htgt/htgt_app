@@ -58,22 +58,25 @@
             </tr>
             [% FOR pair IN projects.$project.pairs %]
                 [% design_id = pair.key %]
-                [% cigar = pair.value %]
-                [% genes = cigar.genes.join(", ") %]
-                <tr>
-                    <td>[% cigar.plate %]</td>
-                    <td>[% cigar.well %]</td>
-                    <td>[% cigar.query_primer %]</td>
-                    <td>[% cigar.score %]</td>
-                    <td>[% cigar.length %]</td>
-                    <td>[% cigar.chromosome %]</td>
-                    <td [% IF genes == "None found" %]style="background-color:#FF8080"[% END %]>[% genes %]</td>
-                    <td>[% cigar.target_start %]</td>
-                    <td>[% cigar.target_end %]</td>
-                    <td>[% cigar.query_start %]</td>
-                    <td>[% cigar.query_end %]</td>
-                    <td><a href="#" onclick="show_sequence('[% design_id %]'); return false;">View Sequence</a></td>
-                    <td>
+                [% cigars = pair.value %]
+                [%# we need to support the old style data which wasn't a list: %]
+                [% IF cigars.keys %][% cigars = [cigars] %][% END %]
+                [% FOR cigar IN cigars %]
+                    [% genes = cigar.genes.join(", ") %]
+                    <tr>
+                        <td>[% cigar.plate %]</td>
+                        <td>[% cigar.well %]</td>
+                        <td>[% cigar.query_primer %]</td>
+                        <td>[% cigar.score %]</td>
+                        <td>[% cigar.length %]</td>
+                        <td>[% cigar.chromosome %]</td>
+                        <td [% IF genes == "None found" %]style="background-color:#FF8080"[% END %]>[% genes %]</td>
+                        <td>[% cigar.target_start %]</td>
+                        <td>[% cigar.target_end %]</td>
+                        <td>[% cigar.query_start %]</td>
+                        <td>[% cigar.query_end %]</td>
+                        <td><a href="#" onclick="show_sequence('[% design_id %]'); return false;">View Sequence</a></td>
+                        <td>
                         
     <form id="UCSC_BLAT" enctype="multipart/form-data" method="post" action="http://genome.ucsc.edu/cgi-bin/hgBlat" name="UCSC_BLAT" target="_blank">
         <input type="hidden" name="org" value="Mouse" />
@@ -85,8 +88,9 @@
         <input type="hidden" name="Lucky" value="I'm feeling lucky" />
         <input type="submit" value="UCSC BLAT" name="Lucky"/>
     </form>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                [% END %]
             [% END %]
         [% END %]
 
