@@ -10,6 +10,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Crypt::CBC;
+use Config::Simple;
 
 use base 'Class::Accessor::Fast';
 
@@ -38,7 +39,6 @@ Retrieve the authenticated username from B<SangerWeb> and look up a
 corresponding user via B<find_user>; returns the user object.
 
 =cut
-use Data::Dumper;
 
 sub authenticate {
      my ( $self, $c, $realm, $authinfo ) = @_;
@@ -52,8 +52,13 @@ sub authenticate {
      ($cookie_data) = @{ $cookie->{value} || [] };
      if ($cookie and $cookie_data){
      	$c->log->debug("Encrypted cookie value: $cookie_data");
-        # FIXME!! get this from config file - it will not be "password"!
-        my $key = "password";            
+        
+        my $conf_file = $ENV{LIMS2_REST_CLIENT_CONF} 
+            or die "Cannot complete LIMS2 login - no LIMS2_REST_CLIENT_CONF environment variable set.";
+    
+        my $conf = new Config::Simple($conf_file);
+        my $key = $conf->param("auth_key")
+            or die "Cannot complete LIMS2 login - no auth_key provided in $conf_file ";          
         my $cipher = Crypt::CBC->new( -key => $key, -cipher => 'Blowfish' );
 
         my $text = $cipher->decrypt($cookie_data);
@@ -61,7 +66,6 @@ sub authenticate {
         
      	my $sessionid;
      	($sessionid,$auth_user) = split ":", $text;
-     	$c->log->debug("Cookie session id: $sessionid, user: $auth_user");
      	
      	# Check we have the correct session id for authentication
      	unless ($sessionid eq $c->sessionid){
@@ -89,9 +93,7 @@ sub authenticate {
          return;
      }
      
-     $user_obj->roles($self->default_roles);
-     
-$c->log->debug(Dumper($user_obj));     
+     $user_obj->roles($self->default_roles);     
      
      return $user_obj;
 
