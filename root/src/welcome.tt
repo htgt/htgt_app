@@ -30,7 +30,7 @@
 [% IF c.user %]
   <p><a href="[% c.uri_for('/logout') %]">LOGOUT</a></p>
 [% ELSE %]
-  <p><a href="http://t87-dev.internal.sanger.ac.uk:3001/login?goto_on_success=[% c.uri_for('welcome') %]">LOGIN VIA LIMS2 HERE</a></p>
+  <p><a href="http://t87-dev.internal.sanger.ac.uk:3001/login?goto_on_success=[% c.uri_for('welcome') %]&htgtsession=[% c.sessionid %]">LOGIN VIA LIMS2 HERE</a></p>
 [% END %]
 
 [% IF c.check_user_roles("edit") %]

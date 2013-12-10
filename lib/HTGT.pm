@@ -50,11 +50,7 @@ else {
 # with a external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config(
-    name           => 'HTGT',
-    authentication => {
-        default_realm => 'ssso',
-        realms        => {
+=head
         	lims2 => {
         		credential => {
         			class          => 'LIMS2Cookie',
@@ -68,7 +64,23 @@ __PACKAGE__->config(
                     role_field    => 'auth_role_name',
                     ignore_fields_in_find => [ 'id' ]
                 },
-        	},
+        	},  
+=cut
+
+__PACKAGE__->config(
+    name           => 'HTGT',
+    authentication => {
+        default_realm => 'ssso',
+        realms        => {
+        	lims2 => {
+        		credential => {
+        			class          => 'LIMS2Cookie',
+        			username_field => 'auth_user_name',
+        		},
+                store => {
+                    class         => 'LIMS2Store',
+                },
+        	},        	
             ssso => {
                 credential => {
                     class          => 'SangerSSO',
