@@ -13,7 +13,7 @@
             <h1 class="title">[% template.heading or template.title or site.title %]</h1>
             [% content %]
         </div>
-        [% sanger_footer %]
+        [% INSERT sanger/sanger_footer.tt %]
     [% ELSE %]
         [% PROCESS 'generic/header.tt' %]
         [% PROCESS 'sanger/header.tt' %]

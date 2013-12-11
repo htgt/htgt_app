@@ -303,6 +303,7 @@
 
 [%
     menu_text = INCLUDE sanger_menu menu=menu_list;
+    sanger_header = INCLUDE 'sanger/sanger_header.tt';
     sanger_header.replace('<li>INSERT NAV HERE</li>', menu_text);
 -%]
 

@@ -27,12 +27,6 @@
 
 <h3>High Throughput Gene Targeting (htgt2)</h3>
 
-[% IF c.user %]
-  <p><a href="[% c.uri_for('/logout') %]">LOGOUT</a></p>
-[% ELSE %]
-  <p><a href="[% c.uri_for('/login') %]">LOGIN VIA LIMS2 HERE</a></p>
-[% END %]
-
 [% IF c.check_user_roles("edit") %]
     <div id="htgt_search">
         <form id="gene_search_main" method="get" action="[% c.uri_for('/report/gene_search') %]">

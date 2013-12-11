@@ -51,6 +51,14 @@
             [% END %]
           [% END %]
         </p>
+        
+        <div id="lims2_auth">
+            [% IF c.user.id %]
+                <a href="[% c.uri_for('/logout/') %]">LOGOUT</a>
+            [% ELSE %]
+                <a href="[% c.uri_for('/login/') %]">LOGIN</a>
+            [% END %]
+        </div>
     [% END %]
 
     <div id="alerts">

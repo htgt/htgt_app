@@ -1,0 +1,20 @@
+</div><!-- end content -->
+    <div id="collapseFOOT">
+      <div id="contact">
+        <p id="email"><a href="http://www.sanger.ac.uk/feedback/">webmaster@sanger.ac.uk</a></p>
+        <p>Wellcome Trust Genome Campus, Hinxton, Cambridge, CB10 1SA, UK&nbsp;&nbsp;Tel:+44 (0)1223 834244</p>
+      </div>
+      <div id="legal">
+        <p class="right"></p>
+        <p class="left">Genome Research Limited is a charity registered in England with number 1021457</p>
+        <p class="middle"><a href="/help/">Help</a> | <a href="/about/contact/">Contact us</a> | <a href="/legal/">Legal</a> | <a href="/legal/cookiespolicy.html">Cookies policy</a> | <a href="/datasharing/">Data sharing</a> </p>
+      </div>
+    </div> <!-- end of collapseFOOT div -->
+    </div><!-- end main -->
+      <script type="text/javascript">
+        _userv=0;
+        urchinTracker();
+      </script>
+      <script src="/zxtm/piwik2.js"></script>
+  </body>
+</html>

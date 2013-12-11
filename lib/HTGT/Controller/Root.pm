@@ -184,28 +184,28 @@ sub process_sangerweb_addins : Private {
         # SangerWeb hangs when it sees a POST request
         $ENV{REQUEST_METHOD} = 'GET';
 
-        require SangerWeb;
+            
         if ( $c->req->base =~ /eucomm/ || $c->req->params->{style} eq 'EUCOMM' ) {
             $c->stash->{style}       = 'EUCOMM';
             $c->req->params->{style} = 'EUCOMM';
             $ENV{'SERVER_NAME'}      = 'www.eucomm.org';
         }
 
-        my $sanger = SangerWeb->new(
-            {
+        #prepare sanger header having figured out roles....
+        if ( $c->req->params->{style} eq 'EUCOMM' ) {
+        	require SangerWeb;
+            my $sanger = SangerWeb->new(
+                {
                 'author' => 'Sanger Institute Team 87',
                 'title'  => 'Sanger Institute High Throughput Gene Targetting',
                 'banner' => '',
-            }
-        );
+                }
+            );
+            $c->stash->{sanger} = $sanger;
 
-        $c->stash->{sanger} = $sanger;
-
-        #prepare sanger header having figured out roles....
-        if ( $c->req->params->{style} eq 'EUCOMM' ) {
             @{$c->stash}{qw(sanger_header sanger_footer)} = prepare_eucomm_header_footer( $self, $c, $sanger );
         } else {
-            @{$c->stash}{qw(sanger_header sanger_footer)} = prepare_sanger_header_footer( $self, $c, $sanger );
+        	$c->stash->{sanger} = 1;
         }
     };
     if ( $@ ) {
@@ -290,70 +290,6 @@ sub end : Private {
     else {
         $c->forward('HTGT::View::TT');
     }
-}
-
-=head2 prepare_sanger_header_footer
-
-Private method to build the Sanger website header and nav menu
-
-=cut
-
-sub prepare_sanger_header_footer : Private {
-    my ( $self, $c, $sanger ) = @_;
-
-    ## Call the automated header creation
-    my $header = $sanger->header(
-        {
-            'nph'         => 1,
-            'title'       => 'High Throughput Gene Targeting Group Informatics',
-            'description' => 'Team87 - High Throughput Gene Targeting Group part of the EUCOMM and KOMP projects.',
-            'keywords'    => 'EUCOMM, eucomm, KOMP, komp, gene targeting, informatics, sanger institute, sanger',
-            'author'      => 'Team87 Informatics',
-            'navhead'     => 'teams.jpg',
-            'swoosh'      => 'swoosh_mice.png',
-            #'swoosh'      => 'swoosh_cairns.png',
-            'heading'     => '<a href="http://www.sanger.ac.uk/Teams/Team87">Team 87</a>',
-            #'stylesheet'  => $c->uri_for('/static/css/htgt.css'),
-            'navigator2'  => "INSERT NAV HERE", # This is handled in the '/lib/site/sanger_sidebar.tt' template
-            'navigator'   => "Project Overview;http://www.sanger.ac.uk/Teams/Team87/,"
-              . "Team;http://www.sanger.ac.uk/Teams/Team87/team.shtml,"
-              . "Ex Team;http://www.sanger.ac.uk/Teams/Team87/ex.shtml,"
-              . "EUCOMM product enquiries;mailto:info.eucomm\@helmholtz-muenchen.de,"
-              . "KOMP product enquiries;mailto:orders\@komp.org,"
-              . "Website problems;mailto:htgt\@sanger.ac.uk"
-        }
-    );
-
-    # Replace prototype and scriptaculous...
-    my $prototype_uri     = $c->uri_for('/static/javascript/prototype.js');
-    my $scriptaculous_uri = $c->uri_for('/static/javascript/scriptaculous.js');
-    $header =~ s/http:\/\/(js|jsdev)\.sanger\.ac\.uk\/prototype(\.js|)/$prototype_uri/;
-    $header =~ s/http:\/\/(js|jsdev)\.sanger\.ac\.uk\/scriptaculous\/scriptaculous\.js/$scriptaculous_uri/;
-
-    ## Inject our Javascript/CSS needs at the end
-    my $our_scripts =
-        '<style type="text/css" media="screen, projector">
-            /*<![CDATA[*/
-                @import "'.$c->uri_for('/static/css/common.css').'";
-                @import "'.$c->uri_for('/static/css/htgt.css').'";
-            /*]]>*/
-        </style>
-        
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/fastinit.js').'"></script>
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/tablecolumnhide.js').'"></script>
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/tablekit.js').'"></script>
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/platetable.js').'"></script>
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/htgt.js').'"></script>
-        <script type="text/javascript" src="'.$c->uri_for('/static/javascript/validation.js').'"></script>
-        <script type="text/javascript" src="http://js.sanger.ac.uk/sorttable_v2.js" ></script>
-        </head>';
-    $header =~ s/<\/head>/$our_scripts/;
-
-    ## Replace Sanger logout URL with application-specific logout
-    my $logout_uri = $c->uri_for( '/logout' );
-    $header =~ s{\Q<a href="/logout" >\E}{<a href="$logout_uri" >};
-        
-    return ($header, $sanger->footer);
 }
 
 =head2 prepare_eucomm_header_footer
