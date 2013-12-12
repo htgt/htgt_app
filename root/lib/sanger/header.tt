@@ -90,7 +90,7 @@
     [% UNLESS c.user OR style == 'EUCOMM'  -%]
         [% UNLESS do_not_show_login == 'true' %]
             <div class="notloggedin">
-                You are not logged in, please <a href="[% IF style == 'EUCOMM' %]https://www.eucomm.org[% ELSE %]https://enigma.sanger.ac.uk[% END %]/sso/login">login</a> to be able to edit data or create designs.
+                You are not logged in, please <a href="[% IF style == 'EUCOMM' %]https://www.eucomm.org/sso/login[% ELSE %][% c.uri_for('/login/') %][% END %]">login</a> to be able to edit data or create designs.
             </div>
         [% END %]
     [% END %]
