@@ -7,6 +7,7 @@ session:
   expires: 3600
   dbi_dbh: HTGTDB
   dbi_table: sessions
+  cookie_name: htgt2_session
 
 design_home: '/lustre/scratch110/sanger/team87/designs'
 
