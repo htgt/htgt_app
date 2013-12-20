@@ -407,17 +407,25 @@ function set_htgt_paths {
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/htgt_app/lib:$HTGT_MIGRATION_NFS_ROOT/htgt_batch/lib:$HTGT_MIGRATION_NFS_ROOT/perl5/lib/perl5
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/HTGT-QC-Common/lib
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/imits-perl-api/lib
+    export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/LIMS2-REST-Client/lib
+    export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/Eng-Seq-Builder/lib
       
     # And add nfs bin dirs to path
     export PATH=$PATH:$HTGT_MIGRATION_NFS_ROOT/htgt_app/bin:$HTGT_MIGRATION_NFS_ROOT/htgt_batch/bin
     
     # export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_NFS_ROOT/perl5:$HTGT_MIGRATION_ROOT
     
-    # config file locations all depend on HTGT_MIGRATION_ROOT
+    # local config file locations all depend on HTGT_MIGRATION_ROOT
     check_and_set HTGT_DBCONNECT $HTGT_MIGRATION_ROOT/config/dbconnect.cfg
     check_and_set HTGT_QC_CONF $HTGT_MIGRATION_ROOT/config/qc.conf
     check_and_set HTGT_QC_DIST_LOGIC_CONF $HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
     check_and_set LIMS2_REST_CLIENT_CONF $HTGT_MIGRATION_ROOT/config/lims2-rest-client.conf
+    # farm config file locations all depend on HTGT_NFS_MIGRATION_ROOT
+    check_and_set NFS_HTGT_DBCONNECT $HTGT_NFS_MIGRATION_ROOT/config/dbconnect.cfg
+    check_and_set NFS_HTGT_QC_CONF $HTGT_NFS_MIGRATION_ROOT/config/qc.conf
+    check_and_set NFS_HTGT_QC_DIST_LOGIC_CONF $HTGT_NFS_MIGRATION_ROOT/config/qc-dist-logic.conf
+    check_and_set NFS_LIMS2_REST_CLIENT_CONF $HTGT_NFS_MIGRATION_ROOT/config/lims2-rest-client.conf
+    check_and_set_dir NFS_GLOBAL_SYNTHVEC_DATADIR $HTGT_NFS_MIGRATION_ROOT/data/mutant_sequences
     # data file locations all depend on HTGT_MIGRATION_ROOT
     check_and_set_dir GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_ROOT/data/mutant_sequences
     # Oracle setup
