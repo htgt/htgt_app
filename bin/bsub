@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+use IPC::Run ();
+
+my $bsub_command = '/usr/local/lsf/9.1/linux2.6-glibc2.3-x86_64/bin/bsub';
+
+print "\nbsub farm wrapper - DP-S 16 September 2013\n";
+
+print "\n==>\n";
+print "==> The command line to bsub was: \n";
+print( join(' ', @ARGV  ) . "\n"  );
+
+shift @ARGV; # lose the original bsub command
+
+print "==> Rewritten bsub command is: \n";
+unshift(@ARGV, $bsub_command);
+print(join(' ', @ARGV  ) . "\n"  );
+
+local $ENV{HTGT_DBCONNECT} = $ENV{NFS_HTGT_DBCONNECT};
+local $ENV{HTGT_QC_CONF} = $ENV{NFS_HTGT_QC_CONF};
+local $ENV{HTGT_QC_DIST_LOGIC_CONF} = $ENV{NFS_HTGT_QC_DIST_LOGIC_CONF};
+local $ENV{LIMS2_REST_CLIENT_CONF} = $ENV{NFS_LIMS2_REST_CLIENT_CONF};
+local $ENV{GLOBAL_SYNTHVEC_DATADIR} = $ENV{NFS_GLOBAL_SYNTHVEC_DATADIR};
+
+print "Local environment variables set:\n";
+print 'HTGT_DBCONNECT:          ' . $ENV{HTGT_DBCONNECT} . "\n";
+print 'HTGT_QC_CONF:            ' . $ENV{HTGT_QC_CONF} . "\n";
+print 'HTGT_QC_DIST_LOGIC_CONF: ' . $ENV{HTGT_QC_DIST_LOGIC_CONF} . "\n";
+print 'LIMS2_REST_CLIENT_CONF:  ' . $ENV{LIMS2_REST_CLIENT_CONF} . "\n";
+print 'GLOBAL_SYNTHVEC_DATADIR: ' . $ENV{GLOBAL_SYNTHVEC_DATADIR} . "\n";
+print "\n";
+
+print '==> Submitting command to LSF bsub command...' . "\n";
+
+my $output = run_cmd( @ARGV );
+
+print $output;
+
+exit;
+
+sub run_cmd {
+    my ( @cmd ) = @_;
+
+    print ( "\nDEBUG ==> @cmd \n");
+    my $output;
+    
+    my $ret_val =  IPC::Run::run( \@cmd, '<', \undef, '>&', \$output );
+    if ( ! $ret_val) {
+        die "Command failed: $output";
+    }
+
+    return  $output;
+}
+
