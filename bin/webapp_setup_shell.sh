@@ -420,7 +420,8 @@ function set_htgt_paths {
       
     # And add nfs bin dirs to path
     export PATH=$PATH:$HTGT_MIGRATION_NFS_ROOT/htgt_app/bin:$HTGT_MIGRATION_NFS_ROOT/htgt_batch/bin
-    
+    export PATH=$PATH:$HTGT_MIGRATION_NFS_ROOT/Eng-Seq-Builder/bin:$HTGT_MIGRATION_NFS_ROOT/HTGT-QC-Common/bin:$HTGT_MIGRATION_NFS_ROOT/LIMS2-REST-Client/bin
+
     # export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_NFS_ROOT/perl5:$HTGT_MIGRATION_ROOT
     
     # local config file locations all depend on HTGT_MIGRATION_ROOT
