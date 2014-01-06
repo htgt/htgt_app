@@ -308,6 +308,7 @@ For QC Farm submission:
 \$NFS_HTGT_QC_DIST_LOGIC_CONF : $NFS_HTGT_QC_DIST_LOGIC_CONF 
 \$NFS_LIMS2_REST_CLIENT_CONF  : $NFS_LIMS2_REST_CLIENT_CONF  
 \$NFS_GLOBAL_SYNTHVEC_DATADIR : $NFS_GLOBAL_SYNTHVEC_DATADIR 
+\$NFS_ENG_SEQ_BUILDER_CONF    : $NFS_ENG_SEQ_BUILDER_CONF 
 
 \$PERL5LIB :
 `perl -e 'print( join("\n", split(":", $ENV{PERL5LIB}))."\n")'`
@@ -433,6 +434,7 @@ function set_htgt_paths {
     check_and_set NFS_HTGT_QC_DIST_LOGIC_CONF $HTGT_MIGRATION_NFS_ROOT/config/qc-dist-logic.conf
     check_and_set NFS_LIMS2_REST_CLIENT_CONF $HTGT_MIGRATION_NFS_ROOT/config/lims2-rest-client.conf
     check_and_set_dir NFS_GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_NFS_ROOT/data/mutant_sequences
+    check_and_set_dir NFS_ENG_SEQ_BUILDER_CONF $HTGT_MIGRATION_NFS_ROOT/config/eng-seq-builder.yaml
     # data file locations all depend on HTGT_MIGRATION_ROOT
     check_and_set_dir GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_ROOT/data/mutant_sequences
     # Oracle setup

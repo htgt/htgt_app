@@ -312,7 +312,7 @@ sub get_qc_cmd {
     my @cmd = (        
         'qc', $qc_cmd,
         '--debug',
-        '--config', $QC_CONFIG,
+        '--config', $ENV{NFS_HTGT_QC_CONF},
         '--profile', $self->qc_run->profile,
         @args
     );

@@ -9,8 +9,6 @@ print "\n==>\n";
 print "==> The command line to bsub was: \n";
 print( join(' ', @ARGV  ) . "\n"  );
 
-shift @ARGV; # lose the original bsub command
-
 print "==> Rewritten bsub command is: \n";
 unshift(@ARGV, $bsub_command);
 print(join(' ', @ARGV  ) . "\n"  );
@@ -20,6 +18,7 @@ local $ENV{HTGT_QC_CONF} = $ENV{NFS_HTGT_QC_CONF};
 local $ENV{HTGT_QC_DIST_LOGIC_CONF} = $ENV{NFS_HTGT_QC_DIST_LOGIC_CONF};
 local $ENV{LIMS2_REST_CLIENT_CONF} = $ENV{NFS_LIMS2_REST_CLIENT_CONF};
 local $ENV{GLOBAL_SYNTHVEC_DATADIR} = $ENV{NFS_GLOBAL_SYNTHVEC_DATADIR};
+local $ENV{ENG_SEQ_BUILDER_CONF} = $ENV{NFS_ENG_SEQ_BUILDER_CONF};
 
 print "Local environment variables set:\n";
 print 'HTGT_DBCONNECT:          ' . $ENV{HTGT_DBCONNECT} . "\n";
