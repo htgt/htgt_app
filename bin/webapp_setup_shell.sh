@@ -302,6 +302,13 @@ HTGT useful environment variables:
 \$HTGT_WEBAPP_SERVER_OPTIONS  : $HTGT_WEBAPP_SERVER_OPTIONS
 \$HTGT_DEBUG_DEFINITION       : $HTGT_DEBUG_DEFINITION
 
+For QC Farm submission:
+\$NFS_HTGT_DBCONNECT          : $NFS_HTGT_DBCONNECT
+\$NFS_HTGT_QC_CONF            : $NFS_HTGT_QC_CONF
+\$NFS_HTGT_QC_DIST_LOGIC_CONF : $NFS_HTGT_QC_DIST_LOGIC_CONF 
+\$NFS_LIMS2_REST_CLIENT_CONF  : $NFS_LIMS2_REST_CLIENT_CONF  
+\$NFS_GLOBAL_SYNTHVEC_DATADIR : $NFS_GLOBAL_SYNTHVEC_DATADIR 
+
 \$PERL5LIB :
 `perl -e 'print( join("\n", split(":", $ENV{PERL5LIB}))."\n")'`
 
@@ -421,11 +428,11 @@ function set_htgt_paths {
     check_and_set HTGT_QC_DIST_LOGIC_CONF $HTGT_MIGRATION_ROOT/config/qc-dist-logic.conf
     check_and_set LIMS2_REST_CLIENT_CONF $HTGT_MIGRATION_ROOT/config/lims2-rest-client.conf
     # farm config file locations all depend on HTGT_NFS_MIGRATION_ROOT
-    check_and_set NFS_HTGT_DBCONNECT $HTGT_NFS_MIGRATION_ROOT/config/dbconnect.cfg
-    check_and_set NFS_HTGT_QC_CONF $HTGT_NFS_MIGRATION_ROOT/config/qc.conf
-    check_and_set NFS_HTGT_QC_DIST_LOGIC_CONF $HTGT_NFS_MIGRATION_ROOT/config/qc-dist-logic.conf
-    check_and_set NFS_LIMS2_REST_CLIENT_CONF $HTGT_NFS_MIGRATION_ROOT/config/lims2-rest-client.conf
-    check_and_set_dir NFS_GLOBAL_SYNTHVEC_DATADIR $HTGT_NFS_MIGRATION_ROOT/data/mutant_sequences
+    check_and_set NFS_HTGT_DBCONNECT $HTGT_MIGRATION_NFS_ROOT/config/dbconnect.cfg
+    check_and_set NFS_HTGT_QC_CONF $HTGT_MIGRATION_NFS_ROOT/config/qc.conf
+    check_and_set NFS_HTGT_QC_DIST_LOGIC_CONF $HTGT_MIGRATION_NFS_ROOT/config/qc-dist-logic.conf
+    check_and_set NFS_LIMS2_REST_CLIENT_CONF $HTGT_MIGRATION_NFS_ROOT/config/lims2-rest-client.conf
+    check_and_set_dir NFS_GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_NFS_ROOT/data/mutant_sequences
     # data file locations all depend on HTGT_MIGRATION_ROOT
     check_and_set_dir GLOBAL_SYNTHVEC_DATADIR $HTGT_MIGRATION_ROOT/data/mutant_sequences
     # Oracle setup
