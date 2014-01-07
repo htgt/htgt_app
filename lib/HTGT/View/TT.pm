@@ -44,7 +44,8 @@ __PACKAGE__->config(
         'link_design'     => [ \&HTGT::View::TT_utils::link_design,     1 ],
         'link_well'       => [ \&HTGT::View::TT_utils::link_well,       1 ],
         #needs qctest_result_id
-    }
+    },
+    LOAD_PERL => 1,
     #DEBUG=>'undef', #cannot get TT debug to work. Let dj3 know how when you do...
 );
 
