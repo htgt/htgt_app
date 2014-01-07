@@ -28,7 +28,7 @@ sub new {
     my ( $class, $config, $app, $realm ) = @_;
     my %self = ( 
         username_field => $config->{username_field} || 'username',
-        default_roles  => [ qw( read edit ) ],
+        default_roles  => [ qw( read edit eucomm eucomm_edit) ],
     );
     bless( \%self, $class );
 }
