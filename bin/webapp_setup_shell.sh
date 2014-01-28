@@ -271,7 +271,7 @@ commands avaiable:
     show         - show the value of useful HTGT variables
     cpanm        - installs a CPAN module to the correct lib location
 
-    server start|stop|restart      - manages apache and fcgi together
+    service start|stop|restart      - manages apache and fcgi together
      -- or --
     fcgi start|stop|restart        - manages the fcgi server
     apache start|stop|restart      - manages the apache webserver     
