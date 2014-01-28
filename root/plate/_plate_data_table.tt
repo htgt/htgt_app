@@ -9,7 +9,7 @@
         </thead>
         <tbody>
             [% FOR data_entry IN plate.plate_data %]
-                [% IF new_data_id && (new_data_id == data_entry.plate_data_id) %]
+                [% IF new_data_id && new_data_id == data_entry.plate_data_id %]
                     [% SET rowclass = 'new' %]
                 [% ELSE %]
                     [% SET rowclass = '' %]

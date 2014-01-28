@@ -37,7 +37,7 @@
 
 
 <script type="text/javascript" charset="utf-8">
-    [% IF plate.plate_comments.size > 0 %]
+    [% IF plate.plate_comments && plate.plate_comments.size %]
     var comments_table = new TableKit( 'comments[% timestamp %]', {
         [% IF c.check_user_roles("edit") %]
         editAjaxURI: '[% c.uri_for('/plate/update/_plate_comment_update/') %]?plate_id=[% plate.plate_id %]'
