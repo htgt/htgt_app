@@ -2,5 +2,5 @@
 [% CSV.set_columns( report.columns ) -%]
 [% CSV.header %]
 [% WHILE report.has_next -%]
-[% CSV.dump( report.next_record ) %]
+[% CSV.data( report.next_record ) %]
 [% END -%]

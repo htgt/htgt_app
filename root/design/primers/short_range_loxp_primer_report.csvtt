@@ -2,5 +2,5 @@
 [% CSV.set_columns( report.columns ) -%]
 [% CSV.header %]
 [% FOR primer IN report.primers -%]
-[% CSV.dump( primer ) %]
+[% CSV.data( primer ) %]
 [% END -%]

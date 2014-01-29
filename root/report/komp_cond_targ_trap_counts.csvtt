@@ -2,5 +2,5 @@
 [% CSV.set_columns( columns ) -%]
 [% CSV.header %]
 [% FOR row IN rows -%]
-[% CSV.dump( row ) %]
+[% CSV.data( row ) %]
 [% END -%]

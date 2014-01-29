@@ -2,5 +2,5 @@
 [% CSV.set_columns( columns.grep('(?<!_well_id)$') ) -%]
 [% CSV.header %]
 [% FOR row IN rows -%]
-[% CSV.dump( row ) %]
+[% CSV.data( row ) %]
 [% END -%]

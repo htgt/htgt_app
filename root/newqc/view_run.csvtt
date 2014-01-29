@@ -2,6 +2,6 @@
 [% CSV.set_columns( columns ) -%]
 [% CSV.header %]
 [% FOR r IN results -%]
-[% CSV.dump( r ) %]
+[% CSV.data( r ) %]
 [% END -%]
 
