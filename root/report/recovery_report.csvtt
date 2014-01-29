@@ -23,7 +23,7 @@
 
 [% END -%]
 [% FOR value IN rows -%] 
-    [% CSV.data( value ) %] 
+    [% CSV.dump( value ) %] 
 [% END -%]
        
 

@@ -33,5 +33,5 @@
      well.COL = 'nope';
    END;
 -%]
-[% CSV.data( well ) %]
+[% CSV.dump_values( well ) %]
 [% END -%]

@@ -14,7 +14,7 @@
 -%]
 
 [% FOR r IN qc_results -%]
-    [% CSV.data( r ) %] 
+    [% CSV.dump( r ) %] 
 [% END -%]
 
 

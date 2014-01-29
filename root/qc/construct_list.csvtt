@@ -1,5 +1,5 @@
 [% USE CSV -%]
-[% CSV.data( [
+[% CSV.dump( [
 "Clone",
 "384 Name",
 "Expected Design",
@@ -36,5 +36,5 @@ data.push(results.${key}.exp_obs_match);
 data.push(results.${key}.primers);
 data.push(results.${key}.comment);
 -%]
-[% CSV.data(data) %]
+[% CSV.dump(data) %]
 [% END -%]
