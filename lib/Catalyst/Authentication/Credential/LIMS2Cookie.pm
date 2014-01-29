@@ -68,7 +68,7 @@ sub authenticate {
      	($sessionid,$auth_user) = split ":", $text;
      	
      	# Check we have the correct session id for authentication
-     	unless ($sessionid eq $c->sessionid){
+     	unless ($sessionid eq $c->sessionid ? $c->sessionid : 'Junk-session'){
      		$c->log->debug( "Session ID in authentication cookie does not match current session" );
      		return;
      	}
