@@ -1,4 +1,4 @@
-[% IF plate.plate_data.size > 0 %]
+[% IF plate.plate_data && plate.plate_data.size %]
     <table class="resizable editable tksort" id="data[% timestamp %]">
         <thead>
             <tr>
