@@ -35,7 +35,10 @@ case $1 in
     apache)
         htgt_apache $2
         ;;
-    fcgi)
+    deploy)
+        htgt_deploy $2
+        ;;
+     fcgi)
         htgt_fcgi $2
         ;;
     t87perl)
@@ -267,6 +270,7 @@ commands avaiable:
     webapp <port_num> - starts the catalyst server on the specified port, overriding the value
                  specified by \$HTGT_WEBAPP_SERVER_PORT (default $HTGT_WEBAPP_SERVER_PORT)
 
+    deploy <devel | live>
     debug        - starts the catalyst server using 'perl -d '
     show         - show the value of useful HTGT variables
     cpanm        - installs a CPAN module to the correct lib location
@@ -364,10 +368,26 @@ function htgt_fcgi {
 
 function htgt_service {
     if [[ "$1" ]] ; then
-        htgt_apache $1
         htgt_fcgi $1
+        htgt_apache $1
     else
         printf "ERROR: must supply start|stop|restart to htgt fcgi command\n"
+    fi
+}
+
+function htgt_deploy {
+    if [[ $USER == "t87perl" ]] ; then
+        if [[ "$1" == 'live' ]] ; then
+            printf "INFO: deploying production code...\n"
+            APPENV=live $HTGT_MIGRATION_ROOT/bin/deploy.rb
+        elif [[ "$1" == 'devel' ]] ; then
+            printf "INFO: deploying devel code...\n"
+            APPENV=devel $HTGT_MIGRATION_ROOT/bin/deploy.rb
+        else
+            printf "ERROR: unrecongnised deployment mode: $1\n"
+        fi
+    else
+        printf "ERROR: must be user t87perl to deploy\n"
     fi
 }
 
