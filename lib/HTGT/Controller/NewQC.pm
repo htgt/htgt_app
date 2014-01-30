@@ -1423,7 +1423,7 @@ sub _submit_es_cell_qc_update {
         '-e', $error_file,
         '-q', 'normal',
         '-P', 'team87',
-        '-M', '1000000',
+        '-M', '1000',
         '-R', "'select[mem>1000] rusage[mem=1000]'",
         'update-escell-plate-qc.pl',
         '--orig-plate-name=' . $orig_plate_name,
