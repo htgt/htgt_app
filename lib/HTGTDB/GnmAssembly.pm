@@ -1,12 +1,12 @@
 use utf8;
-package HTGTDB::GnmExon;
+package HTGTDB::GnmAssembly;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
 =head1 NAME
 
-HTGTDB::GnmExon
+HTGTDB::GnmAssembly
 
 =cut
 
@@ -15,11 +15,11 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 TABLE: C<GNM_EXON>
+=head1 TABLE: C<GNM_ASSEMBLY>
 
 =cut
 
-__PACKAGE__->table("mig.GNM_EXON");
+__PACKAGE__->table("mig.GNM_ASSEMBLY");
 
 =head1 ACCESSORS
 
@@ -29,33 +29,25 @@ __PACKAGE__->table("mig.GNM_EXON");
   is_auto_increment: 1
   is_nullable: 0
   original: {data_type => "number",size => [38,0]}
-  sequence: 'gnm_exon_seq'
+  sequence: 'gnm_assembly_seq'
 
-=head2 locus_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-  original: {data_type => "number",size => [38,0]}
-
-=head2 transcript_id
-
-  data_type: 'integer'
-  is_foreign_key: 1
-  is_nullable: 1
-  original: {data_type => "number",size => [38,0]}
-
-=head2 phase
+=head2 ncbi_taxon
 
   data_type: 'integer'
   is_nullable: 1
   original: {data_type => "number",size => [38,0]}
 
-=head2 primary_name
+=head2 species_name
 
   data_type: 'varchar2'
   is_nullable: 1
-  size: 4000
+  size: 128
+
+=head2 name
+
+  data_type: 'varchar2'
+  is_nullable: 1
+  size: 2000
 
 =head2 check_number
 
@@ -83,10 +75,9 @@ __PACKAGE__->table("mig.GNM_EXON");
 
 =head2 creator_id
 
-  data_type: 'numeric'
+  data_type: 'integer'
   is_nullable: 1
-  original: {data_type => "number"}
-  size: 126
+  original: {data_type => "number",size => [38,0]}
 
 =cut
 
@@ -97,30 +88,18 @@ __PACKAGE__->add_columns(
     is_auto_increment => 1,
     is_nullable       => 0,
     original          => { data_type => "number", size => [38, 0] },
-    sequence          => "gnm_exon_seq",
+    sequence          => "gnm_assembly_seq",
   },
-  "locus_id",
-  {
-    data_type      => "integer",
-    is_foreign_key => 1,
-    is_nullable    => 1,
-    original       => { data_type => "number", size => [38, 0] },
-  },
-  "transcript_id",
-  {
-    data_type      => "integer",
-    is_foreign_key => 1,
-    is_nullable    => 1,
-    original       => { data_type => "number", size => [38, 0] },
-  },
-  "phase",
+  "ncbi_taxon",
   {
     data_type   => "integer",
     is_nullable => 1,
     original    => { data_type => "number", size => [38, 0] },
   },
-  "primary_name",
-  { data_type => "varchar2", is_nullable => 1, size => 4000 },
+  "species_name",
+  { data_type => "varchar2", is_nullable => 1, size => 128 },
+  "name",
+  { data_type => "varchar2", is_nullable => 1, size => 2000 },
   "check_number",
   {
     data_type   => "integer",
@@ -143,10 +122,9 @@ __PACKAGE__->add_columns(
   },
   "creator_id",
   {
-    data_type => "numeric",
+    data_type   => "integer",
     is_nullable => 1,
-    original => { data_type => "number" },
-    size => 126,
+    original    => { data_type => "number", size => [38, 0] },
   },
 );
 
@@ -164,49 +142,24 @@ __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
 
-=head2 locus
+=head2 gnm_genes_build
 
-Type: belongs_to
+Type: has_many
 
-Related object: L<HTGTDB::GnmLocus>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "locus",
-  "HTGTDB::GnmLocus",
-  { id => "locus_id" },
-  {
-    is_deferrable => 0,
-    join_type     => "LEFT",
-    on_delete     => "NO ACTION",
-    on_update     => "NO ACTION",
-  },
-);
-
-=head2 transcript
-
-Type: belongs_to
-
-Related object: L<HTGTDB::GnmTranscript>
+Related object: L<HTGTDB::GnmGeneBuild>
 
 =cut
 
-__PACKAGE__->belongs_to(
-  "transcript",
-  "HTGTDB::GnmTranscript",
-  { id => "transcript_id" },
-  {
-    is_deferrable => 0,
-    join_type     => "LEFT",
-    on_delete     => "NO ACTION",
-    on_update     => "NO ACTION",
-  },
+__PACKAGE__->has_many(
+  "gnm_genes_build",
+  "HTGTDB::GnmGeneBuild",
+  { "foreign.assembly_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2013-10-04 15:28:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:DatKwODsGToG/Tq5mnbJcw
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TlXXmtnR54dO9pZbpkibrg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
