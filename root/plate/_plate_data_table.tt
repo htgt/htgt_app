@@ -1,4 +1,4 @@
-[% IF plate.plate_data.size > 0 %]
+[% IF plate.plate_data && plate.plate_data.size %]
     <table class="resizable editable tksort" id="data[% timestamp %]">
         <thead>
             <tr>
@@ -9,7 +9,7 @@
         </thead>
         <tbody>
             [% FOR data_entry IN plate.plate_data %]
-                [% IF new_data_id && (new_data_id == data_entry.plate_data_id) %]
+                [% IF new_data_id && new_data_id == data_entry.plate_data_id %]
                     [% SET rowclass = 'new' %]
                 [% ELSE %]
                     [% SET rowclass = '' %]

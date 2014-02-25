@@ -185,14 +185,15 @@ sub process_sangerweb_addins : Private {
         $ENV{REQUEST_METHOD} = 'GET';
 
             
-        if ( $c->req->base =~ /eucomm/ || $c->req->params->{style} eq 'EUCOMM' ) {
+        if ( $c->req && $c->req->base && $c->req->base =~ /eucomm/
+            || $c->req && $c->req->params && $c->req->params->{style} && $c->req->params->{style} eq 'EUCOMM' ) {
             $c->stash->{style}       = 'EUCOMM';
             $c->req->params->{style} = 'EUCOMM';
             $ENV{'SERVER_NAME'}      = 'www.eucomm.org';
         }
 
         #prepare sanger header having figured out roles....
-        if ( $c->req->params->{style} eq 'EUCOMM' ) {
+        if ( $c->req && $c->req->params && $c->req->params->{style} && $c->req->params->{style} eq 'EUCOMM' ) {
         	require SangerWeb;
             my $sanger = SangerWeb->new(
                 {
@@ -358,7 +359,7 @@ sub messageToUsers : Private {
 			/
     );
 
-    if ( $c->req->params->{style} eq 'EUCOMM' ) {
+    if ( $c->req->params->{style} && $c->req->params->{style} eq 'EUCOMM' ) {
         $sql_query .= 'AND HTGT_STATUS_MSGS.is_eucomm is not NULL';
     }
 

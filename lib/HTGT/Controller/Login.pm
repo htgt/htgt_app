@@ -36,6 +36,9 @@ sub index :Path :Args(0) {
     
     my $sessionid = $c->sessionid;
     
+    # Store the lims2 change password link for use later
+    $c->session->{change_password_url} = $conf->param("change_password_url");
+    
     $c->res->redirect($url."?htgtsession=".$sessionid."&goto_on_success=".$c->uri_for('/welcome'));
     return;
 }

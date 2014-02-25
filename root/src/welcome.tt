@@ -25,6 +25,10 @@
 </style>
 
 
+[% IF c.user.id %]
+    <a href="[% c.session.change_password_url %]" target="_blank">CHANGE PASSWORD</a>
+[% END %]
+
 <h3>High Throughput Gene Targeting (htgt2)</h3>
 
 [% IF c.check_user_roles("edit") %]
