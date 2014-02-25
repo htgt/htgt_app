@@ -379,10 +379,10 @@ function htgt_deploy {
     if [[ $USER == "t87perl" ]] ; then
         if [[ "$1" == 'live' ]] ; then
             printf "INFO: deploying production code...\n"
-            APPENV=live $HTGT_MIGRATION_ROOT/bin/deploy.rb
+            APPENV=live $HTGT_MIGRATION_ROOT/bin/deploy.sh
         elif [[ "$1" == 'devel' ]] ; then
             printf "INFO: deploying devel code...\n"
-            APPENV=devel $HTGT_MIGRATION_ROOT/bin/deploy.rb
+            APPENV=devel $HTGT_MIGRATION_ROOT/bin/deploy.sh
         else
             printf "ERROR: unrecongnised deployment mode: $1\n"
         fi
