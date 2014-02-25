@@ -27,23 +27,31 @@ sub design_only {
     my ( $self, $c, $design_id )    = @_;
 
     my $dirname = sprintf( 'd_%d.%d.%d.%d', $design_id, $$, Time::HiRes::gettimeofday() );
-    my $design_home = dir( $c->config->{design_home} )->subdir( $dirname );    
+    my $design_home = dir( $c->config->{design_home} )->subdir( $dirname );
     
-    my @run_design_command = ( 'bsub',
-                               '-o' => "$design_home/bjob_output",
-                               '-e' => "$design_home/bjob_error",
-                               '-q' => 'normal',
-                               '-R' => "'select[mem>1000] rusage[mem=1000]'",
-                               '-M' => '1000000',
-                               'create_design.pl',
-                               '-design_home' => $design_home,
-                               '-design_id'   => $design_id
+    mkdir($design_home, 0775) or die "Could not create design directory $design_home - $!";
+
+    # create_design.pl command is piped to ssh command so that it is executed
+    # after the exec of the htgt-env.pl script to create the environment
+    my @run_design_command = ( "echo \"create_design.pl -design_home $design_home -design_id $design_id"
+                               ,"1> $design_home/bjob_output 2> $design_home/bjob_error\"",
+                               '|',
+                               'ssh',
+                               'htgt-web',
+                               'exec',
+                               '/software/bin/perl',
+                               '-I/software/team87/brave_new_world/lib/perl5',
+                               '-I/software/team87/brave_new_world/lib/perl5/x86_64-linux-thread-multi',
+                               '/software/team87/brave_new_world/bin/htgt-env.pl',
+                               '--environment',
+                               $ENV{HTGT_ENV}                            
                            );
 
-    $c->log->info( "submiting command to farm: ". join( q{ }, @run_design_command ) );
+    my $command = join " ", @run_design_command;
+    $c->log->info( "submiting ssh command: ". $command );
 
-    system( @run_design_command ) == 0
-        or $c->log->error( "Failed to run bsub command: $! (exit $?)" );
+    system( $command ) == 0
+        or $c->log->error( "Failed to run command: $! (exit $?)" );
 }
 
 =head1 AUTHOR
