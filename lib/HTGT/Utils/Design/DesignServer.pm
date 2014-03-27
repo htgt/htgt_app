@@ -34,7 +34,7 @@ sub design_only {
     # create_design.pl command is piped to ssh command so that it is executed
     # after the exec of the htgt-env.pl script to create the environment
     my @run_design_command = ( "echo \"create_design.pl -design_home $design_home -design_id $design_id"
-                               ,"1> $design_home/bjob_output 2> $design_home/bjob_error\"",
+                               ,"1> $design_home/bjob_output 2> $design_home/bjob_error &\"",
                                '|',
                                'ssh',
                                'htgt-web',
