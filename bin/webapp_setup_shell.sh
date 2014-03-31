@@ -191,7 +191,7 @@ function devel_or_live {
 function production_htgt {
     export SAVED_HTGT_DEV_ROOT="$HTGT_DEV_ROOT"
     unset HTGT_DEV_ROOT
-    printf "==> saved your HTGT_DEV_ROOT setting, use 'devel_htgt' command to switch back.\n"
+    printf "==> saved your HTGT_DEV_ROOT setting, use 'htgt devel' command to switch back.\n"
     devel_or_live
 }
 
@@ -384,7 +384,7 @@ function htgt_deploy {
             printf "INFO: deploying devel code...\n"
             APPENV=devel $HTGT_MIGRATION_ROOT/bin/deploy.rb
         else
-            printf "ERROR: unrecongnised deployment mode: $1\n"
+            printf "ERROR: unrecognised deployment mode: $1\n"
         fi
     else
         printf "ERROR: must be user t87perl to deploy\n"
