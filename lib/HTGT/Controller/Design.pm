@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use DBI;
 use Cwd; #Yes, I use this - you know who 'I' am
 use File::Temp qw/ tempdir /;
+use HTGT::QC::Util::Which;
 
 =head1 NAME
 
@@ -197,8 +198,12 @@ sub insert_short_range_primers : Local {
         #Gets same result as released version
         #`cp /software/team87/apache2/htdocs/htgt/script/short_range_primers/insertion_genotyping_vvi.pl $tmpdir/insertion_genotyping_vvi.pl`;
         #WHY WHY WHY WHY WHY DOES THIS NOT WORK?
-        `cp /software/team87/apache2/htdocs/htgt/script/short_range_primers/insertion_genotyping_vvi.pl $tmpdir/insertion_genotyping_vvi.pl`;
-        
+
+        my $script_name = 'short_range_primers_insertion_genotyping_vvi.pl';
+        my $script_path = which($script_name) or die "Cannot find script $script_name";
+        $c->log->debug("Copying $script_path to $tmpdir");
+        `cp $script_path $tmpdir/$script_name`;
+
         #This produces some odd results - repeats.
         #`cp /software/team87/apache2/htdocs/dk3/script/short_range_primers/vvi.pl $tmpdir/insertion_genotyping_vvi.pl`;
         
@@ -206,11 +211,11 @@ sub insert_short_range_primers : Local {
 
         if ( $arm_choice =~ /3-arm/ ) { 
             print TMP ">tmp 1\n$fixed_seq\n[\n]\n$var_seq\n";
-            system("./insertion_genotyping_vvi.pl seq $masking 3 $meltingTemp $amplicon_size $five_shim $three_shim ") ;
+            system("./$script_name seq $masking 3 $meltingTemp $amplicon_size $five_shim $three_shim ") ;
         }
         else { 
             print TMP ">tmp 1\n$var_seq\n[\n]\n$fixed_seq\n";
-            system("./insertion_genotyping_vvi.pl seq $masking 5 $meltingTemp $amplicon_size $five_shim $three_shim ") ;
+            system("./$script_name seq $masking 5 $meltingTemp $amplicon_size $five_shim $three_shim ") ;
         }
                            
         
