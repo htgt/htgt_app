@@ -123,6 +123,36 @@ sub request {
         $meta->add_method(
             "find_$key" => sub {
                 my ( $self, $params ) = @_;
+                return $self->request( 'GET', sprintf( 'targ_rep/%ss.json', $key ), $params );
+            }
+        );
+
+        $meta->add_method(
+            "update_$key" => sub {
+                my ( $self, $id, $params ) = @_;
+                return $self->request( 'PUT', sprintf( 'targ_rep/%ss/%d.json', $key, $id ), { "targ_rep_$key" => $params } );
+            }
+        );
+
+        $meta->add_method(
+            "create_$key" => sub {
+                my ( $self, $params ) = @_;
+                return $self->request( 'POST', sprintf( 'targ_rep/%ss.json', $key ), { "targ_rep_$key" => $params } );
+            }
+        );
+
+        $meta->add_method(
+            "delete_$key" => sub {
+                my ( $self, $id ) = @_;
+                return $self->request( 'DELETE', sprintf( 'targ_rep/%ss/%d.json', "targ_rep_$key", $id ) );
+            }
+        );
+    }
+
+    foreach my $key ( qw( mi_plan ) ) {
+        $meta->add_method(
+            "find_$key" => sub {
+                my ( $self, $params ) = @_;
                 return $self->request( 'GET', sprintf( '%ss.json', $key ), $params );
             }
         );
@@ -130,21 +160,21 @@ sub request {
         $meta->add_method(
             "update_$key" => sub {
                 my ( $self, $id, $params ) = @_;
-                return $self->request( 'PUT', sprintf( '%ss/%d.json', $key, $id ), { "targ_rep_$key" => $params } );
+                return $self->request( 'PUT', sprintf( '%ss/%d.json', $key, $id ), { "$key" => $params } );
             }
         );
 
         $meta->add_method(
             "create_$key" => sub {
                 my ( $self, $params ) = @_;
-                return $self->request( 'POST', sprintf( '%ss.json', $key ), { "targ_rep_$key" => $params } );
+                return $self->request( 'POST', sprintf( '%ss.json', $key ), { "$key" => $params } );
             }
         );
 
         $meta->add_method(
             "delete_$key" => sub {
                 my ( $self, $id ) = @_;
-                return $self->request( 'DELETE', sprintf( '%ss/%d.json', "targ_rep_$key", $id ) );
+                return $self->request( 'DELETE', sprintf( '%ss/%d.json', "$key", $id ) );
             }
         );
     }
