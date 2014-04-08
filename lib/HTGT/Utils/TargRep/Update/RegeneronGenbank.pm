@@ -11,6 +11,7 @@ my %REGENERON_CASSETTES = (
     'TM-ZEN-UB1' => 'TM_Zen_Ub1',
     'ZEN-UB1.GB' => 'Zen_Ub1',
     'ZEN-Ub1'    => 'Zen_Ub1',
+    'TM-ZEN-Ub1' => 'TM_Zen_Ub1',
 );
 
 with qw( MooseX::Log::Log4perl );

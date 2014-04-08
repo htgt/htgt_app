@@ -81,11 +81,11 @@
             text    = 'Browse For Designs',
             url     = c.uri_for('/design/designlist/list_designs')
         },
-        #{
-        #    text    = 'Custom Design Tool',
-        #    url     = c.uri_for('/design/designedit/show_create'),
-        #    disable = 1
-        #},
+        {
+            text    = 'Custom Design Tool',
+            url     = c.uri_for('/design/designedit/show_create'),
+            disable = 1
+        },
         {
             text    = 'Allocate Design to Plate',
             url     = c.uri_for('/design/design/list'),
