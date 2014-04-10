@@ -4,7 +4,7 @@ name: HTGT
 using_frontend_proxy: 1
 
 session:
-  expires: 3600
+  expires: 36000
   dbi_dbh: HTGTDB
   dbi_table: sessions
   cookie_name: htgt2_session
