@@ -1026,7 +1026,7 @@ sub get_projects {
     my $projects_rs = $self->htgt_schema->resultset('Project')->search_rs(
         $search_criteria,
         {
-            join     => [ 'new_ws_entries' ],
+            join     => [ 'new_ws_entries','mgi_gene' ],
             prefetch => [ 'design' ],
             order_by => [ qw( me.mgi_gene_id ) ],
         }
