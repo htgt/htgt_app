@@ -197,9 +197,9 @@ sub _get_transcript_id_from_allele {
 
     my $ensembl_gene_id = $allele->gene->ensembl_ids;
     unless ( $ensembl_gene_id ) {
-        WARN('No ensembl gene id found for allele ' . $allele->id . ' in Imits, checking solr index');
-       
-        # TODO: could now try using mgi_id and solr index?
+       WARN('No ensembl gene id found for allele ' . $allele->id . ' in Imits, unable to identify a transcript');
+       return;
+       # TODO: could now try using mgi_id and solr index?
     }
 
     # check for multiple genes
