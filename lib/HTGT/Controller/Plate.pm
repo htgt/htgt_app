@@ -838,12 +838,13 @@ sub fetch_wells : Private {
     my %total_epd_dist_count_for_gene;
     my %sp_tm_for_gene;
     
-    my $regeneron_status = eval {
-        HTGT::Utils::RegeneronGeneStatus->new( $c->model( 'IDCCMart' ) );
-    };
-    if ( $@ ) {
-        $c->log->error( "failed to create HTGT::Utils::RegeneronGeneStatus: $@" );
-    }
+    my $regeneron_status;
+    #my $regeneron_status = eval {
+        #HTGT::Utils::RegeneronGeneStatus->new( $c->model( 'IDCCMart' ) );
+    #};
+    #if ( $@ ) {
+        #$c->log->error( "failed to create HTGT::Utils::RegeneronGeneStatus: $@" );
+    #}
 
     if ( defined $plate ) {
         if ( defined $rsattr ) {
