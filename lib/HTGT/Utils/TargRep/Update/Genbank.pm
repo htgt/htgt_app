@@ -165,6 +165,7 @@ sub get_regeneron_seq {
 
     my %eng_seq_params;
     $eng_seq_params{configfile} = $params{eng_seq_config} if $params{eng_seq_config};
+
     $eng_seq_params{append_seq_length} = 10000;
     my $eng_seq = get_eng_seq_builder( \%eng_seq_params );
 
@@ -180,8 +181,49 @@ sub get_regeneron_seq {
         display_id      => $params{gene_id} . '#' . $params{allele}->id,
     );
 
+    # attempt to get a transcript id
+    my $reg_transcript_id = _get_transcript_id_from_allele( $params{ 'allele' } );
+    if ( $reg_transcript_id ) {
+        $genbank_params{ 'transcript' } = $reg_transcript_id;
+    }
+
     my $allele_seq = $eng_seq->allele_seq( %genbank_params );
+
     return _stringify_bioseq($allele_seq);
+}
+
+sub _get_transcript_id_from_allele {
+    my $allele = shift;
+
+    my $ensembl_gene_id = $allele->gene->ensembl_ids;
+    unless ( $ensembl_gene_id ) {
+       WARN('No ensembl gene id found for allele ' . $allele->id . ' in Imits, unable to identify a transcript');
+       return;
+       # TODO: could now try using mgi_id and solr index?
+    }
+
+    # check for multiple genes
+    if ( index( $ensembl_gene_id, ',' ) > 0 ) {
+        WARN('Multiple ensembl gene ids found for allele ' . $allele->id . ', unable to identify a transcript');
+        return;
+    }
+
+    my $gene = HTGT::Utils::DesignFinder::Gene->new( 'ensembl_gene_id' => $ensembl_gene_id );
+
+    my $transcript;
+    try {
+        $transcript = $gene->template_transcript;
+    }
+    catch {
+        die $_ unless $_ =~ m/Failed to find a template transcript/;
+        $transcript = ( $gene->all_transcripts )[0];
+    };
+
+    unless ($transcript) {
+        WARN('Unable to find gene transcript for allele ' . $allele->id);
+        return;
+    }
+    return $transcript->stable_id;
 }
 
 sub _create_sequences {
@@ -286,6 +328,7 @@ sub _get_design_projects {
 
 sub _get_transcript_id {
     my $design = shift;
+
     my $ensembl_gene_id = $design->info->mgi_gene->ensembl_gene_id;
     unless ( $ensembl_gene_id ) {
         WARN('No ensembl gene id, unable to find transcript');

@@ -109,6 +109,70 @@ __PACKAGE__->table("genes");
   data_type: 'timestamp'
   is_nullable: 1
 
+=head2 chr
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 2
+
+=head2 start_coordinates
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 end_coordinates
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 strand_name
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 vega_ids
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 ncbi_ids
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 ensembl_ids
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 ccds_ids
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 marker_type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 feature_type
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 synonyms
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -145,6 +209,28 @@ __PACKAGE__->add_columns(
   { data_type => "timestamp", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "chr",
+  { data_type => "varchar", is_nullable => 1, size => 2 },
+  "start_coordinates",
+  { data_type => "integer", is_nullable => 1 },
+  "end_coordinates",
+  { data_type => "integer", is_nullable => 1 },
+  "strand_name",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "vega_ids",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "ncbi_ids",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "ensembl_ids",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "ccds_ids",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "marker_type",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "feature_type",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "synonyms",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
 =head1 PRIMARY KEY
@@ -202,21 +288,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 targ_rep_allele
-
-Type: has_many
-
-Related object: L<Tarmits::Schema::Result::TargRepAllele>
-
-=cut
-
-__PACKAGE__->has_many(
-  "targ_rep_allele",
-  "Tarmits::Schema::Result::TargRepAllele",
-  { "foreign.gene_id" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 notifications
 
 Type: has_many
@@ -233,9 +304,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VjFmYbr/NHH/Ddgi2q7lIg
-
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-05-08 13:08:11
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mw+aIeI5sKjSzPcdDW+q3A
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;
