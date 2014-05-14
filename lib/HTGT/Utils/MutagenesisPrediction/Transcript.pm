@@ -108,7 +108,7 @@ sub _build_orfs {
         # Now translate this ORF
         my $s = $seq->trunc( $start, $seq->length );
         $s->verbose(-1); # suppress warnings
-        my $t = $s->translate( -orf => 1 );
+        my $t = $self->translate_first_reading_frame( $s );
         my $orf = HTGT::Utils::MutagenesisPrediction::ORF->new(
             cdna_coding_start => $start,
             cdna_coding_end   => $start + ( $t->length * 3 ) - 1,
@@ -121,6 +121,28 @@ sub _build_orfs {
     }
 
     return \@orfs;
+}
+
+=head translate_first_reading_frame
+
+Translate the first reading frame of the sequence, sequence will always begin with a start codon.
+We translate the sequence, identify the stop position and create a Bio::Seq object for the
+amino acid sequence from the start to the stop codon.
+
+NOTE: We do this to replicate the old behaviour of the translate( -orf => 1 ) method on Bio::PrimarySeqI.
+Newer versions of BioPerl do not always translate the sequence from the first reading frame.
+
+=cut
+sub translate_first_reading_frame {
+    my ( $self, $seq ) = @_;
+
+    # defaults to frame 0, which is what we want as the start codon is the
+    # first 3 bases of the sequence
+    my $translation = $seq->translate();
+
+    my $protein = $translation->seq;
+    my $stop = index( $protein, '*' );
+    return Bio::Seq->new( -alphabet => 'protein', seq => substr( $protein, 0, $stop + 1 ) );
 }
 
 sub is_nmd {
