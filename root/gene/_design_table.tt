@@ -9,17 +9,14 @@
         <th class="sortfirstdesc noedit">Design</th>
         <th class="noedit">Start Exon</th>
         <th class="noedit">End Exon</th>
-        [% IF c.check_user_roles("design") %]
             <th class="noedit">Status</th>
             <th id="fulfills">Fulfills Request</th>
             <th class="noedit">Last Comment</th>
             <th class="noedit">Created By</th>
-        [% END %]
       </tr>
     </thead>
     <tbody>
       [% FOREACH design_info IN design_info_list %]
-        [% IF c.check_user_roles("design") %]
             <tr id="[% design_info.design_id %]">
               <td class="noedit"><a href="[% c.uri_for('/design/designedit/refresh_design')%]?design_id=[% design_info.design_id %]" target="_blank">[% design_info.design_id %]</a></td>
               <td class="noedit">[% design_info.start_exon %]</td>
@@ -32,17 +29,6 @@
                  <td class="nocol"><a id="run_design_id_[% design_info.design_id %]" class="button cog_go run_design">Run Design</a></td>
               [% END %]
             </tr>
-        [% ELSE %]
-            [% IF design_info.design_instance == 1 %]
-                [% IF design_info.fulfills == 1 %]
-                    <tr>
-                      <td><a href=[% c.uri_for('/design/designedit/refresh_design')%]?design_id=[% design_info.design_id %] target="_blank">[% design_info.design_id %]</a></td>
-                      <td>[% design_info.start_exon %]</td>
-                      <td>[% design_info.end_exon %]</td>
-                    </tr>
-                [% END %]
-            [% END %]
-        [% END %]
       [% END %]
     </tbody>
   </table>
@@ -53,11 +39,9 @@
         <th class="sortfirstdesc noedit">Design</th>
         <th class="noedit">Start Exon</th>
         <th class="noedit">End Exon</th>
-        [% IF c.check_user_roles("design") %]
             <th class="noedit">Status</th>
             <th id="fulfills" class="edit">Fulfills Request</th>
             <th class="noedit">Last Comment</th>
-        [% END %]
       </tr>
     </thead>
     <tbody>

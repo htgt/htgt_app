@@ -614,13 +614,11 @@ sub project_gene_report : Local {
     HTGT::Controller::Report::Project::get_project_status_info( $self, $c );
 
     ##
-    ## Get the gene comments etc if the user has the 'design' privilege
+    ## Get the gene comments and the designs linked to the gene 
     ##
 
-    if ($c->check_user_roles("design")) {   
-        HTGT::Controller::Gene::get_gene_comments( $self, $c );
-        HTGT::Controller::Gene::get_gene_designs( $self, $c );
-    } 
+    HTGT::Controller::Gene::get_gene_comments( $self, $c );
+    HTGT::Controller::Gene::get_gene_designs( $self, $c );
 
     ##
     ## Get the constructs (or designs) defined by the project

@@ -183,7 +183,6 @@
   //
 -->
 
-[% IF ( (c.check_user_roles("design")) OR (c.check_user_roles("edit")) )  %]
     <div class="page-section toggleable">
         [% IF style == 'EUCOMM' -%]<h3 class="toggle-control">Design Tools</h3>
         [% ELSE -%]<h5 class="toggle-control">Design Tools</h5>
@@ -211,7 +210,6 @@
             </fieldset>
         </div>
     </div>
-[% END %]
 
 <!--
     //
