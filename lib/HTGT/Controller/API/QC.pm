@@ -24,6 +24,12 @@ sub submit_lims2_qc :Path('/api/submit_lims2_qc') {
         $self->_validate_params($qc_data);
 
         my $config = HTGT::QC::Config->new( { is_lims2 => 1 } );
+        
+        ## LIMS2 does not yet submit prescreen QC runs ##
+        if ( $qc_data->{ run_type } eq "prescreen" ) {
+            #prescreen goes to a diff directory, so notify our config instance that we're prescreen.
+            $config->is_prescreen(1);
+        }
 
         #this is pointless as plate_map defaults to {} in run...
         $qc_data->{ plate_map } ||= {};
@@ -33,16 +39,15 @@ sub submit_lims2_qc :Path('/api/submit_lims2_qc') {
             profile             => $qc_data->{ profile },
             template_plate      => $qc_data->{ template_plate },
             sequencing_projects => $qc_data->{ sequencing_projects },
-            run_type            => 'vector',
+            run_type            => $qc_data->{ run_type },
             persist             => 1,
             plate_map           => $qc_data->{ plate_map },
             created_by          => $qc_data->{ created_by },
             species             => $qc_data->{ species },
         );
 
-        #this only supports vector for the time being.
-
-        my $submit_qc_farm_job = HTGT::QC::Util::SubmitQCFarmJob::Vector->new( { qc_run => $run } );
+        my $submit_class = "HTGT::QC::Util::SubmitQCFarmJob::".$qc_data->{run_type_class};
+        my $submit_qc_farm_job = $submit_class->new( { qc_run => $run } );
         $submit_qc_farm_job->run_qc_on_farm();
         my $run_id = $run->id or die "No QC run ID generated"; #this is pretty pointless; we always get one.
         
@@ -168,6 +173,22 @@ sub _validate_params {
     #if we are provided a plate_map (it's optional) make sure its a hash
     die "The plate_map must be a HashRef\n"
         if $params->{ plate_map } and ref $params->{ plate_map } ne 'HASH';
+
+
+    # Copied from HTGT::Controller::NewQC _submit_qc_job 
+    # would be better in shared Util module 
+    # if you add a new run type here make sure to modify the enum in Run.pm
+    # this just maps a run type to the correct class
+    my %run_types = (
+        es_cell   => "ESCell",
+        prescreen => "ESCellPreScreen",
+        vector    => "Vector",
+    );
+
+    die "$params->{ run_type } is not a valid run type."
+        unless exists $run_types{ $params->{ run_type } };
+
+    $params->{run_type_class} = $run_types{ $params->{ run_type } };
 
     return $params;
 }
