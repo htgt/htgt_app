@@ -37,7 +37,7 @@
     </p>
     [% END %]
     
-    [% IF c.check_user_roles("design") || c.check_user_roles("edit") %]
+    [% IF c.check_user_roles("edit") || c.check_user_roles("edit") %]
         <script type="text/javascript">
             new Ajax.InPlaceCollectionEditor(
                'project_status', 

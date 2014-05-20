@@ -327,7 +327,7 @@
                 (entry.edit  AND c.check_user_roles("edit")) OR
                 (entry.eucomm AND c.check_user_roles("eucomm")) OR
                 (entry.eucomm_edit AND c.check_user_roles("eucomm_edit")) OR
-                (entry.design AND c.check_user_roles("design"))
+                (entry.design AND c.check_user_roles("edit"))
 	      ); display = 1; END; -%]
         [% END -%]
         [% IF display -%]

@@ -7,7 +7,7 @@
          <th id="design_comment">Comment Detail</th>
          <th id="created_user" class="noedit">Edited User</th>
          <th id="created_date" class="sortfirstasc noedit date-oracle">Edited Date</th>
-         [% IF c.check_user_roles("design") %]
+         [% IF c.check_user_roles("edit") %]
             <th id="visibility">Visibility</th>
          [% END %]
          <th class="noedit nosort nocol"></th>
@@ -21,7 +21,7 @@
             [% SET rowclass = ''%]         
           [% END %]
           
-         [% IF c.check_user_roles("design") %] 
+         [% IF c.check_user_roles("edit") %] 
             <tr class="[% rowclass %]" id="[% comment.design_comment_id %]">
               <td class="edit">[% comment.category.category_name %]</td>
               <td class="edit" id="design_comment_field">[% comment.design_comment %]</td>
@@ -48,7 +48,7 @@
      </tbody>
    </table>
 [% ELSE %]            
-   [% IF c.check_user_roles("design") %]
+   [% IF c.check_user_roles("edit") %]
       <table>
         <thead>
           <tr>
@@ -68,14 +68,14 @@
    [% END %]
 [% END %]
    
-[% IF c.check_user_roles("design") %]
+[% IF c.check_user_roles("edit") %]
     <a href="#" class="add" onClick="addComment([% design_info.design_id %]); return false;">add a new comment</a>
 [% END %]
    
  <script type="text/javascript" charset="utf-8">
     [% IF design_info.design_comments.size > 0 %]
     var comments_table = new TableKit( 'comments[% timestamp %]', {
-        [% IF c.check_user_roles("design") %]
+        [% IF c.check_user_roles("edit") %]
         editAjaxURI: '[% c.uri_for('/design/designedit/_design_comment_update/') %]?design_id=[% design_info.design_comments.design_id %]'
         [% ELSE %]
         editable: false
@@ -83,7 +83,7 @@
     });
     [% END %]
 
-    [% IF c.check_user_roles("design") %]
+    [% IF c.check_user_roles("edit") %]
     // Function to add a comment to the table and refresh the table
     function addComment(design_id) {
         var timestamp = new Date().getTime();

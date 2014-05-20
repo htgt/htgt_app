@@ -2,7 +2,7 @@
 
    <thead>
      <tr >
-       <th [% IF c.check_user_roles("design") %] class="edit" [% ELSE %] class = "noedit" [% END %] id="validate">Valid After Annotation</th>
+       <th [% IF c.check_user_roles("edit") %] class="edit" [% ELSE %] class = "noedit" [% END %] id="validate">Valid After Annotation</th>
      </tr>
    </thead>
    <tbody>
@@ -15,7 +15,7 @@
 <script type="text/javascript" charset="utf-8">
 
    var validate_table = new TableKit( 'validation', {
-        [% IF c.check_user_roles("design") %]
+        [% IF c.check_user_roles("edit") %]
             editAjaxURI: '[% c.uri_for('/design/validatedesign/update_validation/') %]'
         [% ELSE %]
             editable: false

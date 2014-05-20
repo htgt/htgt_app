@@ -57,7 +57,7 @@
 <script type="text/javascript" charset="utf-8">
   [% IF design_info_list.size > 0 %]
     var designs_table = new TableKit('designs_table[% timestamp %]',{
-      [% IF c.check_user_roles("design") %]
+      [% IF c.check_user_roles("edit") %]
         editAjaxURI: '[% c.uri_for('/gene/update/_design_fulfills_update/') %]?project_id=[% project_id %]',
         editable: true
       [% ELSE %]
