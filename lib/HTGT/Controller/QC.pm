@@ -759,7 +759,7 @@ sub seq_view_file : Local {
 
     if ( $c->req->params->{munge} ) {    #hack for VectorNTI
         for my $f ( $seq->get_SeqFeatures ) {
-            if ( my @n = $f->annotation->get_Annotations('note') ) {
+            if ( my @n = $f->get_tagset_values('note') ) {
                 my $str = join ", ", @n;
                 $str = substr( $str, 0, 15 ) if ( length($str) > 15 );
                 $f->primary_tag($str);

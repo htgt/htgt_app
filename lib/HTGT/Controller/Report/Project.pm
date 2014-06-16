@@ -132,7 +132,7 @@ sub get_features {
     my @features;
     
     foreach my $feat ( sort { $a->start <=> $b->start } $seq->get_SeqFeatures ) {
-        if ( my @note = $feat->annotation->get_Annotations('note') ) {
+        if ( my @note = $feat->get_tagset_values('note') ) {
             my $name = join( "", @note );
             if ( $feat->primary_tag eq 'exon' ) {
                 if ( $name =~ /(OTTMUSE|ENSMUSE)(\d+)/ ) {

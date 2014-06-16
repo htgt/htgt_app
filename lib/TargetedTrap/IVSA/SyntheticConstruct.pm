@@ -793,8 +793,9 @@ sub get_backbone_seq {
         -file   => $GLOBAL_SYNTHVEC_DATADIR . "/" . $fn,
         -format => 'genbank'
     );
+    $seqio->alphabet(q(dna));
     my $seq = $seqio->next_seq;
-    $seq->alphabet(q(DNA));
+    $seq->alphabet(q(dna));
 
     #marked up for U and D parts of final targetting vector?
     return $seq;
@@ -810,7 +811,7 @@ sub get_cassette_vector_seq {
         -format => 'genbank'
     );
     my $seq = $seqio->next_seq;
-    $seq->alphabet(q(DNA));
+    $seq->alphabet(q(dna));
     for ( $seq->get_SeqFeatures ) {
         if ( $_->has_tag(q(note)) ) {
             my @n = $_->get_tag_values(q(note));
@@ -1034,7 +1035,7 @@ sub rich_l1l2_gpr {
         -format => 'genbank'
     );
     my $seq = $seqio->next_seq;
-    $seq->alphabet(q(DNA));
+    $seq->alphabet(q(dna));
     my ( $trunc_start, $trunc_end );
     for ( $seq->get_SeqFeatures ) {
         if ( $_->has_tag(q(note)) ) {
