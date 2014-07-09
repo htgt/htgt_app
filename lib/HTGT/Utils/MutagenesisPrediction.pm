@@ -73,6 +73,13 @@ has floxed_transcript => (
     lazy_build => 1,
 );
 
+has tm1a_transcript => (
+    is         => 'ro',
+    isa        => 'Maybe[HTGT::Utils::MutagenesisPrediction::Transcript]',
+    init_arg   => undef,
+    lazy_build => 1,
+);
+
 has error => (
     is        => 'ro',
     isa       => 'Str',
@@ -359,6 +366,95 @@ sub _build_floxed_transcript {
     return $mutant_transcript;
 }
 
+sub _build_tm1a_transcript {
+    my $self = shift;
+
+    $self->log->debug( "_build_tm1a_transcript" );
+
+    return if $self->has_error;
+
+    # We will only get a tm1a transcript if orig transcript is coding and at least
+    # one coding exon is preserved
+    # FIXME: need to add cassette sequence after the exons because this contains
+    # the stop site
+    if( $self->transcript->cdna_coding_start and $self->preserves_first_coding_exon ){
+        my $tm1a_transcript = HTGT::Utils::MutagenesisPrediction::Transcript->new(
+            $self->upstream_exons,
+        );
+        $tm1a_transcript->add_cassette("L1L2_Bact_P");
+
+        $self->_compute_predicted_orf_tm1a( $tm1a_transcript );
+
+        $self->log->debug("tm1a ORF: ".$tm1a_transcript->cdna_coding_start.",".$tm1a_transcript->cdna_coding_end.",".$tm1a_transcript->translation->length);
+        $self->log->debug("tm1a description: ".$tm1a_transcript->description);
+        return $tm1a_transcript;
+    }
+
+    return undef;
+}
+
+sub _compute_predicted_orf_tm1a {
+    my ( $self, $mutant_transcript ) = @_;
+
+    $self->log->debug( "_compute_predicted_orf_tm1a" );
+
+    my $orig_cdna_coding_start = $self->transcript->cdna_coding_start;
+
+    # Ignore upstream ORFs
+    my @orfs = grep $_->cdna_coding_start >= $orig_cdna_coding_start, $mutant_transcript->orfs;
+    $self->fatal( "No ORFs identified" ) if scalar @orfs == 0;
+
+    my $orf_orig_start = shift @orfs;
+    $self->fatal( "unexpected ORF (should have same start as original transcript)" )
+        unless $orf_orig_start->cdna_coding_start == $orig_cdna_coding_start;
+
+    # If the ORF with the same start as the original transcript is >= $MIN_TRANSLATION_LENGTH aa, this
+    # is the predicted ORF
+    if ( $orf_orig_start->translation->length >= $MIN_TRANSLATION_LENGTH ) {
+        $mutant_transcript->set_predicted_orf( $orf_orig_start );
+        if ( $mutant_transcript->is_nmd ) {
+            $mutant_transcript->set_description( "No protein product (NMD)" );
+        }
+        elsif ( $mutant_transcript->is_frameshift ) {
+            $mutant_transcript->set_description( "Residual N-terminal, novel C-terminal product" );
+        }
+        else {
+            $mutant_transcript->set_description( "Residual N-terminal, residual C-terminal product" );
+        }
+        return;
+    }
+
+    # If there are no downstream ORFs with a translation >= $MIN_TRANSLATION_LENGTH aa, there is no protein product
+    @orfs = grep $_->translation->length >= $MIN_TRANSLATION_LENGTH, @orfs;
+    unless ( @orfs ) {
+        $mutant_transcript->set_predicted_orf( $orf_orig_start );
+        $mutant_transcript->set_description( "No protein product" );
+        return;
+    }
+
+    # ...there is at least one downstream ORF producing a product >= $MIN_TRANSLATION_LENGTH aa
+    # If any ORF produces the same C-terminal as the original, that's the one we want
+    # FIXME: this would never happen for tm1a as downstream exons will never be included...?
+    my $orf_preserving_c_terminal = firstval { $self->_orf_preserves_c_terminal( $mutant_transcript, $_ ) } @orfs;
+    if ( $orf_preserving_c_terminal ) {
+        $mutant_transcript->set_predicted_orf( $orf_preserving_c_terminal );
+        $mutant_transcript->set_description( "Residual C-terminal product" );
+        return;
+    }
+
+    # Otherwise, it's the first ORF producing >= $MIN_TRANSLATION_LENGTH aa
+    $mutant_transcript->set_predicted_orf( shift @orfs );
+    if ( $mutant_transcript->is_nmd ) {
+        $mutant_transcript->set_description( "No protein product (NMD)" );
+    }
+    else {
+        $mutant_transcript->set_description( "Novel C-terminal product" );
+    }
+
+    return;
+}
+
+
 sub _compute_predicted_orf {
     my ( $self, $mutant_transcript ) = @_;
 
@@ -547,7 +643,7 @@ sub _orf_preserves_c_terminal {
     my $last_orig_coding_exon = lastval { $_->coding_region_start( $self->transcript ) } @{ $self->transcript->get_all_Exons };
 
     return 1
-        if $last_coding_exon->ensembl_exon->stable_id eq $last_orig_coding_exon->stable_id 
+        if $last_coding_exon->ensembl_exon->stable_id eq $last_orig_coding_exon->stable_id
             and $last_coding_exon->phase( $orf ) == $last_orig_coding_exon->phase;
 }
 
@@ -576,6 +672,9 @@ sub to_hash {
             map( $self->_exon_to_hash( $_, $downstream, $floxed_transcript_exons, 0 ), $self->downstream_exons  )
         ];
     }
+
+    $h->{tm1a}->{exons} = $self->tm1a_transcript->exons_to_hash;
+    $h->{tm1a}->{detail} = $self->tm1a_transcript->detail_to_hash("tm1a");
 
     return $h;
 }

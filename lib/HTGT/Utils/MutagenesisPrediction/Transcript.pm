@@ -7,6 +7,7 @@ use Bio::SeqUtils;
 use HTGT::Utils::MutagenesisPrediction::Constants;
 use HTGT::Utils::MutagenesisPrediction::Exon;
 use HTGT::Utils::MutagenesisPrediction::ORF;
+use HTGT::Utils::MutagenesisPrediction::Cassette;
 use List::MoreUtils qw( lastval );
 
 has exons => (
@@ -54,6 +55,13 @@ has description => (
     init_arg   => undef,
 );
 
+has cassette => (
+    is        => 'ro',
+    isa       => 'Maybe[HTGT::Utils::MutagenesisPrediction::Cassette]',
+    init_arg  => undef,
+    writer    => 'set_cassette',
+);
+
 with qw( MooseX::Log::Log4perl );
 
 around BUILDARGS => sub {
@@ -92,6 +100,10 @@ sub _build_seq {
 
     my $seq = Bio::Seq->new( -alphabet => 'dna', -seq => '' );
     Bio::SeqUtils->cat( $seq, map $_->seq, $self->exons );
+
+    if(defined $self->cassette){
+        Bio::SeqUtils->cat( $seq, $self->cassette->seq);
+    }
 
     return $seq;
 }
@@ -176,6 +188,8 @@ sub is_frameshift {
 
     my $last_coding_exon = lastval { defined $_->cdna_coding_start( $orf ) } $self->exons;
 
+    return undef unless $last_coding_exon;
+
     my $phase = $last_coding_exon->phase( $orf );
     my $orig_phase = $last_coding_exon->ensembl_exon->phase;
 
@@ -189,22 +203,24 @@ sub is_frameshift {
 }
 
 sub detail_to_hash {
-    my $self = shift;
+    my ($self, $type) = @_;
+
+    $type ||= "floxed";
 
     my %h;
 
     if ( defined $self->predicted_orf ) {
         %h = (
-            floxed_transcript_description       => $self->description,
-            floxed_transcript_is_nmd            => $self->is_nmd,
-            floxed_transcript_is_frameshift     => $self->is_frameshift,
-            floxed_transcript_cdna_coding_start => $self->cdna_coding_start,
-            floxed_transcript_cdna_coding_end   => $self->cdna_coding_end,
-            floxed_transcript_translation       => $self->translation ? $self->translation->seq : ''
+            $type."_transcript_description"       => $self->description,
+            $type."_transcript_is_nmd"            => $self->is_nmd,
+            $type."_transcript_is_frameshift"     => $self->is_frameshift,
+            $type."_transcript_cdna_coding_start" => $self->cdna_coding_start,
+            $type."_transcript_cdna_coding_end"   => $self->cdna_coding_end,
+            $type."_transcript_translation"       => $self->translation ? $self->translation->seq : ''
         );
     }
     elsif ( defined $self->description ) {
-        %h = ( floxed_transcript_description => $self->description );
+        %h = ( $type."_transcript_description" => $self->description );
     }
 
     return \%h;
@@ -229,6 +245,14 @@ sub exons_to_hash {
         };
     }
     return \%exons;
+}
+
+sub add_cassette {
+    my ($self, $cassette_name) = @_;
+
+    my $cassette = HTGT::Utils::MutagenesisPrediction::Cassette->new({ cassette_name => $cassette_name });
+
+    $self->set_cassette($cassette);
 }
 
 __PACKAGE__->meta->make_immutable;
