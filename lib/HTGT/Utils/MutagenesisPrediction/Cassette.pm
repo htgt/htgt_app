@@ -4,7 +4,7 @@ use Moose;
 use Moose::Util::TypeConstraints;
 use namespace::autoclean;
 use Bio::SeqIO;
-use HTGT::QC::Util::RunCmd qw(run_cmd);
+use EngSeqBuilder;
 
 has cassette_name => (
     is => 'ro',
@@ -31,18 +31,11 @@ with 'MooseX::Log::Log4perl';
 sub _build_seq{
 	my $self = shift;
 
-	my @args = ("eng-seq-builder","fetch-seq","--name",$self->cassette_name,"--format","genbank");
-
     $self->log->debug("Attempting to fetch seq for cassette ".$self->cassette_name);
 
-    # FIXME: check for errors
-	my $output = run_cmd(@args);
+    my $eng_seq_builder = EngSeqBuilder->new();
 
-    open(my $stringfh, "<", \$output) or die "Could not open string for reading: $!";
-
-    my $seqio = Bio::SeqIO->new( -fh => $stringfh, -format => 'genbank');
-
-    return $seqio->next_seq;
+    return $eng_seq_builder->fetch_seq( name => $self->cassette_name );
 }
 
 sub _build_first_splice_acceptor{
