@@ -13,6 +13,12 @@ has design => (
     required => 1
 );
 
+has cassette => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1
+);
+
 has ensembl_gene_id => (
     is         => 'ro',
     isa        => 'Str',
@@ -71,7 +77,8 @@ around prediction_for => sub {
                                        target_gene         => $self->target_gene,
                                        transcript_id       => $transcript_id,
                                        target_region_start => $self->target_region_start,
-                                       target_region_end   => $self->target_region_end
+                                       target_region_end   => $self->target_region_end,
+                                       cassette            => $self->cassette
                                    )
                                );
     }

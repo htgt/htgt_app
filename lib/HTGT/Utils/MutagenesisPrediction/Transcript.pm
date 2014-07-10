@@ -101,8 +101,13 @@ sub _build_seq {
     my $seq = Bio::Seq->new( -alphabet => 'dna', -seq => '' );
     Bio::SeqUtils->cat( $seq, map $_->seq, $self->exons );
 
+    # FIXME: check this is correct!
     if(defined $self->cassette){
-        Bio::SeqUtils->cat( $seq, $self->cassette->seq);
+        my $from_splice_site  = $self->cassette->seq->trunc(
+                                   $self->cassette->first_splice_acceptor->end,
+                                   $self->cassette->seq->length
+                                );
+        Bio::SeqUtils->cat( $seq, $from_splice_site );
     }
 
     return $seq;

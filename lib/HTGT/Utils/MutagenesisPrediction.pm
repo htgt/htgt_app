@@ -8,6 +8,7 @@ use HTGT::Utils::MutagenesisPrediction::Transcript;
 use HTGT::Utils::MutagenesisPrediction::PartExon::UpstreamPartExon;
 use HTGT::Utils::MutagenesisPrediction::PartExon::FloxedPartExon;
 use List::MoreUtils qw( firstval lastval );
+use Data::Dumper;
 
 has target_gene => (
     is       => 'ro',
@@ -41,6 +42,12 @@ has target_region_start => (
 has target_region_end => (
     is       => 'ro',
     isa      => 'Int',
+    required => 1,
+);
+
+has cassette => (
+    is       => 'ro',
+    isa      => 'Str',
     required => 1,
 );
 
@@ -381,7 +388,7 @@ sub _build_tm1a_transcript {
         my $tm1a_transcript = HTGT::Utils::MutagenesisPrediction::Transcript->new(
             $self->upstream_exons,
         );
-        $tm1a_transcript->add_cassette("L1L2_Bact_P");
+        $tm1a_transcript->add_cassette($self->cassette);
 
         $self->_compute_predicted_orf_tm1a( $tm1a_transcript );
 
@@ -654,6 +661,7 @@ sub to_hash {
         return {
             ensembl_transcript_id         => $self->transcript->stable_id,
             biotype                       => $self->transcript->biotype,
+            cassette                      => $self->cassette,
             floxed_transcript_description => $self->error,
             is_warning                    => 1
         };
@@ -662,6 +670,7 @@ sub to_hash {
     my $h = $self->floxed_transcript->detail_to_hash;
     $h->{ensembl_transcript_id} = $self->transcript->stable_id;
     $h->{biotype}               = $self->transcript->biotype;
+    $h->{cassette}              = $self->cassette;
 
     if ( $self->floxed_transcript->predicted_orf ) {
         my $floxed_transcript_exons = $self->floxed_transcript->exons_to_hash;
