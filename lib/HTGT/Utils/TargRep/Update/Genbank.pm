@@ -339,7 +339,13 @@ sub _get_transcript_id {
 
     my $transcript;
     try {
-        $transcript = $gene->template_transcript;
+        # use EnsEMBL canonical transcript if available, otherwise attempt to determine the best transcript
+        $transcript = $gene->ensembl_gene->canonical_transcript;
+        if ($transcript) { DEBUG('Setting transcript from gene EnsEMBL canonical transcript: ' . $transcript->display_id ); }
+        unless ($transcript) {
+            $transcript = $gene->template_transcript;
+            DEBUG('Setting transcript from gene template transcript: ' . $transcript->display_id );
+        }
     }
     catch {
         die $_ unless $_ =~ m/Failed to find a template transcript/;

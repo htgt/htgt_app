@@ -33,8 +33,8 @@ Log::Log4perl->easy_init( { level => $loglevel, layout => '%p %x %m%n' } );
 my $htgt_schema    = HTGT::DBFactory->connect('eucomm_vector', { FetchHashKeyName => 'NAME_lc' });
 #targrep_schema now points to tarmits. This database is targrep and imits merged together. This is used to retrieve data from tarmits
 my $targrep_schema = HTGT::DBFactory->connect( 'tarmits' );
-#idcc_api is used to update tarmits through the api.
-my $idcc_api       = HTGT::Utils::Tarmits->new_with_config( username => 'htgt@sanger.ac.uk', password => 'WPbjGHdG' );
+#idcc_api is used to update tarmits through the api. connection details set in yml file behind ENV variable TARMITS_CLIENT_CONF
+my $idcc_api       = HTGT::Utils::Tarmits->new_with_config();
 
 my @config = (
     htgt_schema         => $htgt_schema,
