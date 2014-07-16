@@ -24,6 +24,7 @@ has seq => (
     isa        => 'Bio::SeqI',
     init_arg   => undef,
     lazy_build => 1,
+    trigger    => \&clear_orfs,
 );
 
 has orfs => (
@@ -60,6 +61,22 @@ has cassette => (
     isa       => 'Maybe[HTGT::Utils::MutagenesisPrediction::Cassette]',
     init_arg  => undef,
     writer    => 'set_cassette',
+    trigger   => \&clear_seq,
+);
+
+# Cassette downstream exons only used to predict NMD
+has cassette_downstream_exons => (
+    is        => 'ro',
+    isa       => 'ArrayRef',
+    traits    => [ 'Array' ],
+    init_arg  => undef,
+    writer    => 'set_cassette_downstream_exons',
+    handles   => {
+        get_cassette_downstream_exon  => 'get',
+        has_cassette_downstream_exons => 'count',
+        all_cassette_downstream_exons => 'elements',
+    },
+    trigger   => \&clear_seq,
 );
 
 with qw( MooseX::Log::Log4perl );
@@ -101,13 +118,15 @@ sub _build_seq {
     my $seq = Bio::Seq->new( -alphabet => 'dna', -seq => '' );
     Bio::SeqUtils->cat( $seq, map $_->seq, $self->exons );
 
-    # FIXME: check this is correct!
     if(defined $self->cassette){
         my $from_splice_site  = $self->cassette->seq->trunc(
                                    $self->cassette->first_splice_acceptor->end,
                                    $self->cassette->seq->length
                                 );
         Bio::SeqUtils->cat( $seq, $from_splice_site );
+        if($self->has_cassette_downstream_exons){
+            Bio::SeqUtils->cat( $seq, map $_->seq, $self->all_cassette_downstream_exons );
+        }
     }
 
     return $seq;
@@ -172,8 +191,21 @@ sub is_nmd {
     }
 
     my $last_splice_site = ( $self->exons )[-1]->cdna_start;
+    if($self->cassette){
+        if($self->has_cassette_downstream_exons){
+            # last splice junction is start of final downstream exon
+            $last_splice_site = $self->get_cassette_downstream_exon(-1)->cdna_start;
+        }
+        else{
+             # no exons downstream of cassette so last splice junction is the
+             # end of final exon/start of cassette
+             $last_splice_site = ( $self->exons )[-1]->cdna_end;
+        }
+    }
 
     # If the coding stops more than $NMD_SPLICE_LIMIT bases from the last splice site, this is NMD
+    $self->log->debug("last splice site: $last_splice_site");
+    $self->log->debug("orf cdna_coding_end: ".$orf->cdna_coding_end);
     if ( $last_splice_site - $orf->cdna_coding_end > $NMD_SPLICE_LIMIT ) {
         return 1;
     }
@@ -258,6 +290,32 @@ sub add_cassette {
     my $cassette = HTGT::Utils::MutagenesisPrediction::Cassette->new({ cassette_name => $cassette_name });
 
     $self->set_cassette($cassette);
+}
+
+sub add_cassette_downstream_exons {
+    my ($self, @exons) = @_;
+
+    unless($self->cassette){
+        $self->log->warn( "cannot set cassette downstream exon positions without a cassette");
+    }
+
+    my @new_exons;
+
+    # downstream exon positions begin from final upstream exon + spliced part of cassette
+    my $cdna_start = ( $self->exons )[-1]->cdna_end + $self->cassette->spliced_length;
+
+    foreach my $e ( @exons ) {
+        $self->log->debug("adding cassette downstream exon at cdna start $cdna_start");
+        my $cdna_end = $cdna_start + $e->length - 1;
+        push @new_exons, HTGT::Utils::MutagenesisPrediction::Exon->new(
+            ensembl_exon => $e,
+            cdna_start   => $cdna_start,
+            cdna_end     => $cdna_end,
+        );
+        $cdna_start += $e->length;
+    }
+
+    $self->set_cassette_downstream_exons(\@new_exons);
 }
 
 __PACKAGE__->meta->make_immutable;

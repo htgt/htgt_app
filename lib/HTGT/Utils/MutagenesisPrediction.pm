@@ -7,6 +7,7 @@ use HTGT::Utils::MutagenesisPrediction::Constants;
 use HTGT::Utils::MutagenesisPrediction::Transcript;
 use HTGT::Utils::MutagenesisPrediction::PartExon::UpstreamPartExon;
 use HTGT::Utils::MutagenesisPrediction::PartExon::FloxedPartExon;
+use HTGT::Utils::MutagenesisPrediction::Cassette;
 use List::MoreUtils qw( firstval lastval );
 use Data::Dumper;
 
@@ -381,14 +382,14 @@ sub _build_tm1a_transcript {
     return if $self->has_error;
 
     # We will only get a tm1a transcript if orig transcript is coding and at least
-    # one coding exon is preserved
-    # FIXME: need to add cassette sequence after the exons because this contains
-    # the stop site
+    # one coding exon is preserved?? Or will we get a transcript which starts with cassette??
+    # Include downstream exons in case no stop codon in cassette??
     if( $self->transcript->cdna_coding_start and $self->preserves_first_coding_exon ){
         my $tm1a_transcript = HTGT::Utils::MutagenesisPrediction::Transcript->new(
             $self->upstream_exons,
         );
         $tm1a_transcript->add_cassette($self->cassette);
+        $tm1a_transcript->add_cassette_downstream_exons($self->floxed_exons, $self->downstream_exons);
 
         $self->_compute_predicted_orf_tm1a( $tm1a_transcript );
 

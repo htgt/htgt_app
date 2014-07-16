@@ -26,6 +26,13 @@ has first_splice_acceptor => (
     lazy_build => 1,
 );
 
+has spliced_length => (
+    is         => 'ro',
+    isa        => 'Int',
+    init_arg   => undef,
+    lazy_build => 1,
+);
+
 with 'MooseX::Log::Log4perl';
 
 sub _build_seq{
@@ -53,4 +60,11 @@ sub _build_first_splice_acceptor{
 
     $self->log->debug("No splice acceptor feature found in cassette");
     return undef;
+}
+
+sub _build_spliced_length{
+    my $self = shift;
+
+    my $sa = $self->first_splice_acceptor;
+    return $self->seq->length - $sa->end;
 }

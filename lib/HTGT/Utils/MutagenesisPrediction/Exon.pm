@@ -57,7 +57,7 @@ sub cdna_coding_end {
         return $e;
     }
     else {
-        return;        
+        return;
     }
 }
 
@@ -96,7 +96,7 @@ sub end_phase {
     else {
         return ( $self->cdna_coding_end( $orf ) - $orf->cdna_coding_start + 1 ) % 3;
     }
-    
+
 }
 
 sub is_in_phase {
@@ -117,7 +117,7 @@ sub translation {
     return unless $self->is_coding( $orf );
     my $start_offset = $self->phase( $orf ) > 0 ? $self->phase( $orf ) : 0;
     my $start  = $self->cdna_coding_start( $orf ) - $start_offset - $orf->cdna_coding_start;
-    
+
     my $end_offset = $self->end_phase( $orf ) > 0 ? 3 - $self->end_phase( $orf ) : 0;
     my $end = $self->cdna_coding_end( $orf ) + $end_offset - $orf->cdna_coding_start + 1;
 
@@ -131,15 +131,15 @@ sub translation {
 
     my $aa_start = ( $start / 3 ) + 1;
     my $aa_end   = min( $end / 3, $orf->translation->length );
-    
+
     $self->log->debug( $self->ensembl_exon->stable_id . " translation is from $aa_start to $aa_end" );
-    
+
     $orf->translation->trunc( $aa_start, $aa_end );
 }
 
 sub _assert_is_orf {
     my ( $self, $maybe_orf ) = @_;
-    
+
     confess "expected HTGT::Utils::MutagenesisPrediction::ORF"
         unless defined $maybe_orf
             and UNIVERSAL::isa( $maybe_orf, 'HTGT::Utils::MutagenesisPrediction::ORF' );
