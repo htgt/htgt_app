@@ -50,9 +50,9 @@ __PACKAGE__->table("targ_rep_alleles");
 =head2 assembly
 
   data_type: 'varchar'
-  default_value: 'NCBIM37'
+  default_value: 'GRCm38'
   is_nullable: 0
-  size: 50
+  size: 255
 
 =head2 chromosome
 
@@ -69,12 +69,12 @@ __PACKAGE__->table("targ_rep_alleles");
 =head2 homology_arm_start
 
   data_type: 'integer'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 homology_arm_end
 
   data_type: 'integer'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 loxp_start
 
@@ -161,12 +161,59 @@ __PACKAGE__->table("targ_rep_alleles");
 =head2 created_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 updated_at
 
   data_type: 'timestamp'
+  is_nullable: 0
+
+=head2 intron
+
+  data_type: 'integer'
   is_nullable: 1
+
+=head2 type
+
+  data_type: 'varchar'
+  default_value: 'TargRep::TargetedAllele'
+  is_nullable: 1
+  size: 255
+
+=head2 has_issue
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 0
+
+=head2 issue_description
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 sequence
+
+  accessor: undef
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 taqman_critical_del_assay_id
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 taqman_upstream_del_assay_id
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 taqman_downstream_del_assay_id
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
 
 =cut
 
@@ -183,18 +230,18 @@ __PACKAGE__->add_columns(
   "assembly",
   {
     data_type => "varchar",
-    default_value => "NCBIM37",
+    default_value => "GRCm38",
     is_nullable => 0,
-    size => 50,
+    size => 255,
   },
   "chromosome",
   { data_type => "varchar", is_nullable => 0, size => 2 },
   "strand",
   { data_type => "varchar", is_nullable => 0, size => 1 },
   "homology_arm_start",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "integer", is_nullable => 1 },
   "homology_arm_end",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "integer", is_nullable => 1 },
   "loxp_start",
   { data_type => "integer", is_nullable => 1 },
   "loxp_end",
@@ -226,9 +273,30 @@ __PACKAGE__->add_columns(
   "cassette_type",
   { data_type => "varchar", is_nullable => 1, size => 50 },
   "created_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "updated_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
+  "intron",
+  { data_type => "integer", is_nullable => 1 },
+  "type",
+  {
+    data_type => "varchar",
+    default_value => "TargRep::TargetedAllele",
+    is_nullable => 1,
+    size => 255,
+  },
+  "has_issue",
+  { data_type => "boolean", default_value => \"false", is_nullable => 0 },
+  "issue_description",
+  { data_type => "text", is_nullable => 1 },
+  "sequence",
+  { accessor => undef, data_type => "text", is_nullable => 1 },
+  "taqman_critical_del_assay_id",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "taqman_upstream_del_assay_id",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "taqman_downstream_del_assay_id",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
 =head1 PRIMARY KEY
@@ -243,123 +311,52 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id");
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Njigetp6dbjze1sQlRDJUA
-
-# NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
-# If Foreign keys are add to this table we may see relationships defined multiple times.
-
-__PACKAGE__->has_many(
-  "targ_rep_es_cells",
-  "Tarmits::Schema::Result::TargRepEsCell",
-  { "foreign.allele_id" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 genbank_files
+=head2 mi_attempts
 
 Type: has_many
 
-Related object: L<Tarmits::Schema::Result::GenbankFile>
+Related object: L<Tarmits::Schema::Result::MiAttempt>
 
 =cut
 
 __PACKAGE__->has_many(
-  "targ_rep_genbank_files",
-  "Tarmits::Schema::Result::TargRepGenbankFile",
+  "mi_attempts",
+  "Tarmits::Schema::Result::MiAttempt",
   { "foreign.allele_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 targeting_vectors
+=head2 mouse_allele_mods
 
 Type: has_many
 
-Related object: L<Tarmits::Schema::Result::TargetingVector>
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
 
 =cut
 
 __PACKAGE__->has_many(
-  "targ_rep_targeting_vectors",
-  "Tarmits::Schema::Result::TargRepTargetingVector",
+  "mouse_allele_mods",
+  "Tarmits::Schema::Result::MouseAlleleMod",
   { "foreign.allele_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 gene
+=head2 phenotype_attempts
 
-Type: belongs_to
+Type: has_many
 
-Related object: L<Tarmits::Schema::Result::Gene>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "gene",
-  "Tarmits::Schema::Result::Gene",
-  { id => "gene_id" },
-);
-
-=head2 mutation_method
-
-Type: belongs_to
-
-Related object: L<Tarmits::Schema::Result::MutationMethod>
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
 
 =cut
 
-__PACKAGE__->belongs_to(
-  "targ_rep_mutation_method",
-  "Tarmits::Schema::Result::TargRepMutationMethod",
-  { id => "mutation_method_id" },
+__PACKAGE__->has_many(
+  "phenotype_attempts",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
-
-=head2 mutation_type
-
-Type: belongs_to
-
-Related object: L<Tarmits::Schema::Result::MutationType>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "targ_rep_mutation_type",
-  "Tarmits::Schema::Result::TargRepMutationType",
-  { id => "mutation_type_id" },
-);
-
-=head2 mutation_method
-
-Type: belongs_to
-
-Related object: L<Tarmits::Schema::Result::MutationSubtype>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "targ_rep_mutation_subtype",
-  "Tarmits::Schema::Result::TargRepMutationSubtype",
-  { id => "mutation_subtype_id" },
-);
-
-sub mutation_type_name {
-    my $self = shift;
-
-    return $self->targ_rep_mutation_type->name;
-}
-
-sub mutation_subtype_name {
-    my $self = shift;
-    return unless $self->targ_rep_mutation_subtype;
-    return $self->targ_rep_mutation_subtype->name;
-}
-
-sub mutation_method_name {
-    my $self = shift;
-
-    return $self->targ_rep_mutation_method->name;
-}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;
