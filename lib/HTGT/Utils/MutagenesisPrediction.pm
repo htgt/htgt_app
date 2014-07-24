@@ -10,6 +10,7 @@ use HTGT::Utils::MutagenesisPrediction::PartExon::FloxedPartExon;
 use HTGT::Utils::MutagenesisPrediction::Cassette;
 use List::MoreUtils qw( firstval lastval );
 use Data::Dumper;
+use Try::Tiny;
 
 has target_gene => (
     is       => 'ro',
@@ -383,13 +384,11 @@ sub _build_tm1a_transcript {
 
     # We will only get a tm1a transcript if orig transcript is coding and at least
     # one coding exon is preserved?? Or will we get a transcript which starts with cassette??
-    # Include downstream exons in case no stop codon in cassette??
     if( $self->transcript->cdna_coding_start and $self->preserves_first_coding_exon ){
         my $tm1a_transcript = HTGT::Utils::MutagenesisPrediction::Transcript->new(
             $self->upstream_exons,
         );
         $tm1a_transcript->add_cassette($self->cassette);
-        $tm1a_transcript->add_cassette_downstream_exons($self->floxed_exons, $self->downstream_exons);
 
         $self->_compute_predicted_orf_tm1a( $tm1a_transcript );
 
@@ -671,7 +670,6 @@ sub to_hash {
     my $h = $self->floxed_transcript->detail_to_hash;
     $h->{ensembl_transcript_id} = $self->transcript->stable_id;
     $h->{biotype}               = $self->transcript->biotype;
-    $h->{cassette}              = $self->cassette;
 
     if ( $self->floxed_transcript->predicted_orf ) {
         my $floxed_transcript_exons = $self->floxed_transcript->exons_to_hash;
@@ -683,8 +681,22 @@ sub to_hash {
         ];
     }
 
-    $h->{tm1a}->{exons} = $self->tm1a_transcript->exons_to_hash;
-    $h->{tm1a}->{detail} = $self->tm1a_transcript->detail_to_hash("tm1a");
+    try{
+        my $tm1a_hash = $self->tm1a_transcript->detail_to_hash("tm1a");
+        $tm1a_hash->{cassette} = $self->cassette;
+
+        if(my $orf = $self->tm1a_transcript->predicted_orf){
+            $tm1a_hash->{last_exon_end_phase} = ( $self->tm1a_transcript->exons )[-1]->end_phase( $orf );
+            my $tm1a_transcript_exons = $self->tm1a_transcript->exons_to_hash;
+            $tm1a_hash->{exons} = [
+                map( $self->_exon_to_hash( $_, 'tm1a',  $tm1a_transcript_exons, 0 ), $self->upstream_exons )
+            ];
+        }
+        $h->{tm1a} = $tm1a_hash;
+    }
+    catch{
+        $self->log->debug("Failed to generate tm1a transcript details: $_");
+    };
 
     return $h;
 }
@@ -712,16 +724,20 @@ sub _exon_to_hash {
     elsif ( ref $exon eq 'HTGT::Utils::MutagenesisPrediction::PartExon::FloxedPartExon' ){
         $h{ art_intron_offset } = - $exon->length;
     }
+
+    my $type = "floxed";
+    if($desc eq "tm1a"){ $type = "tm1a"};
+
     if ( $floxed_transcript_exons and $floxed_transcript_exons->{ $exon->stable_id }
              and $floxed_exons == 0 ){
         my $f = $floxed_transcript_exons->{ $exon->stable_id };
-        $h{floxed_phase}       = $f->{phase};
-        $h{floxed_end_phase}   = $f->{end_phase};
-        $h{floxed_translation} = $f->{translation};
-        $h{floxed_structure}   = $self->_exon_structure( $f->{phase}, $f->{end_phase}, $exon );
-        $self->log->debug( "Floxed exon: " . $exon->stable_id );
-        $self->log->debug( "Floxed exon phase: " . $f->{phase} );
-        $self->log->debug( "Floxed exon end phase: " . $f->{end_phase} );
+        $h{$type.'_phase'}       = $f->{phase};
+        $h{$type.'_end_phase'}   = $f->{end_phase};
+        $h{$type.'_translation'} = $f->{translation};
+        $h{$type.'_structure'}   = $self->_exon_structure( $f->{phase}, $f->{end_phase}, $exon );
+        $self->log->debug( $type." exon: " . $exon->stable_id );
+        $self->log->debug( $type." exon phase: " . $f->{phase} );
+        $self->log->debug( $type." exon end phase: " . $f->{end_phase} );
     }
     return \%h;
 }

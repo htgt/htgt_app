@@ -26,12 +26,13 @@ has first_splice_acceptor => (
     lazy_build => 1,
 );
 
-has spliced_length => (
+has first_polya_site => (
     is         => 'ro',
-    isa        => 'Int',
+    isa        => 'Maybe[Bio::LocationI]',
     init_arg   => undef,
     lazy_build => 1,
 );
+
 
 with 'MooseX::Log::Log4perl';
 
@@ -62,9 +63,20 @@ sub _build_first_splice_acceptor{
     return undef;
 }
 
-sub _build_spliced_length{
+sub _build_first_polya_site{
     my $self = shift;
 
-    my $sa = $self->first_splice_acceptor;
-    return $self->seq->length - $sa->end;
+    my @features = sort { $a->start <=> $b->start} $self->seq->top_SeqFeatures;
+
+    foreach my $feature (@features){
+        my @notes = $feature->get_tag_values('note');
+        if(grep {$_ =~ /polya(denylation)? site/i} @notes){
+            $self->log->debug("polyA feature found at position ".$feature->start." of cassette");
+            return $feature->location;
+        }
+    }
+
+    $self->log->debug("No polyA feature found in cassette");
+    return undef;
 }
+

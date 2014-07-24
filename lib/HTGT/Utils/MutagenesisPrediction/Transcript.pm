@@ -64,20 +64,6 @@ has cassette => (
     trigger   => \&clear_seq,
 );
 
-# Cassette downstream exons only used to predict NMD
-has cassette_downstream_exons => (
-    is        => 'ro',
-    isa       => 'ArrayRef',
-    traits    => [ 'Array' ],
-    init_arg  => undef,
-    writer    => 'set_cassette_downstream_exons',
-    handles   => {
-        get_cassette_downstream_exon  => 'get',
-        has_cassette_downstream_exons => 'count',
-        all_cassette_downstream_exons => 'elements',
-    },
-    trigger   => \&clear_seq,
-);
 
 with qw( MooseX::Log::Log4perl );
 
@@ -121,12 +107,9 @@ sub _build_seq {
     if(defined $self->cassette){
         my $from_splice_site  = $self->cassette->seq->trunc(
                                    $self->cassette->first_splice_acceptor->end,
-                                   $self->cassette->seq->length
+                                   $self->cassette->first_polya_site->end,
                                 );
         Bio::SeqUtils->cat( $seq, $from_splice_site );
-        if($self->has_cassette_downstream_exons){
-            Bio::SeqUtils->cat( $seq, map $_->seq, $self->all_cassette_downstream_exons );
-        }
     }
 
     return $seq;
@@ -192,15 +175,9 @@ sub is_nmd {
 
     my $last_splice_site = ( $self->exons )[-1]->cdna_start;
     if($self->cassette){
-        if($self->has_cassette_downstream_exons){
-            # last splice junction is start of final downstream exon
-            $last_splice_site = $self->get_cassette_downstream_exon(-1)->cdna_start;
-        }
-        else{
-             # no exons downstream of cassette so last splice junction is the
-             # end of final exon/start of cassette
-             $last_splice_site = ( $self->exons )[-1]->cdna_end;
-        }
+        # no exons downstream of cassette so last splice junction is the
+        # end of final exon/start of cassette
+        $last_splice_site = ( $self->exons )[-1]->cdna_end;
     }
 
     # If the coding stops more than $NMD_SPLICE_LIMIT bases from the last splice site, this is NMD
@@ -292,31 +269,6 @@ sub add_cassette {
     $self->set_cassette($cassette);
 }
 
-sub add_cassette_downstream_exons {
-    my ($self, @exons) = @_;
-
-    unless($self->cassette){
-        $self->log->warn( "cannot set cassette downstream exon positions without a cassette");
-    }
-
-    my @new_exons;
-
-    # downstream exon positions begin from final upstream exon + spliced part of cassette
-    my $cdna_start = ( $self->exons )[-1]->cdna_end + $self->cassette->spliced_length;
-
-    foreach my $e ( @exons ) {
-        $self->log->debug("adding cassette downstream exon at cdna start $cdna_start");
-        my $cdna_end = $cdna_start + $e->length - 1;
-        push @new_exons, HTGT::Utils::MutagenesisPrediction::Exon->new(
-            ensembl_exon => $e,
-            cdna_start   => $cdna_start,
-            cdna_end     => $cdna_end,
-        );
-        $cdna_start += $e->length;
-    }
-
-    $self->set_cassette_downstream_exons(\@new_exons);
-}
 
 __PACKAGE__->meta->make_immutable;
 
