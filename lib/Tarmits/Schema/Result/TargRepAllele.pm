@@ -359,4 +359,118 @@ __PACKAGE__->has_many(
 );
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+# NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
+# If Foreign keys are add to this table we may see relationships defined multiple times.
+
+__PACKAGE__->has_many(
+  "targ_rep_es_cells",
+  "Tarmits::Schema::Result::TargRepEsCell",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 genbank_files
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::GenbankFile>
+
+=cut
+
+__PACKAGE__->has_many(
+  "targ_rep_genbank_files",
+  "Tarmits::Schema::Result::TargRepGenbankFile",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 targeting_vectors
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::TargetingVector>
+
+=cut
+
+__PACKAGE__->has_many(
+  "targ_rep_targeting_vectors",
+  "Tarmits::Schema::Result::TargRepTargetingVector",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 gene
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::Gene>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "gene",
+  "Tarmits::Schema::Result::Gene",
+  { id => "gene_id" },
+);
+
+=head2 mutation_method
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::MutationMethod>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "targ_rep_mutation_method",
+  "Tarmits::Schema::Result::TargRepMutationMethod",
+  { id => "mutation_method_id" },
+);
+
+=head2 mutation_type
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::MutationType>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "targ_rep_mutation_type",
+  "Tarmits::Schema::Result::TargRepMutationType",
+  { id => "mutation_type_id" },
+);
+
+=head2 mutation_method
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::MutationSubtype>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "targ_rep_mutation_subtype",
+  "Tarmits::Schema::Result::TargRepMutationSubtype",
+  { id => "mutation_subtype_id" },
+);
+
+sub mutation_type_name {
+    my $self = shift;
+
+    return $self->targ_rep_mutation_type->name;
+}
+
+sub mutation_subtype_name {
+    my $self = shift;
+    return unless $self->targ_rep_mutation_subtype;
+    return $self->targ_rep_mutation_subtype->name;
+}
+
+sub mutation_method_name {
+    my $self = shift;
+
+    return $self->targ_rep_mutation_method->name;
+}
+
 1;
