@@ -104,7 +104,7 @@ sub update_coordinates {
 sub design_coordinates {
     my $design = shift;
 
-    my $features = design_oligos( $design ); 
+    my $features = design_oligos( $design );
 
     return unless %{ $features };
 
@@ -119,18 +119,31 @@ sub design_coordinates {
         unless @chr_names == 1;
     my $chr_name = shift @chr_names;
 
-    my %coordinates;
-    if ( $chr_strand == 1 ) {
-        $coordinates{cassette_start} = $features->{U5}->feature_end;            
-        $coordinates{cassette_end} = $features->{D3}->feature_start;            
-        $coordinates{homology_arm_start} = $features->{G5}->feature_end;
-        $coordinates{homology_arm_end} = $features->{G3}->feature_start;
+    my ( $u_oligo, $d_oligo );
+    my $num_oligos = scalar( keys %{ $features } );
+    # Some of the designs have 6 oligos, if this is the case then the Mirko group
+    # picked the U3 and D5 oligos
+    if ( $num_oligos > 4 ) {
+        $u_oligo = $features->{U3};
+        $d_oligo = $features->{D5};
     }
     else {
-        $coordinates{cassette_start} = $features->{U5}->feature_start;            
-        $coordinates{cassette_end} = $features->{D3}->feature_end;
+        $u_oligo = $features->{U5};
+        $d_oligo = $features->{D3};
+    }
+
+    my %coordinates;
+    if ( $chr_strand == 1 ) {
+        $coordinates{cassette_start}     = $u_oligo->feature_end;
+        $coordinates{cassette_end}       = $d_oligo->feature_start;
         $coordinates{homology_arm_start} = $features->{G5}->feature_start;
-        $coordinates{homology_arm_end} = $features->{G3}->feature_end;
+        $coordinates{homology_arm_end}   = $features->{G3}->feature_end;
+    }
+    else {
+        $coordinates{cassette_start}     = $u_oligo->feature_start;
+        $coordinates{cassette_end}       = $d_oligo->feature_end;
+        $coordinates{homology_arm_start} = $features->{G5}->feature_end;
+        $coordinates{homology_arm_end}   = $features->{G3}->feature_start;
     }
 
     return (\%coordinates, $strand, $chr_name );
