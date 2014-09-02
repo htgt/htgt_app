@@ -82,18 +82,18 @@ sub get_alleles {
     my ( @mirko_escells, @mirko_targ_vecs );
 
     if ( $self->has_projects ) {
-        @mirko_escells = $mirko->es_cells->search(
+        @mirko_escells = $mirko->targ_rep_es_cells->search(
             { ikmc_project_id => $self->projects },
             { columns => [ 'allele_id' ] }
         );
-        @mirko_targ_vecs = $mirko->targeting_vectors->search(
+        @mirko_targ_vecs = $mirko->targ_rep_targeting_vectors->search(
             { ikmc_project_id => $self->projects },
             { columns => [ 'allele_id' ] }
         );
     }
     else {
-        @mirko_escells = $mirko->es_cells->search( {}, { columns => [ 'allele_id' ] } );
-        @mirko_targ_vecs = $mirko->targeting_vectors->search( {}, { columns => [ 'allele_id' ] } );
+        @mirko_escells = $mirko->targ_rep_es_cells->search( {}, { columns => [ 'allele_id' ] } );
+        @mirko_targ_vecs = $mirko->targ_rep_targeting_vectors->search( {}, { columns => [ 'allele_id' ] } );
     }
 
     push @mirko_allele_ids, map{ $_->allele_id } @mirko_escells;
@@ -102,7 +102,7 @@ sub get_alleles {
 
     my @alleles = $self->targrep_schema->resultset('TargRepAllele')->search(
         {
-            id => \@uniq_mirko_allele_ids,
+            'me.id' => \@uniq_mirko_allele_ids,
             'targ_rep_mutation_type.name' => 'Deletion',
         },
         {
@@ -124,7 +124,7 @@ sub process_allele {
     my @genbank_files
         = $self->targrep_schema->resultset('TargRepGenbankFile')->search( { allele_id => $allele->id, } );
 
-    my $gene_id = $self->get_gene_id( $allele->mgi_accession_id );
+    my $gene_id = $self->get_gene_id( $allele->gene->mgi_accession_id );
     my %mirko_seq_config = (
         allele   => $allele,
         gene_id  => $gene_id,
