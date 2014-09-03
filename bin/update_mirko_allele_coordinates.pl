@@ -2,6 +2,10 @@
 use warnings FATAL => 'all';
 use strict;
 
+# Note
+# Allele 25849 was updated manually because the design was on the +ve strand
+# and the gene it targeted was on the -ve strand.
+
 use HTGT::Utils::Tarmits;
 use HTGT::DBFactory;
 use Getopt::Long;
