@@ -36,6 +36,51 @@ use IO::String;
     }
 }
 
+{
+    my %human_gene_annotations;
+
+    sub set_human_gene_annotations {
+        %human_gene_annotations = shift;
+    }
+
+    sub get_human_gene_annotations {
+        my $htgt_schema = shift;
+
+        my $SELECT_ANNOTATED_DESIGNS_SQL = <<'EOT';
+        SELECT design_annotation.design_id, da_target_region_gene.ensembl_gene_id
+        FROM da_target_region_gene
+        JOIN da_human_annotation ON da_human_annotation.design_annotation_id = da_target_region_gene.design_annotation_id
+        JOIN design_annotation ON design_annotation.design_annotation_id = da_human_annotation.design_annotation_id
+        WHERE human_annotation_status_id = 'change_the_design_projects_gene'
+        ORDER BY design_annotation.design_id
+EOT
+
+        my $count_annot = scalar keys %human_gene_annotations;
+        unless ( %human_gene_annotations && ( $count_annot > 0 ) ) {
+            try {
+                my $annotations_sth = $htgt_schema->storage->dbh()->prepare( $SELECT_ANNOTATED_DESIGNS_SQL );
+                $annotations_sth->execute();
+
+                DEBUG('---------------------------------');
+                DEBUG('Human annotations found:');
+                while ( my $row = $annotations_sth->fetchrow_hashref() ) {
+                    DEBUG("human annotations : design id = " . $row->{ 'design_id' } . ", EnsEMBL gene id = " . $row->{ 'ensembl_gene_id' }) ;
+
+                    $human_gene_annotations{ $row->{ 'design_id' } } = $row->{ 'ensembl_gene_id' };
+                }
+                DEBUG('---------------------------------');
+            }
+            catch {
+                WARN('No human annotations for genes found, unable to create ensembl gene ids hash');
+                return;
+            };
+        }
+
+        return \%human_gene_annotations;
+    }
+
+}
+
 sub get_targeting_vector_and_allele_seq {
     my %params = validated_hash(
         \@_,
@@ -329,11 +374,23 @@ sub _get_design_projects {
 sub _get_transcript_id {
     my $design = shift;
 
-    my $ensembl_gene_id = $design->info->mgi_gene->ensembl_gene_id;
+    # check for cases where mgi_gene has multiple ensembl
+    my $human_gene_annotations = get_human_gene_annotations( $design->result_source->schema );
+
+    my $ensembl_gene_id;
+
+    if ( exists $human_gene_annotations->{ $design->id } ) {
+        $ensembl_gene_id = $human_gene_annotations->{ $design->id };
+    } else {
+        $ensembl_gene_id = $design->info->mgi_gene->ensembl_gene_id;
+    }
+
     unless ( $ensembl_gene_id ) {
-        WARN('No ensembl gene id, unable to find transcript');
+        WARN('Genbank : _get_transcript_id : No EnsEMBL gene id, unable to find transcript');
         return;
     }
+
+    DEBUG('Genbank : _get_transcript_id : EnsEMBL gene id identified = ' . $ensembl_gene_id);
 
     my $gene = HTGT::Utils::DesignFinder::Gene->new( ensembl_gene_id => $ensembl_gene_id );
 
@@ -341,18 +398,22 @@ sub _get_transcript_id {
     try {
         # use EnsEMBL canonical transcript if available, otherwise attempt to determine the best transcript
         $transcript = $gene->ensembl_gene->canonical_transcript;
-        # if ($transcript) { DEBUG('Setting transcript from gene EnsEMBL canonical transcript: ' . $transcript->display_id ); }
-        unless ($transcript) {
+        if ( $transcript ) {
+            DEBUG('Genbank : _get_transcript_id : using EnsEMBL genes canonical transcript with id: ' . $transcript->display_id );
+        }
+        else {
             $transcript = $gene->template_transcript;
-            DEBUG('Setting transcript from gene template transcript: ' . $transcript->display_id );
+            if ( $transcript ) {
+                DEBUG('Genbank : _get_transcript_id : using genes template transcript with id: ' . $transcript->display_id );
+            }
         }
     }
     catch {
         die $_ unless $_ =~ m/Failed to find a template transcript/;
         $transcript = ( $gene->all_transcripts )[0];
     };
-    unless ($transcript) {
-        WARN('Unable to find gene transcript');
+    unless ( $transcript ) {
+        WARN('Genbank : _get_transcript_id : Unable to find gene transcript');
         return;
     }
     return $transcript->stable_id;

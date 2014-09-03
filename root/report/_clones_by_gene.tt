@@ -8,7 +8,7 @@
             <th id='gene' class="noedit">Gene</th>
             <th id='epd_well' class="noedit">EPD Well</th>
             <th id='fp_well' class="noedit">FP Well</th>
-            [% IF (c.check_user_roles("eucomm_edit") OR c.check_user_roles("edit")) %]
+            [% IF c.check_user_roles("edit") %]
                 <th class='noedit' id="strain">Strain</th>                
                 <th class='noedit' id="pass_level">QC Pass</th>                
                 <th class='noedit' id="distribute">Distribute</th>
@@ -42,7 +42,7 @@
                     <td><a href="[% c.uri_for('/plate/view') %]?well_id=[% epd_well.id %]">[% epd_well.name %]</a></td>
                     <td><a href="[% c.uri_for('/plate/view') %]?well_id=[% epd_well.fp_well_id %]" >[% epd_well.fp_well_name %] </a></td>
                     <td>[% epd_well.strain %]</td>
-                    [% IF (c.check_user_roles("eucomm_edit") OR c.check_user_roles("edit")) %]
+                    [% IF c.check_user_roles("edit") %]
                         <td>[% epd_well.pass_level %]</td>
                         <td>[% epd_well.distribute %]</td>
                         <td>[% epd_well.five_prime_arm %]</td>
@@ -80,7 +80,7 @@
     var well_table =
         new TableKit('es_cells_for_gene[% timestamp %]', {
             editable: true,
-            [% IF c.check_user_roles("eucomm_edit") %]
+            [% IF c.check_user_roles("edit") %]
                 editAjaxURI: '[% c.uri_for('/report/_update_unassigned_es_cell_status')%]'
             [% ELSE %]
                 editable: false
