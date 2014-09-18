@@ -10,6 +10,8 @@
       <th>Bespoke Status</th>
       <th>Production centre</th>
       <th>Priority</th>
+      <th>Plan Completion Note</th>
+      <th>Plan Status</th>
       <th>Clones at WTSI</th>
     </tr>
   </thead>
@@ -21,6 +23,8 @@
       <td>[% u.bespoke_status %]</td>
       <td>[% u.group %]</td>
       <td>[% u.priority %]</td>
+      <td>[% u.mi_plan_completion_note %]</td>
+      <td>[% u.mi_plan_status %]</td>
       <td>[% u.clones_at_wtsi %]</td>
     </tr>
     [% END -%]
@@ -36,8 +40,10 @@
       <th>Bespoke Status</th>
       <th>Production Centre</th>
       <th>Priority</th>
+      <th>Plan Completion Note</th>
+      <th>Plan Status</th>
       <th>PIQ Wells</th>
-      <th>FP Ancestors</th>      
+      <th>FP Ancestors</th>
       <th>EPD Ancestors</th>
       <th>Picked clones</th>
       <th>Unpicked clones at WTSI</th>
@@ -51,6 +57,8 @@
       <td>[% f.bespoke_status %]</td>
       <td>[% f.group %]</td>
       <td>[% f.priority %]</td>
+      <td>[% f.mi_plan_completion_note %]</td>
+      <td>[% f.mi_plan_status %]</td>
       <td>[% f.piq_well_statuses %]</td>
       <td>[% f.fp_ancestors %]</td>
       <td>[% f.epd_ancestors %]</td>
@@ -70,8 +78,10 @@
       <th>Bespoke Status</th>
       <th>Production Centre</th>
       <th>Priority</th>
+      <th>Plan Completion Note</th>
+      <th>Plan Status</th>
       <th>PIQ Wells</th>
-      <th>FP Ancestors</th>      
+      <th>FP Ancestors</th>
       <th>EPD Ancestors</th>
       <th>Picked clones</th>
       <th>Unpicked clones at WTSI</th>
@@ -85,6 +95,8 @@
       <td>[% a.bespoke_status %]</td>
       <td>[% a.group %]</td>
       <td>[% a.priority %]</td>
+      <td>[% a.mi_plan_completion_note %]</td>
+      <td>[% a.mi_plan_status %]</td>
       <td>[% a.piq_well_statuses %]</td>
       <td>[% a.fp_ancestors %]</td>
       <td>[% a.epd_ancestors %]</td>

@@ -82,7 +82,7 @@ sub get_gene_info{
         SELECT intermediate_report.mgi_accession_id, intermediate_report.gene as marker_symbol,
         intermediate_report.consortium, intermediate_report.production_centre, intermediate_report.sub_project,
         intermediate_report.priority, intermediate_report.mi_plan_status, mi_plan_statuses.name as status,
-        mi_plan_status_stamps.updated_at as status_datetime
+        mi_plan_status_stamps.updated_at as status_datetime, mi_plans.completion_note as mi_plan_completion_note
         from intermediate_report left outer join mi_plan_status_stamps on mi_plan_status_stamps.mi_plan_id = intermediate_report.mi_plan_id join
         mi_plan_statuses on mi_plan_statuses.id = mi_plan_status_stamps.status_id join mi_plans on mi_plans.id = intermediate_report.mi_plan_id
         where (intermediate_report.consortium = 'BaSH' or intermediate_report.consortium = 'MGP' or intermediate_report.consortium = 'MRC')
@@ -103,12 +103,13 @@ sub get_gene_info{
         my $key = $r->{mgi_accession_id} . '_' . $r->{consortium} . '_' . $group;
 
         $gene_info->{$key} = {
-            mgi_accession_id => $r->{mgi_accession_id},
-            marker_symbol    => $r->{marker_symbol},
-            consortium       => $r->{consortium},
-            priority         => $r->{priority},
-            group            => $group,
-            mi_plan_status   => $r->{mi_plan_status}
+            mgi_accession_id         => $r->{mgi_accession_id},
+            marker_symbol            => $r->{marker_symbol},
+            consortium               => $r->{consortium},
+            priority                 => $r->{priority},
+            group                    => $group,
+            mi_plan_status           => $r->{mi_plan_status},
+            mi_plan_completion_note  => $r->{mi_plan_completion_note},
         };
 
         $gene_info->{$key}{has_mi_attempt} = 1 if defined $genes_with_attempts->{$key};
@@ -125,6 +126,7 @@ sub get_gene_info{
 
     my @qcs = keys %{$qc_started};
     my @qcns = keys %{$qc_not_started};
+
     return ( $gene_info, \@qcs, \@qcns );
 }
 
@@ -284,7 +286,6 @@ sub add_clone_availability_data {
 
     for my $ck ( keys %{$gene_info} ) {
         my ($mgi_acc_id) = $ck =~ /^(MGI:\d+)_/;
-
         my ( @clone_names, %cell_lines, @clones_at_wtsi, @clones_at_wtsi_MGP, @invalid_clones );
         my $has_non_JM8A1_N3_clone     = 0;
         my $clones_available_count     = 0;
@@ -527,7 +528,7 @@ sub get_escell_details {
 
     my $sql =
           qq[
-            SELECT genes.mgi_accession_id, targ_rep_es_cells.name, targ_rep_es_cells.parental_cell_line, 
+            SELECT genes.mgi_accession_id, targ_rep_es_cells.name, targ_rep_es_cells.parental_cell_line,
             targ_rep_es_cells.pipeline_id, targ_rep_es_cells.ikmc_project_id
             FROM genes join targ_rep_alleles on genes.id = targ_rep_alleles.gene_id
             join targ_rep_es_cells on targ_rep_es_cells.allele_id = targ_rep_alleles.id
