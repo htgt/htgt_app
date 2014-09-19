@@ -33,8 +33,8 @@ has primer_filters => (
     isa      => 'ArrayRef[Str]',
     traits   => [ 'Getopt', 'Array' ],
     cmd_flag => 'primer-filter',
-    default => sub { [] } 
-); 
+    default => sub { [] }
+);
 
 sub _build_fetch_seq_reads_cmd {
     which( 'fetch-seq-reads.sh' );
@@ -42,8 +42,8 @@ sub _build_fetch_seq_reads_cmd {
 
 sub execute {
     my ( $self, $opts, $args ) = @_;
-    
-    for my $project_name ( @{$args} ) {        
+
+    for my $project_name ( @{$args} ) {
         $self->fetch_reads_for_project( $project_name );
     }
 }
@@ -63,7 +63,7 @@ sub fetch_reads_for_project {
     my $primers = join "|", @{ $self->primer_filters };
 
     my $parser = HTGT::QC::Util::CigarParser->new( primers => [ '.*?' ] );
-    
+
     while ( my $bio_seq = $seq_in->next_seq ) {
         next unless $bio_seq->length;
         $num_reads++;
@@ -77,14 +77,48 @@ sub fetch_reads_for_project {
             unless ( $primer ) {
                 $self->log->debug("Skipping " . $bio_seq->id . ": primer not in $primers.");
                 next;
-            } 
+            }
         }
 
         # Exonerate won't eat sequences containing '-'
         ( my $seq = $bio_seq->seq ) =~ s/-/N/g;
         $bio_seq->seq( $seq );
 
-        my $primer = $parser->parse_query_id( $bio_seq->id )->{ primer };
+        #fix lims2 es cell runs by removing A/B/R from plate name
+        if ( $self->is_lims2 and $self->profile->is_es_cell ) {
+            my ( $plate, $well, $rest ) = $bio_seq->id =~ /([^_]+_\d+)_[A-Z]_\d(?:_\d)*([a-z]\d{2})(.*)/;
+            #strip any trailing numbers
+            #$plate =~ s/(\d)(?:_\d)+$/$1/;
+            $self->log->warn("Swapping " . $bio_seq->id . " with " . $plate . $rest );
+            $bio_seq->id( $plate . $well . $rest );
+        }
+
+        my $parsed = $parser->parse_query_id( $bio_seq->id );
+        my $primer = $parsed->{ primer };
+
+        if ( $self->profile->merge_wells ) {
+            $self->log->debug("Assembly run, merging wells and renaming primers");
+            my $to_replace = 'SP6R';
+            my %primer_map = (
+                'a' => 'SP6R',
+                'b' => 'T3',
+                'c' => 'P19F',
+                'd' => 'P19R',
+            );
+
+            #"HFA0003_B1a02.p1kSP6R" =~ /^(.+)([a-z]\d\d)(.*)$/
+            my ( $plate, $well, $rest ) = $bio_seq->id =~ /^(.+)([a-z]\d\d)(.*)$/;
+
+            #choose correct primer name based on well
+            my $primer_name = $primer_map{ substr($well, 0, 1) };
+            #alter well name - all get merged into A
+            substr($well, 0, 1) = "a";
+
+            $rest =~ s/$to_replace/$primer_name/;
+
+            my $corrected = $plate . $well . $rest;
+            $bio_seq->id( $corrected );
+        }
 
         if ( $self->profile->has_split_primers and $self->profile->split_primer_exists( $primer ) ) {
             my $original_id = $bio_seq->id; #store this so we can substitute each time

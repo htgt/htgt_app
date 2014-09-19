@@ -90,6 +90,7 @@ sub _build_alignments {
 
         #finally add the whole sequence
         $cigar->{ sequence } = $self->seq_reads->{ $query_id }->seq;
+        $cigar->{ read_length } = $self->seq_reads->{ $query_id }->length;
 
         #we might get more than one alignment, so store them all
 

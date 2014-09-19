@@ -77,7 +77,7 @@ sub collapse_primers {
     my %collapsed;
     for my $plate_type ( keys %{$analysis} ) {
         while ( my ( $primer, $primer_result ) = each %{ $analysis->{$plate_type} } ) {
-            $primer = $plate_type . '_' . $primer;            
+            $primer = $plate_type ? $plate_type . '_' . $primer : $primer;            
             $primer_result->{primer} = $primer;
             $collapsed{$primer} = $primer_result;
         }
@@ -95,9 +95,18 @@ sub parse_analysis {
         for my $query_dir ( $analysis_dir->children ) {
             for my $target_yaml ( $query_dir->children ) {
                 my $target_analysis = YAML::Any::LoadFile( $target_yaml );
-                my ( $plate_name, $plate_type, $well_name ) = $target_analysis->{query_well}
-                    =~ qr/^(.+)_([ABRZ])(?:_\d)*(?:\d)*([a-zA-Z]\d{2})$/
-                        or HTGT::QC::Exception->throw( "failed to parse plate_id/type/well from $target_analysis->{ query_well }" );
+                my ( $plate_name, $plate_type, $well_name );
+                if ( $self->is_lims2 ) {
+                    ( $plate_name, $well_name ) = $target_analysis->{query_well} =~ qr/^(.+)_(?:_\d)*(?:\d)*([a-zA-Z]\d{2})$/;
+                    $plate_type = '';
+                }
+                else {
+                    ( $plate_name, $plate_type, $well_name ) = $target_analysis->{query_well} =~ qr/^(.+)_([ABRZ])(?:_\d)*(?:\d)*([a-zA-Z]\d{2})$/;
+                }
+
+                HTGT::QC::Exception->throw( "failed to parse plate_id/type/well from $target_analysis->{ query_well }" )
+                    unless $plate_name and $well_name;
+
                 for my $p ( values %{ $target_analysis->{primers} } ) {
                     $analysis{ $plate_name . $well_name }{ $target_analysis->{target_id} }{ $plate_type }{ $p->{ primer } } = $p;
                 }

@@ -40,6 +40,17 @@ sub _process_qc_test_results {
     for my $subdir ( $self->analysis_dir->children ) {
         for my $yaml_file ( $subdir->children ) {
             my $analysis = YAML::Any::LoadFile( $yaml_file );
+
+            #es cell cant detect if soemthing has passed properly because the primers can be in different files,
+            #so you could have an LR in the _A and R2R in the _B, meaning they get processed separately.
+            #so we need to double check if we passed or not now we've definitely got all the primers
+            if ( $self->profile->is_es_cell ) {
+                #$self->log->debug( "Extracted primers:" . join ",", keys %extracted_primers );
+
+                #now do the re-check
+                $analysis->{ pass } = $self->profile->is_pass( $analysis->{ primers } );
+            }
+
             $self->_create_qc_test_result( $analysis );
         }
     }

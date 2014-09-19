@@ -317,6 +317,8 @@ sub get_qc_cmd {
         @args
     );
 
+    push @cmd, '--is-lims2' if $self->qc_run->config->is_lims2;
+
     return @cmd;
 }
 
