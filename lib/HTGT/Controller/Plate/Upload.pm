@@ -106,6 +106,7 @@ sub linkify_plate {
 sub parse_uploaded_data {
     my ( $self, $c, $plate_name, $skip_header ) = @_;
 
+$DB::single=1;
     my $upload = $c->req->upload( 'datafile' );
     die "Missing or invalid data file\n"
         unless $upload and $upload->size;
@@ -123,13 +124,13 @@ sub parse_uploaded_data {
         $line =~ s/\s+$//; # kill trailing whitespace
         $csv->parse( $line )
             or die "Parse error, line $. of input: " . $csv->error_input . "\n";
-        my @f = $csv->fields;
+        my @trimmed_fields = grep { s/^\s*|\s*$//g } $csv->fields;
         # Handle upload of [ plate, well, parent_spec, ... ]
-        if ( @f >= 3 ) {
-            $plate_name = shift @f;
-            shift @f; # discard well_name
+        if ( @trimmed_fields >= 3 ) {
+            $plate_name = shift @trimmed_fields;
+            shift @trimmed_fields; # discard well_name
         }
-        push @{ $data{ $plate_name } }, \@f;
+        push @{ $data{ $plate_name } }, \@trimmed_fields;
     }
 
     return \%data;        
