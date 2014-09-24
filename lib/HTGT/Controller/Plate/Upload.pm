@@ -106,7 +106,6 @@ sub linkify_plate {
 sub parse_uploaded_data {
     my ( $self, $c, $plate_name, $skip_header ) = @_;
 
-$DB::single=1;
     my $upload = $c->req->upload( 'datafile' );
     die "Missing or invalid data file\n"
         unless $upload and $upload->size;
