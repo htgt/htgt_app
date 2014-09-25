@@ -118,9 +118,9 @@ sub parse_uploaded_data {
     shift @lines if $skip_header;
 
     my %data;
-    
+
     while ( my $line = shift @lines ) {
-        $line =~ s/\s+$//; # kill trailing whitespace
+        $line =~ s/,*\s*$//; # kill trailing whitespace and stray trailing commas
         $csv->parse( $line )
             or die "Parse error, line $. of input: " . $csv->error_input . "\n";
         my @trimmed_fields = grep { s/^\s*|\s*$//g } $csv->fields;
