@@ -328,7 +328,7 @@ For QC Farm submission:
 \$HTGT_ENSEMBL_USER    : $HTGT_ENSEMBL_USER
 
 \$HTGT_DB              : $HTGT_DB
-\$HTGT_SHORT DB        : $HTGT_SHORT_DB
+\$HTGT_SHORT_DB        : $HTGT_SHORT_DB
 \$HTGT_ENV             : $HTGT_ENV
 END
 }
