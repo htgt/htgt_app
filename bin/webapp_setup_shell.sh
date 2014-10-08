@@ -427,7 +427,7 @@ function set_htgt_paths {
     export PERL_MM_OPT="INSTALL_BASE=$HTGT_MIGRATION_ROOT/perl5";
     export PERL5LIB="$HTGT_MIGRATION_ROOT/htgt_app/lib:$HTGT_MIGRATION_ROOT/perl5/lib/perl5"
     export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
-    export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_72_1/ensembl-compara/modules"
+    export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_76_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_76_1/ensembl-compara/modules"
     
     # Add nfs root to end of perl path for modules used by farm3
     export HTGT_MIGRATION_NFS_ROOT=/nfs/team87/htgt/htgt_root
