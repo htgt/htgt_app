@@ -33,10 +33,10 @@ sub project :PathPart( 'tools/mutagenesis_prediction/project' ) :Chained( '/' ) 
         or $c->detach( 'error', [ "missing or invalid project id" ] );
 
     try {
-        $c->stash( prediction => HTGT::Utils::MutagenesisPrediction::Design->new( design => $project->design ) );
+        $c->stash( prediction => HTGT::Utils::MutagenesisPrediction::Design->new( design => $project->design, cassette => $project->cassette ) );
     }
     catch {
-        $c->detach( 'error', [ $_ ] );        
+        $c->detach( 'error', [ $_ ] );
     };
 
 }
@@ -46,12 +46,12 @@ sub summary :PathPart( 'summary' ) :Chained( 'project' ) :Args(0) {
 
     try {
         my $summary = $c->stash->{prediction}->summary;
-        $c->response->content_type( 'application/json' );        
+        $c->response->content_type( 'application/json' );
         $c->response->body( to_json( $summary ) );
     }
     catch {
         $c->detach( 'error', [ $_ ] );
-    };    
+    };
 }
 
 sub detail :PathPart( 'detail' ) :Chained( 'project' ) :Args(0) {
@@ -59,12 +59,12 @@ sub detail :PathPart( 'detail' ) :Chained( 'project' ) :Args(0) {
 
     try {
         my $detail = $c->stash->{prediction}->detail;
-        $c->response->content_type( 'application/json' );        
+        $c->response->content_type( 'application/json' );
         $c->response->body( to_json( $detail ) );
     }
     catch {
         $c->detach( 'error', [ $_ ] );
-    };    
+    };
 }
 
 sub transcript :PathPart( 'transcript' ) :Chained( 'project' ) :Args {
@@ -87,8 +87,8 @@ sub transcript :PathPart( 'transcript' ) :Chained( 'project' ) :Args {
 sub error :Private {
     my ( $self, $c, $mesg ) = @_;
 
-    $c->log->error( $mesg );    
-    $c->response->content_type( 'application/json' );    
+    $c->log->error( $mesg );
+    $c->response->content_type( 'application/json' );
     $c->response->body( to_json( { error => $mesg } ) );
     $c->response->status( 500 );
 }
