@@ -661,7 +661,6 @@ sub to_hash {
         return {
             ensembl_transcript_id         => $self->transcript->stable_id,
             biotype                       => $self->transcript->biotype,
-            cassette                      => $self->cassette,
             floxed_transcript_description => $self->error,
             is_warning                    => 1
         };
