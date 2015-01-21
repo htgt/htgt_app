@@ -7,6 +7,7 @@ use Bio::SeqUtils;
 use HTGT::Utils::MutagenesisPrediction::Constants;
 use HTGT::Utils::MutagenesisPrediction::Exon;
 use HTGT::Utils::MutagenesisPrediction::ORF;
+use HTGT::Utils::MutagenesisPrediction::Cassette;
 use List::MoreUtils qw( lastval );
 
 has exons => (
@@ -23,6 +24,7 @@ has seq => (
     isa        => 'Bio::SeqI',
     init_arg   => undef,
     lazy_build => 1,
+    trigger    => \&clear_orfs,
 );
 
 has orfs => (
@@ -53,6 +55,15 @@ has description => (
     writer     => 'set_description',
     init_arg   => undef,
 );
+
+has cassette => (
+    is        => 'ro',
+    isa       => 'Maybe[HTGT::Utils::MutagenesisPrediction::Cassette]',
+    init_arg  => undef,
+    writer    => 'set_cassette',
+    trigger   => \&clear_seq,
+);
+
 
 with qw( MooseX::Log::Log4perl );
 
@@ -92,6 +103,14 @@ sub _build_seq {
 
     my $seq = Bio::Seq->new( -alphabet => 'dna', -seq => '' );
     Bio::SeqUtils->cat( $seq, map $_->seq, $self->exons );
+
+    if(defined $self->cassette){
+        my $from_splice_site  = $self->cassette->seq->trunc(
+                                   $self->cassette->first_splice_acceptor->end,
+                                   $self->cassette->first_polya_site->end,
+                                );
+        Bio::SeqUtils->cat( $seq, $from_splice_site );
+    }
 
     return $seq;
 }
@@ -155,8 +174,15 @@ sub is_nmd {
     }
 
     my $last_splice_site = ( $self->exons )[-1]->cdna_start;
+    if($self->cassette){
+        # no exons downstream of cassette so last splice junction is the
+        # end of final exon/start of cassette
+        $last_splice_site = ( $self->exons )[-1]->cdna_end;
+    }
 
     # If the coding stops more than $NMD_SPLICE_LIMIT bases from the last splice site, this is NMD
+    $self->log->debug("last splice site: $last_splice_site");
+    $self->log->debug("orf cdna_coding_end: ".$orf->cdna_coding_end);
     if ( $last_splice_site - $orf->cdna_coding_end > $NMD_SPLICE_LIMIT ) {
         return 1;
     }
@@ -176,6 +202,8 @@ sub is_frameshift {
 
     my $last_coding_exon = lastval { defined $_->cdna_coding_start( $orf ) } $self->exons;
 
+    return undef unless $last_coding_exon;
+
     my $phase = $last_coding_exon->phase( $orf );
     my $orig_phase = $last_coding_exon->ensembl_exon->phase;
 
@@ -189,22 +217,24 @@ sub is_frameshift {
 }
 
 sub detail_to_hash {
-    my $self = shift;
+    my ($self, $type) = @_;
+
+    $type ||= "floxed";
 
     my %h;
 
     if ( defined $self->predicted_orf ) {
         %h = (
-            floxed_transcript_description       => $self->description,
-            floxed_transcript_is_nmd            => $self->is_nmd,
-            floxed_transcript_is_frameshift     => $self->is_frameshift,
-            floxed_transcript_cdna_coding_start => $self->cdna_coding_start,
-            floxed_transcript_cdna_coding_end   => $self->cdna_coding_end,
-            floxed_transcript_translation       => $self->translation ? $self->translation->seq : ''
+            $type."_transcript_description"       => $self->description,
+            $type."_transcript_is_nmd"            => $self->is_nmd,
+            $type."_transcript_is_frameshift"     => $self->is_frameshift,
+            $type."_transcript_cdna_coding_start" => $self->cdna_coding_start,
+            $type."_transcript_cdna_coding_end"   => $self->cdna_coding_end,
+            $type."_transcript_translation"       => $self->translation ? $self->translation->seq : ''
         );
     }
     elsif ( defined $self->description ) {
-        %h = ( floxed_transcript_description => $self->description );
+        %h = ( $type."_transcript_description" => $self->description );
     }
 
     return \%h;
@@ -230,6 +260,15 @@ sub exons_to_hash {
     }
     return \%exons;
 }
+
+sub add_cassette {
+    my ($self, $cassette_name) = @_;
+
+    my $cassette = HTGT::Utils::MutagenesisPrediction::Cassette->new({ cassette_name => $cassette_name });
+
+    $self->set_cassette($cassette);
+}
+
 
 __PACKAGE__->meta->make_immutable;
 
