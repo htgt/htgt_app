@@ -52,7 +52,7 @@ case $1 in
         set_mono_prompt
         set_mono_ls
         ;;
-    *) 
+    *)
         printf "Usage: htgt sub-command [option]\n"
         printf "see 'htgt help' for commands and options\n"
 esac
@@ -98,12 +98,14 @@ function set_prompt {
 
 function esmp {
     export HTGT_SHORT_DB=esmp
+    export VECTOR_QC_DB=vector_qc_esmp
     synthesize_htgt_db
     set_prompt
 }
 
 function esmt {
     export HTGT_SHORT_DB=esmt
+    export VECTOR_QC_DB=vector_qc_esmt
     synthesize_htgt_db
     set_prompt
 }
@@ -205,10 +207,10 @@ function htgt_live {
 
 function devel_htgt {
     if [[ ("$1") && ( -d "$1" ) ]] ; then
-        export HTGT_DEV_ROOT=$1    
+        export HTGT_DEV_ROOT=$1
     elif [[ ( "$SAVED_HTGT_DEV_ROOT" )]] ; then
-        printf "==> switching to saved HTGT_DEV_ROOT: %s\n" $SAVED_HTGT_DEV_ROOT 
-        export HTGT_DEV_ROOT=$SAVED_HTGT_DEV_ROOT 
+        printf "==> switching to saved HTGT_DEV_ROOT: %s\n" $SAVED_HTGT_DEV_ROOT
+        export HTGT_DEV_ROOT=$SAVED_HTGT_DEV_ROOT
     else
         printf "==> no saved HTGT_DEV_ROOT, using current working directory: %s\n" `pwd`
         export HTGT_DEV_ROOT=`pwd`;
@@ -222,7 +224,7 @@ function htgt_devel {
 
 function htgt_webapp {
     if [[  "$1"   ]] ; then
-        HTGT_PORT=$1 
+        HTGT_PORT=$1
     elif [[ "$HTGT_WEBAPP_SERVER_PORT"  ]] ; then
         HTGT_PORT=$HTGT_WEBAPP_SERVER_PORT
     else
@@ -278,7 +280,7 @@ commands avaiable:
     service start|stop|restart      - manages apache and fcgi together
      -- or --
     fcgi start|stop|restart        - manages the fcgi server
-    apache start|stop|restart      - manages the apache webserver     
+    apache start|stop|restart      - manages the apache webserver
 
     colour       - use colours in the prompt and in directory listings
     mono         - don't use any colour in prompt or directory listings
@@ -299,7 +301,7 @@ HTGT useful environment variables:
 \$HTGT_MIGRATION_ROOT         : $HTGT_MIGRATION_ROOT
 \$HTGT_MIGRATION_NFS_ROOT     : $HTGT_MIGRATION_NFS_ROOT
 \$HTGT_DEV_ROOT               : $HTGT_DEV_ROOT
-\$SAVED_HTGT_DEV_ROOT         : $SAVED_HTGT_DEV_ROOT 
+\$SAVED_HTGT_DEV_ROOT         : $SAVED_HTGT_DEV_ROOT
 \$HTGT_LIVE_DEPLOYMENT_ROOT   : $HTGT_LIVE_DEPLOYMENT_ROOT
 \$HTGT_DEVEL_DEPLOYMENT_ROOT  : $HTGT_DEVEL_DEPLOYMENT_ROOT
 \$HTGT_WEBAPP_SERVER_PORT     : $HTGT_WEBAPP_SERVER_PORT
@@ -309,10 +311,10 @@ HTGT useful environment variables:
 For QC Farm submission:
 \$NFS_HTGT_DBCONNECT          : $NFS_HTGT_DBCONNECT
 \$NFS_HTGT_QC_CONF            : $NFS_HTGT_QC_CONF
-\$NFS_HTGT_QC_DIST_LOGIC_CONF : $NFS_HTGT_QC_DIST_LOGIC_CONF 
-\$NFS_LIMS2_REST_CLIENT_CONF  : $NFS_LIMS2_REST_CLIENT_CONF  
-\$NFS_GLOBAL_SYNTHVEC_DATADIR : $NFS_GLOBAL_SYNTHVEC_DATADIR 
-\$NFS_ENG_SEQ_BUILDER_CONF    : $NFS_ENG_SEQ_BUILDER_CONF 
+\$NFS_HTGT_QC_DIST_LOGIC_CONF : $NFS_HTGT_QC_DIST_LOGIC_CONF
+\$NFS_LIMS2_REST_CLIENT_CONF  : $NFS_LIMS2_REST_CLIENT_CONF
+\$NFS_GLOBAL_SYNTHVEC_DATADIR : $NFS_GLOBAL_SYNTHVEC_DATADIR
+\$NFS_ENG_SEQ_BUILDER_CONF    : $NFS_ENG_SEQ_BUILDER_CONF
 
 \$PERL5LIB :
 `perl -e 'print( join("\n", split(":", $ENV{PERL5LIB}))."\n")'`
@@ -428,7 +430,7 @@ function set_htgt_paths {
     export PERL5LIB="$HTGT_MIGRATION_ROOT/htgt_app/lib:$HTGT_MIGRATION_ROOT/perl5/lib/perl5"
     export PERL5LIB="$PERL5LIB:$HTGT_SHARED/Eng-Seq-Builder/lib:$HTGT_SHARED/HTGT-QC-Common/lib:$HTGT_SHARED/LIMS2-REST-Client/lib"
     export PERL5LIB="$PERL5LIB:/software/pubseq/PerlModules/Ensembl/www_76_1/ensembl/modules:/software/pubseq/PerlModules/Ensembl/www_76_1/ensembl-compara/modules"
-    
+
     # Add nfs root to end of perl path for modules used by farm3
     export HTGT_MIGRATION_NFS_ROOT=/nfs/team87/htgt/htgt_root
     check_and_set_dir HTGT_MIGRATION_NFS_ROOT $HTGT_MIGRATION_NFS_ROOT
@@ -437,13 +439,13 @@ function set_htgt_paths {
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/imits-perl-api/lib
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/LIMS2-REST-Client/lib
     export PERL5LIB=$PERL5LIB:$HTGT_MIGRATION_NFS_ROOT/Eng-Seq-Builder/lib
-      
+
     # And add nfs bin dirs to path
     export PATH=$PATH:$HTGT_MIGRATION_NFS_ROOT/htgt_app/bin:$HTGT_MIGRATION_NFS_ROOT/htgt_batch/bin
     export PATH=$PATH:$HTGT_MIGRATION_NFS_ROOT/Eng-Seq-Builder/bin:$HTGT_MIGRATION_NFS_ROOT/HTGT-QC-Common/bin:$HTGT_MIGRATION_NFS_ROOT/LIMS2-REST-Client/bin
 
     # export PERL_LOCAL_LIB_ROOT=$HTGT_MIGRATION_NFS_ROOT/perl5:$HTGT_MIGRATION_ROOT
-    
+
     # local config file locations all depend on HTGT_MIGRATION_ROOT
     check_and_set HTGT_DBCONNECT $HTGT_MIGRATION_ROOT/config/dbconnect.cfg
     check_and_set HTGT_QC_CONF $HTGT_MIGRATION_ROOT/config/qc.conf
@@ -471,7 +473,7 @@ function set_htgt_paths {
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
     export LSB_DEFAULTGROUP=team87-grp
-    
+
     set_batch_paths
 }
 
@@ -480,10 +482,10 @@ export NLS_DATE_FORMAT=DD-MON-RR
 export NLS_TIMESTAMP_FORMAT='YYYY-MM-DD HH24:MI:SSXFF'
 export NLS_TIMESTAMP_TZ_FORMAT='YYYY-MM-DD HH24:MI:SSXFFTZD'
 
-export ORA_NLS11=${ORACLE_HOME}/nls/data 
+export ORA_NLS11=${ORACLE_HOME}/nls/data
 
 
-if [[ -z ${TNS_ADMIN} ]] 
+if [[ -z ${TNS_ADMIN} ]]
 then
     export TNS_ADMIN=/etc
 fi
@@ -525,7 +527,6 @@ alias ls='ls -FqC'
 }
 
 export KERMITS_DB=external_mi_esmt
-export VECTOR_QC_DB=vector_qc_esmt
 
 printf "Environment setup for htgt2. Type help_htgt for help on commands.\n"
 if [[ -f $HOME/.htgt_local ]] ; then
