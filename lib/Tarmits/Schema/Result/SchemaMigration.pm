@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<schema_migrations>
 
 =cut
@@ -63,8 +51,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->add_unique_constraint("unique_schema_migrations", ["version"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5taaOndfRulVvnsPRa9lMQ
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zlzGs8mGEyGfgl4N4R4Jtw
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

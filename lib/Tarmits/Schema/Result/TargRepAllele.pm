@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<targ_rep_alleles>
 
 =cut
@@ -215,6 +203,12 @@ __PACKAGE__->table("targ_rep_alleles");
   is_nullable: 1
   size: 255
 
+=head2 wildtype_oligos_sequence
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -297,6 +291,8 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "taqman_downstream_del_assay_id",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "wildtype_oligos_sequence",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
 =head1 PRIMARY KEY
@@ -357,6 +353,41 @@ __PACKAGE__->has_many(
   { "foreign.allele_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
+
+=head2 targ_rep_allele_sequence_annotations
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::TargRepAlleleSequenceAnnotation>
+
+=cut
+
+__PACKAGE__->has_many(
+  "targ_rep_allele_sequence_annotations",
+  "Tarmits::Schema::Result::TargRepAlleleSequenceAnnotation",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 targ_rep_genotype_primers
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::TargRepGenotypePrimer>
+
+=cut
+
+__PACKAGE__->has_many(
+  "targ_rep_genotype_primers",
+  "Tarmits::Schema::Result::TargRepGenotypePrimer",
+  { "foreign.allele_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/6cKQiL2PaW/fxwjaaKNLA
+
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 # NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
@@ -472,5 +503,4 @@ sub mutation_method_name {
 
     return $self->targ_rep_mutation_method->name;
 }
-
 1;

@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<pipelines>
 
 =cut
@@ -110,8 +98,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("index_pipelines_on_name", ["name"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PGaxMq7Tt+8IjI6qLGhBoQ
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+i945g0RxSlWoZVqroIzhQ
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

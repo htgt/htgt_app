@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<targ_rep_distribution_qcs>
 
 =cut
@@ -155,12 +143,30 @@ __PACKAGE__->table("targ_rep_distribution_qcs");
 =head2 created_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 updated_at
 
   data_type: 'timestamp'
+  is_nullable: 0
+
+=head2 loxp_srpcr
+
+  data_type: 'varchar'
   is_nullable: 1
+  size: 255
+
+=head2 unspecified_repository_testing
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 neo_qpcr
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
 
 =cut
 
@@ -211,9 +217,15 @@ __PACKAGE__->add_columns(
   "es_cell_distribution_centre_id",
   { data_type => "integer", is_nullable => 1 },
   "created_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "updated_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
+  "loxp_srpcr",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "unspecified_repository_testing",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "neo_qpcr",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
 =head1 PRIMARY KEY
@@ -248,8 +260,8 @@ __PACKAGE__->add_unique_constraint(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/ymx3HKQoI4dUCysRJ+67w
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:w/0gS0aoDRILTTNz/Y0CmA
 
 # NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
 # If Foreign keys are add to this table we may see relationships defined multiple times.
