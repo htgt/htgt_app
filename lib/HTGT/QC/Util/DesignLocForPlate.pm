@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 
 use Sub::Exporter -setup => {
-    exports => [ 'design_loc_for_plate', 'design_loc_for_epd_plate' ]
+    exports => [ 'design_loc_for_plate', 'design_loc_for_epd_plate', 'design_loc_for_wh_epd_plate']
 };
 
 use HTGT::DBFactory;
@@ -23,8 +23,8 @@ sub design_loc_for_plate {
     my %design_loc_for;
 
     for my $well ( $plate->wells ) {
-        my $well_name = uc substr( $well->well_name, -3 );        
-        if ( my $di = $well->design_instance ) {            
+        my $well_name = uc substr( $well->well_name, -3 );
+        if ( my $di = $well->design_instance ) {
             $design_loc_for{ $well_name } = $di->design_id;
         }
     }
@@ -47,7 +47,7 @@ sub design_loc_for_epd_plate {
     #The expected design-loc depends on epd-plate name and well-loc
     foreach my $well ( $plate->wells ) {
         my $ep_well = $well->parent_well;
-        if ( my $di = $well->design_instance ) {            
+        if ( my $di = $well->design_instance ) {
           foreach my $child_well ($ep_well->child_wells){
             # Well name 'EPD0921_1_A05' has to be replaced by 'A05'
             if($child_well->well_name =~ /\S+_\S+_(\S+)/){
@@ -62,6 +62,29 @@ sub design_loc_for_epd_plate {
     return \%design_loc_for;
 }
 
+sub design_loc_for_wh_epd_plate {
+    my $plate_name = shift;
+    my $htgt = HTGT::DBFactory->connect( 'eucomm_vector' );
+
+    # Remove the T from the template name so we can find the actual EPD plate
+    $plate_name =~ s/^T//g;
+
+    my $plate = $htgt->resultset( 'Plate' )->find(
+        { name => $plate_name},
+        { prefetch => { 'wells' => 'design_instance' } }
+    ) or HTGT::QC::Exception->throw( "Plate $plate_name not found" );
+
+    my %design_loc_for;
+
+    foreach my $well ( $plate->wells ) {
+        my $well_name = uc substr( $well->well_name, -3 );
+        if ( my $di = $well->design_instance ) {
+            $design_loc_for{$plate_name}{ $well_name } = $di->design_id;
+        }
+    }
+
+    return \%design_loc_for;
+}
 1;
 
 __END__

@@ -10,7 +10,7 @@ use Sub::Exporter -setup => {
 
 use Log::Log4perl qw( :easy );
 use List::Util qw(sum);
-use HTGT::QC::Util::DesignLocForPlate qw( design_loc_for_plate  design_loc_for_epd_plate );
+use HTGT::QC::Util::DesignLocForPlate qw( design_loc_for_plate  design_loc_for_epd_plate design_loc_for_wh_epd_plate );
 use HTGT::Utils::WellName qw ( to384 );
 use HTGT::QC::DistributionLogic;
 use HTGT::QC::Config;
@@ -27,7 +27,7 @@ join qc_synvecs s on s.qc_synvec_id = r.qc_synvec_id
 join project p on p.design_id = s.design_id
 join mgi_gene m on m.mgi_gene_id = p.mgi_gene_id
 join qc_test_result_alignment_map am on am.qc_test_result_id = r.qc_test_result_id
-join qc_test_result_alignments a on a.qc_test_result_alignment_id = am.qc_test_result_alignment_id 
+join qc_test_result_alignments a on a.qc_test_result_alignment_id = am.qc_test_result_alignment_id
 join qc_test_result_align_regions g on g.qc_test_result_alignment_id = a.qc_test_result_alignment_id
 join qc_seq_reads sr on sr.qc_seq_read_id = a.qc_seq_read_id
 where r.qc_run_id = ?
@@ -57,23 +57,27 @@ sub fetch_test_results_for_run {
     }
 
     my $vector_stage = get_vector_stage( $qc_run );
-
-    my $expected_design_loc; 
-    if ( $vector_stage eq 'allele' ) {
-        $expected_design_loc = design_loc_for_epd_plate( $qc_run->template_plate->name );    
+DEBUG "Vector stage is $vector_stage";
+    my $expected_design_loc;
+    if ( $vector_stage eq 'allele' and $qc_run->template_plate->name =~ /WH/){
+       $expected_design_loc = design_loc_for_wh_epd_plate( $qc_run->template_plate->name );
+    }
+    elsif ( $vector_stage eq 'allele' ) {
+        $expected_design_loc = design_loc_for_epd_plate( $qc_run->template_plate->name );
     }
     else{
-        $expected_design_loc = design_loc_for_plate( $qc_run->template_plate->name );    
+        $expected_design_loc = design_loc_for_plate( $qc_run->template_plate->name );
     }
-
-    #we store all the plates, wells, primers and sequence read lengths in here. 
+DEBUG Dumper($expected_design_loc);
+    #we store all the plates, wells, primers and sequence read lengths in here.
     my %read_length_for;
 
-    #populate read_length_for with seq_reads data (from the qc_seq_reads table)  
+    #populate read_length_for with seq_reads data (from the qc_seq_reads table)
     for my $seq_read ( $qc_run->seq_reads ) {
         my $plate_name = $seq_read->plate_name;
         my $well_name  = lc $seq_read->well_name;
         my $primer_name = $seq_read->primer_name;
+DEBUG "Processing read for plate $plate_name, well $well_name, primer $primer_name";
         if ( $plate_name and $well_name and $primer_name ) {
             #only overwrite an existing primer sequence length if we have a longer one
             if ( exists $read_length_for{ $plate_name }{ $well_name }{ primers }{ $primer_name } ) {
@@ -81,7 +85,7 @@ sub fetch_test_results_for_run {
                     $read_length_for{$plate_name}{$well_name}{primers}{$primer_name} = $seq_read->length;
                 }
 
-                next; #we don't want to increase the num_reads 
+                next; #we don't want to increase the num_reads
             }
 
             $read_length_for{ $plate_name }{ $well_name }{ primers }{ $primer_name } = $seq_read->length;
@@ -104,7 +108,7 @@ sub fetch_test_results_for_run {
     #with the mapped plate names, so we can refer to the seq read data from our
     #database query. see comments in get_merged_data for more info
     if ( $merged_run ) {
-        #decode_json returns a hashref 
+        #decode_json returns a hashref
         my $merged_data = get_merged_data( decode_json $qc_run->plate_map, \%read_length_for );
 
         #overwrite read_length_for with our new merged data.
@@ -115,7 +119,7 @@ sub fetch_test_results_for_run {
     %read_length_for = %{ combine_ABRZ_plates( \%read_length_for) } if $vector_stage eq 'allele';
 
     my ( @results, %processed );
-    
+
     $schema->storage->dbh_do(
         sub {
             my $sth = $_[1]->prepare( $FETCH_RESULTS_SQL );
@@ -131,15 +135,15 @@ sub fetch_test_results_for_run {
                 if ( $vector_stage eq 'allele' ) {
                     $expected_design_id = $expected_design_loc->{ $plate_name }->{ $strict_well_name };
                     if ( ! $expected_design_id ) {
-                        if ( $r->{PLATE_NAME} =~ /(\S*EPD)0+(\S+)/ ) {
-                            my $tmp_plate = $1 . "0" . $2;
+                        if ( $r->{PLATE_NAME} =~ /(\S*EPD)(?:_WH)?0+(\S+)/ ) {
+                            my $tmp_plate = $1 . "00" . $2;
                             $expected_design_id = $expected_design_loc->{ $tmp_plate }->{ $strict_well_name } || '-';
                         }
                     }
                 } else {
                     $expected_design_id = $expected_design_loc->{ $strict_well_name } || '-';
                 }
-
+DEBUG "expected design ID: $expected_design_id";
                 my %result = (
                     plate_name         => $plate_name,
                     well_name          => $well_name,
@@ -165,7 +169,7 @@ sub fetch_test_results_for_run {
 
                     $primers{$this_primer}{read_length} = $r->{PRIMER_READ_LENGTH};
 
-                    my @regions;                    
+                    my @regions;
                     while ( $r and $r->{PLATE_NAME} eq $result{plate_name}
                                 and lc($r->{WELL_NAME}) eq $result{well_name}
                                     and $r->{DESIGN_ID} == $result{design_id}
@@ -204,7 +208,7 @@ sub fetch_test_results_for_run {
     # Merge in the number of primer reads (this has to be done in a
     # separate loop to catch wells with primer reads but no test
     # results)
-    
+
     #we only do this for results not processed above, as a last resort.
 
     for my $plate_name ( keys %read_length_for ) {
@@ -219,7 +223,7 @@ sub fetch_test_results_for_run {
                 num_reads           => $read_length_for{ $plate_name }{ $well_name }{ num_reads },
                 num_valid_primers   => 0,
                 valid_primers_score => 0,
-                map { $_ . '_read_length' => $read_length_for{$plate_name}{$well_name}{primers}{$_} } 
+                map { $_ . '_read_length' => $read_length_for{$plate_name}{$well_name}{primers}{$_} }
                     keys %{ $read_length_for{$plate_name}{$well_name}{primers} }
             };
         }
@@ -229,9 +233,9 @@ sub fetch_test_results_for_run {
         $a->{plate_name} cmp $b->{plate_name}
             || lc($a->{well_name}) cmp lc($b->{well_name})
                 || $b->{num_valid_primers} <=> $a->{num_valid_primers}
-                    || $b->{valid_primers_score} <=> $a->{valid_primers_score};        
+                    || $b->{valid_primers_score} <=> $a->{valid_primers_score};
     } @results;
-    
+
     return ( $qc_run, \@results  );
 }
 
@@ -290,10 +294,10 @@ sub get_merged_data {
 
     #attempt to find any different plates that share the same well name.
     #if they do, the primers and number of reads must be merged into a
-    #single entry in the hash using the new plate name (generated from the plate map). 
+    #single entry in the hash using the new plate name (generated from the plate map).
     #we have to do this because the qc test results table stores the NEW plate name,
     #but all the sequencing reads retain the old, unmapped one. so when comparing
-    #data from the two tables nothing matches.  
+    #data from the two tables nothing matches.
 
     for my $plate_name ( keys %{ $read_length_for } ) {
         for my $well_name ( keys %{ $read_length_for->{ $plate_name } }) {
@@ -306,7 +310,7 @@ sub get_merged_data {
                 next;
             }
 
-            #we've already done this one; each plate only has to be done once, as when we come across 
+            #we've already done this one; each plate only has to be done once, as when we come across
             #a plate we find ALL other plates with the same well name.
             next if exists $merged_data{ $new_plate_name }{ $well_name };
 

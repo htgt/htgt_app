@@ -65,6 +65,11 @@ sub fetch_reads_for_project {
     my $parser = HTGT::QC::Util::CigarParser->new( primers => [ '.*?' ] );
 
     while ( my $bio_seq = $seq_in->next_seq ) {
+        if($bio_seq->id =~ /(.*)_WH0([1-9]*)_(.*)/){
+            my $hacked_id = $1."_WH00".$2."_".$3;
+            $self->log->debug("Changed seq ID to $hacked_id");
+            $bio_seq->id($hacked_id);
+        }
         next unless $bio_seq->length;
         $num_reads++;
 

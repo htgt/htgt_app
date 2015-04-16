@@ -290,7 +290,7 @@ sub view_run_files :Local :Args(1) {
     if ( $c->request->param( 'prescreen' ) || $c->req->param( 'view' ) eq 'csvdl' ) {
         $config->is_prescreen(1); #either of these parameters means its a prescreen.
     }
-    
+
     my $run_dir = $config->basedir->subdir( $qc_run_id );
 
     $c->stash( qc_run_id => $qc_run_id );
@@ -346,7 +346,7 @@ sub view_run_files :Local :Args(1) {
                 for my $design_id ( sort keys %{ $project } ) {
                     my $cigar = $project->{ $design_id }; # this is HEPD0855_2_A_1a03.p1kLR
                     #columns should be identical to the non csv view (except for blast)
-                    push @results, [ 
+                    push @results, [
                         $cigar->{ plate },
                         $cigar->{ well },
                         $cigar->{ query_primer },
@@ -374,7 +374,7 @@ sub view_run_files :Local :Args(1) {
 
             return;
         }
-        
+
         #if they didnt request a csv then just give them the regular webpage
         $c->stash( projects => \%projects );
 
@@ -395,7 +395,7 @@ sub view_run_files :Local :Args(1) {
         $c->stash( error_msg => "Couldn't find params.yaml file. Directory listing:<br/>$listing" );
     };
 
-    return unless $run; 
+    return unless $run;
 
     my $sequencing_projects = $run->{ sequencing_projects };
     $c->stash( {
@@ -1248,8 +1248,8 @@ sub _suggest_plates {
 
     my @plates;
     if ( defined $search_string and length $search_string > 4 and defined $type ) {
-        @plates = $c->model( 'HTGTDB::Plate' )->search( 
-            { type => $type, name => { like => $search_string . '%' } } 
+        @plates = $c->model( 'HTGTDB::Plate' )->search(
+            { type => $type, name => { like => $search_string . '%' } }
         );
     }
 
@@ -1354,7 +1354,7 @@ sub submit_es_cell :Local :Args(0) {
                 $c->stash( error_msg => "No sequencing projects selected." );
                 return;
             }
-                
+
             $self->_submit_qc_job( $c, $params );
 
             #we don't return as we want to display the submit page to the user
@@ -1487,14 +1487,14 @@ sub _submit_qc_job {
 
         #add any additional type specific modifications in this if
         if ( $params->{ run_type } eq "vector" ) {
-            #only vector needs a plate_map. 
+            #only vector needs a plate_map.
             $run_params{ plate_map } = $params->{ plate_map };
-        } 
+        }
         elsif ( $params->{ run_type } eq "prescreen" ) {
             #prescreen goes to a diff directory, so notify our config instance that we're prescreen.
             $run_params{ config }->is_prescreen(1);
         }
-            
+
 
         #run holds all of these parameters together
         my $run = HTGT::QC::Run->init( %run_params );
@@ -1531,6 +1531,7 @@ sub _validated_es_cell_params {
     my ( $self, $c ) = @_;
     my @errors;
 
+    my $epd_plate_name_orig = $self->_clean_input( $c, $c->request->params->{ 'epd_plate_name' });
     my $epd_plate_name = $self->_clean_input( $c, $c->request->params->{ 'epd_plate_name' }) . '_';
     my $profile = $self->_clean_input( $c, $c->request->params->{ 'profile' } );
     my @projects = $c->request->param( 'sequencing_projects' );
@@ -1546,45 +1547,64 @@ sub _validated_es_cell_params {
         push @errors, "Please select a profile name from the drop-down menu";
     }
 
-    my $epd_plates = $c->model( 'HTGTDB::Plate' )->search({ 
-        'me.name' => { like => "$epd_plate_name%" } 
+    my $epd_plates = $c->model( 'HTGTDB::Plate' )->search({
+        'me.name' => { like => "$epd_plate_name%" }
     });
 
     #make sure the EPD plate is valid. a resultset in numeric context returns the count
     if ( $epd_plates == 0 ) {
-        push @errors, "Please select a valid EPD plate";
+        # Try searching for plate with the exact name entered
+        $epd_plates = $c->model( 'HTGTDB::Plate' )->search({
+            'me.name' => $epd_plate_name_orig,
+        });
+        $epd_plate_name = $epd_plate_name_orig;
+    }
+    if( $epd_plates == 0) {
+        push @errors, "Please select a valid EPD plate ($epd_plate_name not found)";
     }
     elsif ( $c->model( 'HTGTDB::Plate' )->search( { name => $template_plate_name, type => 'VTP' } ) == 0 ) {
         #get ep plates as an array instead of resultset object
         my @ep_plates = $epd_plates->related_resultset( 'wells' )
                                    ->related_resultset( 'parent_well' )
                                    ->related_resultset( 'plate' )
-                                   ->search( 
-                                        { 'plate.type' => 'EP' }, 
-                                        { distinct => 1 } 
+                                   ->search(
+                                        { 'plate.type' => 'EP' },
+                                        { distinct => 1 }
                                     );
-        
+
         #make sure we got an ep plate
+        unless ( @ep_plates ){
+            # try grandparents
+            @ep_plates = $epd_plates->related_resultset( 'wells' )
+                                   ->related_resultset( 'parent_well' )
+                                   ->related_resultset( 'parent_well' )
+                                   ->related_resultset( 'plate' )
+                                   ->search(
+                                        { 'plate.type' => 'EP' },
+                                        { distinct => 1 }
+                                    );
+        }
+
         if ( @ep_plates ) {
             #create template plate_data
             my @parent_wells;
             #get the parents of every plate we found
             for my $ep_plate ( @ep_plates ) {
-                my @parents = $ep_plate->wells->search( 
+                my @parents = $ep_plate->wells->search(
                     {},
-                    { order_by => { -asc => 'well_name' } } 
+                    { order_by => { -asc => 'well_name' } }
                 );
 
                 push @parent_wells, map { [ $ep_plate->name, $_->well_name ] } @parents;
             }
 
             #create the template plate if it doesn't exist
-            create_plate( 
-                $c->model( 'HTGTDB' )->schema, 
-                plate_name => $template_plate_name, 
-                plate_type => 'VTP', 
-                plate_data => [ @parent_wells ], 
-                created_by => $c->user->id 
+            create_plate(
+                $c->model( 'HTGTDB' )->schema,
+                plate_name => $template_plate_name,
+                plate_type => 'VTP',
+                plate_data => [ @parent_wells ],
+                created_by => $c->user->id
             );
         }
         else {
@@ -1636,7 +1656,7 @@ sub get_grouped_es_cell_plates {
     #we also have to restore them after the user has submitted.
     my %grouped_projects;
     for my $project ( @all_projects ) {
-        my ( $stripped ) = $project =~ /(\w+_\d)_\w/; #HEPD0848_1_R -> HEPD0848_1
+        my ( $stripped ) = $project =~ /(\w+)_\w$/; #HEPD0848_1_R -> HEPD0848_1
         next unless $stripped; #this will happen to mislabelled plates with no trailing letter
         $grouped_projects{ $stripped }++;
     }
@@ -1654,11 +1674,10 @@ sub ungroup_es_cell_plates {
     for my $project ( @selected_projects ) {
         #find any projects with the same start as our selected projects,
         #so for HEPD0848_1 we expect HEPD0848_1_A, HEPD0848_1_B, etc.
-        #we do $project_ to remove projects that have been mislabelled and 
+        #we do $project_ to remove projects that have been mislabelled and
         #don't have a trailing letter
         push @ungrouped, sort grep { $_ =~ /^${project}_/ } @all_projects;
     }
-
     return @ungrouped;
 }
 
