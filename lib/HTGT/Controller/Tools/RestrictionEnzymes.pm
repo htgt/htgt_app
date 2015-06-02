@@ -37,6 +37,8 @@ Catalyst Controller.
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->stash->{do_not_show_login} = 'true';
+
     my $es_clone_name     = $self->get_param( $c, 'es_clone_name', '' );
     my $max_fragment_size = $self->get_param( $c, 'max_fragment_size', 0 );
     my $tolerance         = $self->get_param( $c, 'tolerance', 25 );
@@ -49,7 +51,7 @@ sub index :Path :Args(0) {
     $c->stash->{probes}            = $self->init_probes( $c, $probe );
 
     return unless $c->req->param( 'find_restriction_enzymes' );
-    
+
     unless ( $es_clone_name =~ $VALID_CLONE_NAME_RX ) {
         $c->stash->{error_msg} = "Invalid ES clone name: '$es_clone_name'";
         return;
@@ -57,7 +59,7 @@ sub index :Path :Args(0) {
 
     unless ( $max_fragment_size =~ $VALID_FRAG_SIZE_RX ) {
         $c->stash->{error_msg} = "Invalid max fragment size: '$max_fragment_size'";
-        return;        
+        return;
     }
 
     unless ( $tolerance =~ $VALID_TOLERANCE_RX and $tolerance >= 0 and $tolerance < 100 ) {
@@ -69,7 +71,7 @@ sub index :Path :Args(0) {
         $c->stash->{error_msg} = "Invalid probe: '$probe'";
         return;
     }
-    
+
     try {
         my $sb = HTGT::Utils::SouthernBlot->new(
             es_clone_name     => $es_clone_name,
@@ -81,9 +83,9 @@ sub index :Path :Args(0) {
         $c->stash->{probe_desc}     = $VALID_PROBES{$probe};
         $c->stash->{fivep_enzymes}  = $sb->fivep_enzymes;
         $c->stash->{threep_enzymes} = $sb->threep_enzymes;
-        $self->audit( $c );        
+        $self->audit( $c );
     }
-    catch {       
+    catch {
         $c->stash->{error_msg} = UNIVERSAL::isa( $_, 'Throwable::Error' ) ? $_->message : $_;
         delete $c->stash->{fivep_enzymes};
         delete $c->stash->{threep_enzymes};
@@ -116,10 +118,10 @@ sub init_probes {
             name    => $_,
             desc    => $VALID_PROBES{$_},
             checked => $_ eq $probe ? "checked" : undef
-        };        
+        };
     }
 
-    return \@probes;    
+    return \@probes;
 }
 
 sub audit {
