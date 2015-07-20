@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<users>
 
 =cut
@@ -88,6 +76,17 @@ __PACKAGE__->table("users");
   default_value: false
   is_nullable: 1
 
+=head2 reset_password_token
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 reset_password_sent_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
 =head2 es_cell_distribution_centre_id
 
   data_type: 'integer'
@@ -97,6 +96,18 @@ __PACKAGE__->table("users");
 =head2 legacy_id
 
   data_type: 'integer'
+  is_nullable: 1
+
+=head2 admin
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 1
+
+=head2 active
+
+  data_type: 'boolean'
+  default_value: true
   is_nullable: 1
 
 =cut
@@ -125,10 +136,18 @@ __PACKAGE__->add_columns(
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "is_contactable",
   { data_type => "boolean", default_value => \"false", is_nullable => 1 },
+  "reset_password_token",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "reset_password_sent_at",
+  { data_type => "timestamp", is_nullable => 1 },
   "es_cell_distribution_centre_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "legacy_id",
   { data_type => "integer", is_nullable => 1 },
+  "admin",
+  { data_type => "boolean", default_value => \"false", is_nullable => 1 },
+  "active",
+  { data_type => "boolean", default_value => \"true", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -159,7 +178,7 @@ __PACKAGE__->add_unique_constraint("index_users_on_email", ["email"]);
 
 =head1 RELATIONS
 
-=head2 es_cell_distribution_centre
+=head2 es_cell_distribution_centres
 
 Type: belongs_to
 
@@ -168,14 +187,14 @@ Related object: L<Tarmits::Schema::Result::TargRepEsCellDistributionCentre>
 =cut
 
 __PACKAGE__->belongs_to(
-  "es_cell_distribution_centre",
+  "es_cell_distribution_centres",
   "Tarmits::Schema::Result::TargRepEsCellDistributionCentre",
   { id => "es_cell_distribution_centre_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -195,8 +214,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jVMZ9goZ3nHKQ/XiiMOjjw
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7eunyDkooFg+qLXr+rCiDQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<qc_results>
 
 =cut
@@ -103,6 +91,21 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("index_qc_results_on_description", ["description"]);
 
 =head1 RELATIONS
+
+=head2 mi_attempts_qc_critical_region_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MiAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mi_attempts_qc_critical_region_qpcrs",
+  "Tarmits::Schema::Result::MiAttempt",
+  { "foreign.qc_critical_region_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 =head2 mi_attempts_qc_five_prime_cassette_integrities
 
@@ -191,6 +194,36 @@ __PACKAGE__->has_many(
   "mi_attempts_qc_loxp_confirmations",
   "Tarmits::Schema::Result::MiAttempt",
   { "foreign.qc_loxp_confirmation_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mi_attempts_qc_loxp_srpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MiAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mi_attempts_qc_loxp_srpcrs",
+  "Tarmits::Schema::Result::MiAttempt",
+  { "foreign.qc_loxp_srpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mi_attempts_qc_loxp_srpcrs_and_sequencing
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MiAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mi_attempts_qc_loxp_srpcrs_and_sequencing",
+  "Tarmits::Schema::Result::MiAttempt",
+  { "foreign.qc_loxp_srpcr_and_sequencing_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
@@ -284,9 +317,489 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 mouse_allele_mods_qc_critical_region_qpcrs
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8ispOfnBv5/c+/RvZR4kag
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_critical_region_qpcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_critical_region_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_five_prime_cassette_integrities
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_five_prime_cassette_integrities",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_five_prime_cassette_integrity_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_five_prime_lr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_five_prime_lr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_five_prime_lr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_homozygous_loa_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_homozygous_loa_sr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_homozygous_loa_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_lacz_count_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_lacz_count_qpcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_lacz_count_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_lacz_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_lacz_sr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_lacz_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_loa_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_loa_qpcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_loa_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_loxp_confirmations
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_loxp_confirmations",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_loxp_confirmation_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_loxp_srpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_loxp_srpcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_loxp_srpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_loxp_srpcrs_and_sequencing
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_loxp_srpcrs_and_sequencing",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_loxp_srpcr_and_sequencing_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_mutant_specific_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_mutant_specific_sr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_mutant_specific_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_neo_count_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_neo_count_qpcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_neo_count_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_neo_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_neo_sr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_neo_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_southern_blots
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_southern_blots",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_southern_blot_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_three_prime_lr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_three_prime_lr_pcrs",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_three_prime_lr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_qc_tv_backbone_assays
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_qc_tv_backbone_assays",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.qc_tv_backbone_assay_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_critical_region_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_critical_region_qpcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_critical_region_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_five_prime_cassette_integrities
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_five_prime_cassette_integrities",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_five_prime_cassette_integrity_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_five_prime_lr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_five_prime_lr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_five_prime_lr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_homozygous_loa_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_homozygous_loa_sr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_homozygous_loa_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_lacz_count_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_lacz_count_qpcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_lacz_count_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_lacz_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_lacz_sr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_lacz_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_loa_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_loa_qpcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_loa_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_loxp_confirmations
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_loxp_confirmations",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_loxp_confirmation_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_loxp_srpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_loxp_srpcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_loxp_srpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_loxp_srpcrs_and_sequencing
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_loxp_srpcrs_and_sequencing",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_loxp_srpcr_and_sequencing_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_mutant_specific_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_mutant_specific_sr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_mutant_specific_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_neo_count_qpcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_neo_count_qpcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_neo_count_qpcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_neo_sr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_neo_sr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_neo_sr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_southern_blots
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_southern_blots",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_southern_blot_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_three_prime_lr_pcrs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_three_prime_lr_pcrs",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_three_prime_lr_pcr_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotype_attempts_qc_tv_backbone_assays
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotype_attempts_qc_tv_backbone_assays",
+  "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.qc_tv_backbone_assay_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:f9HMSynOjJpr4H+jkV+lrQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<genes>
 
 =cut
@@ -173,6 +161,23 @@ __PACKAGE__->table("genes");
   is_nullable: 1
   size: 255
 
+=head2 komp_repo_geneid
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 marker_name
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 cm_position
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -230,6 +235,12 @@ __PACKAGE__->add_columns(
   "feature_type",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "synonyms",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "komp_repo_geneid",
+  { data_type => "integer", is_nullable => 1 },
+  "marker_name",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "cm_position",
   { data_type => "varchar", is_nullable => 1, size => 255 },
 );
 
@@ -303,9 +314,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 targ_rep_real_alleles
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-05-08 13:08:11
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mw+aIeI5sKjSzPcdDW+q3A
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::TargRepRealAllele>
+
+=cut
+
+__PACKAGE__->has_many(
+  "targ_rep_real_alleles",
+  "Tarmits::Schema::Result::TargRepRealAllele",
+  { "foreign.gene_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Hlv+PwKHNFOOLpktfq3dNg
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<targ_rep_es_cells>
 
 =cut
@@ -250,18 +238,83 @@ __PACKAGE__->table("targ_rep_es_cells");
 =head2 created_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 updated_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 production_centre_auto_update
 
   data_type: 'boolean'
   default_value: true
-  is_nullable: 0
+  is_nullable: 1
+
+=head2 user_qc_loxp_srpcr_and_sequencing
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_karyotype_spread
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_karyotype_pcr
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_mouse_clinic_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 user_qc_chr1
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_chr11
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_chr8
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_chry
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 user_qc_lacz_qpcr
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 255
+
+=head2 ikmc_project_foreign_id
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 real_allele_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
 
 =cut
 
@@ -344,11 +397,33 @@ __PACKAGE__->add_columns(
   "legacy_id",
   { data_type => "integer", is_nullable => 1 },
   "created_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "updated_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "production_centre_auto_update",
-  { data_type => "boolean", default_value => \"true", is_nullable => 0 },
+  { data_type => "boolean", default_value => \"true", is_nullable => 1 },
+  "user_qc_loxp_srpcr_and_sequencing",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_karyotype_spread",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_karyotype_pcr",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_mouse_clinic_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "user_qc_chr1",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_chr11",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_chr8",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_chry",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "user_qc_lacz_qpcr",
+  { data_type => "varchar", is_nullable => 1, size => 255 },
+  "ikmc_project_foreign_id",
+  { data_type => "integer", is_nullable => 1 },
+  "real_allele_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -377,9 +452,51 @@ __PACKAGE__->set_primary_key("id");
 
 __PACKAGE__->add_unique_constraint("targ_rep_index_es_cells_on_name", ["name"]);
 
+=head1 RELATIONS
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mHu8/WkVmVCgd84RZK37tg
+=head2 real_allele
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::TargRepRealAllele>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "real_allele",
+  "Tarmits::Schema::Result::TargRepRealAllele",
+  { id => "real_allele_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+=head2 user_qc_mouse_clinic
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::Centre>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "user_qc_mouse_clinic",
+  "Tarmits::Schema::Result::Centre",
+  { id => "user_qc_mouse_clinic_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:u1rt2dwA6XJoQUumMEjr5A
 
 # NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
 # If Foreign keys are add to this table we may see relationships defined multiple times.

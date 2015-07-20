@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<mi_attempts>
 
 =cut
@@ -45,7 +33,7 @@ __PACKAGE__->table("mi_attempts");
 =head2 es_cell_id
 
   data_type: 'integer'
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 mi_date
 
@@ -58,7 +46,7 @@ __PACKAGE__->table("mi_attempts");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 colony_name
+=head2 external_ref
 
   data_type: 'varchar'
   is_nullable: 1
@@ -212,7 +200,7 @@ __PACKAGE__->table("mi_attempts");
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 2
+  size: 3
 
 =head2 qc_southern_blot_id
 
@@ -331,6 +319,150 @@ __PACKAGE__->table("mi_attempts");
   is_nullable: 1
   size: 512
 
+=head2 legacy_es_cell_id
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 qc_lacz_count_qpcr_id
+
+  data_type: 'integer'
+  default_value: 1
+  is_nullable: 1
+
+=head2 qc_critical_region_qpcr_id
+
+  data_type: 'integer'
+  default_value: 1
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 qc_loxp_srpcr_id
+
+  data_type: 'integer'
+  default_value: 1
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 qc_loxp_srpcr_and_sequencing_id
+
+  data_type: 'integer'
+  default_value: 1
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 cassette_transmission_verified
+
+  data_type: 'date'
+  is_nullable: 1
+
+=head2 cassette_transmission_verified_auto_complete
+
+  data_type: 'boolean'
+  is_nullable: 1
+
+=head2 mutagenesis_factor_id
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_total_embryos_injected
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_total_embryos_survived
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_total_transfered
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_no_founder_pups
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_pcr_num_assays
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_pcr_num_positive_results
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_surveyor_num_assays
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_surveyor_num_positive_results
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_t7en1_num_assays
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_t7en1_num_positive_results
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_total_num_mutant_founders
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 crsp_num_founders_selected_for_breading
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_loa_num_assays
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_loa_num_positive_results
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 allele_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 real_allele_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 founder_num_assays
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 founder_num_positive_results
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 assay_type
+
+  data_type: 'text'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -342,12 +474,12 @@ __PACKAGE__->add_columns(
     sequence          => "mi_attempts_id_seq",
   },
   "es_cell_id",
-  { data_type => "integer", is_nullable => 0 },
+  { data_type => "integer", is_nullable => 1 },
   "mi_date",
   { data_type => "date", is_nullable => 0 },
   "status_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
-  "colony_name",
+  "external_ref",
   { data_type => "varchar", is_nullable => 1, size => 125 },
   "updated_by_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
@@ -406,7 +538,7 @@ __PACKAGE__->add_columns(
   "number_of_live_glt_offspring",
   { data_type => "integer", is_nullable => 1 },
   "mouse_allele_type",
-  { data_type => "varchar", is_nullable => 1, size => 2 },
+  { data_type => "varchar", is_nullable => 1, size => 3 },
   "qc_southern_blot_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "qc_five_prime_lr_pcr_id",
@@ -447,6 +579,75 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "genotyping_comment",
   { data_type => "varchar", is_nullable => 1, size => 512 },
+  "legacy_es_cell_id",
+  { data_type => "integer", is_nullable => 1 },
+  "qc_lacz_count_qpcr_id",
+  { data_type => "integer", default_value => 1, is_nullable => 1 },
+  "qc_critical_region_qpcr_id",
+  {
+    data_type      => "integer",
+    default_value  => 1,
+    is_foreign_key => 1,
+    is_nullable    => 1,
+  },
+  "qc_loxp_srpcr_id",
+  {
+    data_type      => "integer",
+    default_value  => 1,
+    is_foreign_key => 1,
+    is_nullable    => 1,
+  },
+  "qc_loxp_srpcr_and_sequencing_id",
+  {
+    data_type      => "integer",
+    default_value  => 1,
+    is_foreign_key => 1,
+    is_nullable    => 1,
+  },
+  "cassette_transmission_verified",
+  { data_type => "date", is_nullable => 1 },
+  "cassette_transmission_verified_auto_complete",
+  { data_type => "boolean", is_nullable => 1 },
+  "mutagenesis_factor_id",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_total_embryos_injected",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_total_embryos_survived",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_total_transfered",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_no_founder_pups",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_pcr_num_assays",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_pcr_num_positive_results",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_surveyor_num_assays",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_surveyor_num_positive_results",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_t7en1_num_assays",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_t7en1_num_positive_results",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_total_num_mutant_founders",
+  { data_type => "integer", is_nullable => 1 },
+  "crsp_num_founders_selected_for_breading",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_loa_num_assays",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_loa_num_positive_results",
+  { data_type => "integer", is_nullable => 1 },
+  "allele_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "real_allele_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "founder_num_assays",
+  { data_type => "integer", is_nullable => 1 },
+  "founder_num_positive_results",
+  { data_type => "integer", is_nullable => 1 },
+  "assay_type",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -467,15 +668,35 @@ __PACKAGE__->set_primary_key("id");
 
 =over 4
 
-=item * L</colony_name>
+=item * L</external_ref>
 
 =back
 
 =cut
 
-__PACKAGE__->add_unique_constraint("index_mi_attempts_on_colony_name", ["colony_name"]);
+__PACKAGE__->add_unique_constraint("index_mi_attempts_on_colony_name", ["external_ref"]);
 
 =head1 RELATIONS
+
+=head2 allele
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::TargRepAllele>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "allele",
+  "Tarmits::Schema::Result::TargRepAllele",
+  { id => "allele_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
 
 =head2 blast_strain
 
@@ -490,11 +711,26 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::Strain",
   { id => "blast_strain_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
+);
+
+=head2 colonies
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::Colony>
+
+=cut
+
+__PACKAGE__->has_many(
+  "colonies",
+  "Tarmits::Schema::Result::Colony",
+  { "foreign.mi_attempt_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 colony_background_strain
@@ -510,10 +746,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::Strain",
   { id => "colony_background_strain_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -532,21 +768,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 mi_attempt_status_stamps
-
-Type: has_many
-
-Related object: L<Tarmits::Schema::Result::MiAttemptStatusStamp>
-
-=cut
-
-__PACKAGE__->has_many(
-  "mi_attempt_status_stamps",
-  "Tarmits::Schema::Result::MiAttemptStatusStamp",
-  { "foreign.mi_attempt_id" => "self.id" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 mi_plan
 
 Type: belongs_to
@@ -559,22 +780,42 @@ __PACKAGE__->belongs_to(
   "mi_plan",
   "Tarmits::Schema::Result::MiPlan",
   { id => "mi_plan_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 phenotype_attempts
+=head2 mouse_allele_mods
 
 Type: has_many
 
-Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
 
 =cut
 
 __PACKAGE__->has_many(
-  "phenotype_attempts",
-  "Tarmits::Schema::Result::PhenotypeAttempt",
+  "mouse_allele_mods",
+  "Tarmits::Schema::Result::MouseAlleleMod",
   { "foreign.mi_attempt_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 qc_critical_region_qpcr
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::QcResult>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "qc_critical_region_qpcr",
+  "Tarmits::Schema::Result::QcResult",
+  { id => "qc_critical_region_qpcr_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
 );
 
 =head2 qc_five_prime_cassette_integrity
@@ -590,10 +831,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_five_prime_cassette_integrity_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -610,10 +851,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_five_prime_lr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -630,10 +871,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_homozygous_loa_sr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -650,10 +891,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_lacz_sr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -670,10 +911,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_loa_qpcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -690,10 +931,50 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_loxp_confirmation_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+=head2 qc_loxp_srpcr
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::QcResult>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "qc_loxp_srpcr",
+  "Tarmits::Schema::Result::QcResult",
+  { id => "qc_loxp_srpcr_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+=head2 qc_loxp_srpcr_and_sequencing
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::QcResult>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "qc_loxp_srpcr_and_sequencing",
+  "Tarmits::Schema::Result::QcResult",
+  { id => "qc_loxp_srpcr_and_sequencing_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -710,10 +991,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_mutant_specific_sr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -730,10 +1011,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_neo_count_qpcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -750,10 +1031,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_neo_sr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -770,10 +1051,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_southern_blot_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -790,10 +1071,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_three_prime_lr_pcr_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -810,10 +1091,30 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::QcResult",
   { id => "qc_tv_backbone_assay_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+=head2 real_allele
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::TargRepRealAllele>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "real_allele",
+  "Tarmits::Schema::Result::TargRepRealAllele",
+  { id => "real_allele_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -829,7 +1130,7 @@ __PACKAGE__->belongs_to(
   "status",
   "Tarmits::Schema::Result::MiAttemptStatus",
   { id => "status_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 test_cross_strain
@@ -845,10 +1146,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::Strain",
   { id => "test_cross_strain_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -865,16 +1166,16 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::User",
   { id => "updated_by_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BFE7F3PZgTsWCMoCzwS16g
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fACVo4x60/NPu/b/5V5ehA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<targ_rep_es_cell_distribution_centres>
 
 =cut
@@ -51,12 +39,12 @@ __PACKAGE__->table("targ_rep_es_cell_distribution_centres");
 =head2 created_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 updated_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =cut
 
@@ -71,9 +59,9 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "created_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "updated_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -99,14 +87,15 @@ Related object: L<Tarmits::Schema::Result::User>
 =cut
 
 __PACKAGE__->has_many(
-  "targ_rep_distribution_qc",
-  "Tarmits::Schema::Result::TargRepDistributionQc",
+  "users",
+  "Tarmits::Schema::Result::User",
   { "foreign.es_cell_distribution_centre_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UT9b17+xJr67UtK9oeSC6w
+
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:tpUUg8FZiV+RB/6i3Gvejg
 
 # NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
 # If Foreign keys are add to this table we may see relationships defined multiple times.

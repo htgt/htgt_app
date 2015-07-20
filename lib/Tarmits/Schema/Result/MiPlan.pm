@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<mi_plans>
 
 =cut
@@ -64,7 +52,7 @@ __PACKAGE__->table("mi_plans");
 
   data_type: 'integer'
   is_foreign_key: 1
-  is_nullable: 0
+  is_nullable: 1
 
 =head2 production_centre_id
 
@@ -157,6 +145,78 @@ __PACKAGE__->table("mi_plans");
   default_value: false
   is_nullable: 1
 
+=head2 completion_note
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 100
+
+=head2 recovery
+
+  data_type: 'boolean'
+  is_nullable: 1
+
+=head2 conditional_tm1c
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 0
+
+=head2 ignore_available_mice
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 0
+
+=head2 number_of_es_cells_received
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 es_cells_received_on
+
+  data_type: 'date'
+  is_nullable: 1
+
+=head2 es_cells_received_from_id
+
+  data_type: 'integer'
+  is_nullable: 1
+
+=head2 point_mutation
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 0
+
+=head2 conditional_point_mutation
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 0
+
+=head2 allele_symbol_superscript
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 report_to_public
+
+  data_type: 'boolean'
+  default_value: true
+  is_nullable: 0
+
+=head2 completion_comment
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 mutagenesis_via_crispr_cas9
+
+  data_type: 'boolean'
+  default_value: false
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -174,7 +234,7 @@ __PACKAGE__->add_columns(
   "status_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "priority_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "production_centre_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "created_at",
@@ -207,6 +267,32 @@ __PACKAGE__->add_columns(
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
   "phenotype_only",
   { data_type => "boolean", default_value => \"false", is_nullable => 1 },
+  "completion_note",
+  { data_type => "varchar", is_nullable => 1, size => 100 },
+  "recovery",
+  { data_type => "boolean", is_nullable => 1 },
+  "conditional_tm1c",
+  { data_type => "boolean", default_value => \"false", is_nullable => 0 },
+  "ignore_available_mice",
+  { data_type => "boolean", default_value => \"false", is_nullable => 0 },
+  "number_of_es_cells_received",
+  { data_type => "integer", is_nullable => 1 },
+  "es_cells_received_on",
+  { data_type => "date", is_nullable => 1 },
+  "es_cells_received_from_id",
+  { data_type => "integer", is_nullable => 1 },
+  "point_mutation",
+  { data_type => "boolean", default_value => \"false", is_nullable => 0 },
+  "conditional_point_mutation",
+  { data_type => "boolean", default_value => \"false", is_nullable => 0 },
+  "allele_symbol_superscript",
+  { data_type => "text", is_nullable => 1 },
+  "report_to_public",
+  { data_type => "boolean", default_value => \"true", is_nullable => 0 },
+  "completion_comment",
+  { data_type => "text", is_nullable => 1 },
+  "mutagenesis_via_crispr_cas9",
+  { data_type => "boolean", default_value => \"false", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -235,6 +321,22 @@ __PACKAGE__->set_primary_key("id");
 
 =item * L</sub_project_id>
 
+=item * L</is_bespoke_allele>
+
+=item * L</is_conditional_allele>
+
+=item * L</is_deletion_allele>
+
+=item * L</is_cre_knock_in_allele>
+
+=item * L</is_cre_bac_allele>
+
+=item * L</conditional_tm1c>
+
+=item * L</phenotype_only>
+
+=item * L</mutagenesis_via_crispr_cas9>
+
 =back
 
 =cut
@@ -246,6 +348,14 @@ __PACKAGE__->add_unique_constraint(
     "consortium_id",
     "production_centre_id",
     "sub_project_id",
+    "is_bespoke_allele",
+    "is_conditional_allele",
+    "is_deletion_allele",
+    "is_cre_knock_in_allele",
+    "is_cre_bac_allele",
+    "conditional_tm1c",
+    "phenotype_only",
+    "mutagenesis_via_crispr_cas9",
   ],
 );
 
@@ -263,10 +373,10 @@ __PACKAGE__->belongs_to(
   "consortium",
   "Tarmits::Schema::Result::Consortia",
   { id => "consortium_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 es_qc_comment
+=head2 es_qc_comments
 
 Type: belongs_to
 
@@ -275,14 +385,14 @@ Related object: L<Tarmits::Schema::Result::MiPlanEsQcComment>
 =cut
 
 __PACKAGE__->belongs_to(
-  "es_qc_comment",
+  "es_qc_comments",
   "Tarmits::Schema::Result::MiPlanEsQcComment",
   { id => "es_qc_comment_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -298,7 +408,7 @@ __PACKAGE__->belongs_to(
   "gene",
   "Tarmits::Schema::Result::Gene",
   { id => "gene_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 mi_attempts
@@ -312,6 +422,21 @@ Related object: L<Tarmits::Schema::Result::MiAttempt>
 __PACKAGE__->has_many(
   "mi_attempts",
   "Tarmits::Schema::Result::MiAttempt",
+  { "foreign.mi_plan_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mi_plan_es_cell_qcs
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MiPlanEsCellQc>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mi_plan_es_cell_qcs",
+  "Tarmits::Schema::Result::MiPlanEsCellQc",
   { "foreign.mi_plan_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
@@ -331,6 +456,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 mouse_allele_mods
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.mi_plan_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 phenotype_attempts
 
 Type: has_many
@@ -342,6 +482,21 @@ Related object: L<Tarmits::Schema::Result::PhenotypeAttempt>
 __PACKAGE__->has_many(
   "phenotype_attempts",
   "Tarmits::Schema::Result::PhenotypeAttempt",
+  { "foreign.mi_plan_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 phenotyping_productions
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::PhenotypingProduction>
+
+=cut
+
+__PACKAGE__->has_many(
+  "phenotyping_productions",
+  "Tarmits::Schema::Result::PhenotypingProduction",
   { "foreign.mi_plan_id" => "self.id" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
@@ -358,7 +513,12 @@ __PACKAGE__->belongs_to(
   "priority",
   "Tarmits::Schema::Result::MiPlanPriority",
   { id => "priority_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
 );
 
 =head2 production_centre
@@ -374,10 +534,10 @@ __PACKAGE__->belongs_to(
   "Tarmits::Schema::Result::Centre",
   { id => "production_centre_id" },
   {
-    is_deferrable => 1,
+    is_deferrable => 0,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
@@ -393,7 +553,7 @@ __PACKAGE__->belongs_to(
   "status",
   "Tarmits::Schema::Result::MiPlanStatus",
   { id => "status_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 sub_project
@@ -408,12 +568,12 @@ __PACKAGE__->belongs_to(
   "sub_project",
   "Tarmits::Schema::Result::MiPlanSubProject",
   { id => "sub_project_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Sb1fy/quya40Vb0iPlizcg
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rOft600w1pBypBCxLBattQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
