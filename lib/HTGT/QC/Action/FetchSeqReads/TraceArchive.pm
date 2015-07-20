@@ -70,6 +70,12 @@ sub fetch_reads_for_project {
             $self->log->debug("Changed seq ID to $hacked_id");
             $bio_seq->id($hacked_id);
         }
+        else{
+            my $hacked_id = $bio_seq->id;
+            $hacked_id =~ s/HEPD1023_4/HEPD1024_2/g;
+            $bio_seq->id($hacked_id);
+        }
+
         next unless $bio_seq->length;
         $num_reads++;
 
