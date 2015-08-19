@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<phenotype_attempt_status_stamps>
 
 =cut
@@ -129,7 +117,7 @@ __PACKAGE__->belongs_to(
   "phenotype_attempt",
   "Tarmits::Schema::Result::PhenotypeAttempt",
   { id => "phenotype_attempt_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 status
@@ -144,12 +132,12 @@ __PACKAGE__->belongs_to(
   "status",
   "Tarmits::Schema::Result::PhenotypeAttemptStatus",
   { id => "status_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9mdGSzAy6RkXnBbc/KCB6Q
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cC4QbiP1Afsz/y9OD+EHJg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

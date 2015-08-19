@@ -299,7 +299,7 @@ sub hide_non_distributable_products {
 
     my @products = $self->targrep_schema->resultset($type)->search(
         {
-            pipeline_id      => { IN => [ 1, 4, 6, 7, 8 ] },
+            pipeline_id      => { IN => [ 1, 4, 6, 7 ] },
             report_to_public => 1,
         },
         {
@@ -330,6 +330,13 @@ sub hide_targ_rep_product {
             $self->log->error("Cannot find $type $name in targ vec, unable to hide");
             next;
         }
+
+        if(!$object->production_centre_auto_update){
+            $self->log->info("Not hiding $type $name as production_centre_auto_update is false");
+            next;
+        }
+
+        $self->log->info("Hiding $type $name in targ_rep");
 
         try {
             if ( $type eq 'TargRepEsCell') {
@@ -705,6 +712,12 @@ sub find_create_update_targ_vec {
             my $targ_vec = $self->create_targeting_vector( \%tv_data );
             return $self->commit ? $targ_vec->{id} : 0;
         }
+    }
+
+    if (!$targ_vec->production_centre_auto_update) {
+        $self->log->debug( '"production_cente_auto_update" is set to false. Targeting vector ' . $targ_vec->name . ' has not been updated.' );
+        # do NOT update targ_vec if production_centre_auto_update is false.
+        return 0;
     }
     $self->check_and_update_targeting_vector_info( $targ_vec, \%tv_data );
     return $targ_vec->id;

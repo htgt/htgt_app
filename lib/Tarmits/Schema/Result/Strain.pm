@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<strains>
 
 =cut
@@ -46,7 +34,7 @@ __PACKAGE__->table("strains");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 50
+  size: 100
 
 =head2 created_at
 
@@ -57,6 +45,18 @@ __PACKAGE__->table("strains");
 
   data_type: 'timestamp'
   is_nullable: 1
+
+=head2 mgi_strain_accession_id
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 100
+
+=head2 mgi_strain_name
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 100
 
 =cut
 
@@ -69,11 +69,15 @@ __PACKAGE__->add_columns(
     sequence          => "strains_id_seq",
   },
   "name",
-  { data_type => "varchar", is_nullable => 0, size => 50 },
+  { data_type => "varchar", is_nullable => 0, size => 100 },
   "created_at",
   { data_type => "timestamp", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "mgi_strain_accession_id",
+  { data_type => "varchar", is_nullable => 1, size => 100 },
+  "mgi_strain_name",
+  { data_type => "varchar", is_nullable => 1, size => 100 },
 );
 
 =head1 PRIMARY KEY
@@ -149,6 +153,36 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 mouse_allele_mods_colony_background_strains
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_colony_background_strains",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.colony_background_strain_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 mouse_allele_mods_deleter_strains
+
+Type: has_many
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->has_many(
+  "mouse_allele_mods_deleter_strains",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { "foreign.deleter_strain_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 phenotype_attempts
 
 Type: has_many
@@ -165,8 +199,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:uYjln+S3Szfv8GCx/ZF56w
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cC93/P8/Nr/UVoIKw2rnmA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

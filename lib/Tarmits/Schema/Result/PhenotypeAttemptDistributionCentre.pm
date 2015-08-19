@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<phenotype_attempt_distribution_centres>
 
 =cut
@@ -92,6 +80,30 @@ __PACKAGE__->table("phenotype_attempt_distribution_centres");
   is_nullable: 1
   size: 255
 
+=head2 mouse_allele_mod_id
+
+  data_type: 'integer'
+  is_foreign_key: 1
+  is_nullable: 1
+
+=head2 reconciled
+
+  data_type: 'varchar'
+  default_value: 'not checked'
+  is_nullable: 0
+  size: 255
+
+=head2 reconciled_at
+
+  data_type: 'timestamp'
+  is_nullable: 1
+
+=head2 available
+
+  data_type: 'boolean'
+  default_value: true
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -120,6 +132,19 @@ __PACKAGE__->add_columns(
   { data_type => "timestamp", is_nullable => 1 },
   "distribution_network",
   { data_type => "varchar", is_nullable => 1, size => 255 },
+  "mouse_allele_mod_id",
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "reconciled",
+  {
+    data_type => "varchar",
+    default_value => "not checked",
+    is_nullable => 0,
+    size => 255,
+  },
+  "reconciled_at",
+  { data_type => "timestamp", is_nullable => 1 },
+  "available",
+  { data_type => "boolean", default_value => \"true", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -148,7 +173,7 @@ __PACKAGE__->belongs_to(
   "centre",
   "Tarmits::Schema::Result::Centre",
   { id => "centre_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 deposited_material
@@ -163,7 +188,27 @@ __PACKAGE__->belongs_to(
   "deposited_material",
   "Tarmits::Schema::Result::DepositedMaterial",
   { id => "deposited_material_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
+=head2 mouse_allele_mod
+
+Type: belongs_to
+
+Related object: L<Tarmits::Schema::Result::MouseAlleleMod>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "mouse_allele_mod",
+  "Tarmits::Schema::Result::MouseAlleleMod",
+  { id => "mouse_allele_mod_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
 );
 
 =head2 phenotype_attempt
@@ -178,12 +223,12 @@ __PACKAGE__->belongs_to(
   "phenotype_attempt",
   "Tarmits::Schema::Result::PhenotypeAttempt",
   { id => "phenotype_attempt_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rW846YsJf2U1PLpUevK25g
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:edLrLx+rHlEDkq1AtcZvKQ
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

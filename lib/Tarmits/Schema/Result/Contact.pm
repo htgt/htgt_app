@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<contacts>
 
 =cut
@@ -58,6 +46,12 @@ __PACKAGE__->table("contacts");
   data_type: 'timestamp'
   is_nullable: 1
 
+=head2 report_to_public
+
+  data_type: 'boolean'
+  default_value: true
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -74,6 +68,8 @@ __PACKAGE__->add_columns(
   { data_type => "timestamp", is_nullable => 1 },
   "updated_at",
   { data_type => "timestamp", is_nullable => 1 },
+  "report_to_public",
+  { data_type => "boolean", default_value => \"true", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -120,8 +116,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XZ9Kbso46vwr2vEKf21J/w
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:gfgXR/TNA0cAq+G9u4F8Eg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

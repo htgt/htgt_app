@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<mi_plan_status_stamps>
 
 =cut
@@ -129,7 +117,7 @@ __PACKAGE__->belongs_to(
   "mi_plan",
   "Tarmits::Schema::Result::MiPlan",
   { id => "mi_plan_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 status
@@ -144,12 +132,12 @@ __PACKAGE__->belongs_to(
   "status",
   "Tarmits::Schema::Result::MiPlanStatus",
   { id => "status_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FZovBwXXETlPYvRzqsbVtA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Jp/Tt/IYRcUMFsSg4BHjdg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

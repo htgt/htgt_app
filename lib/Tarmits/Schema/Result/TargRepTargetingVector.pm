@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<targ_rep_targeting_vectors>
 
 =cut
@@ -68,7 +56,6 @@ __PACKAGE__->table("targ_rep_targeting_vectors");
 =head2 report_to_public
 
   data_type: 'boolean'
-  default_value: true
   is_nullable: 0
 
 =head2 pipeline_id
@@ -79,12 +66,35 @@ __PACKAGE__->table("targ_rep_targeting_vectors");
 =head2 created_at
 
   data_type: 'timestamp'
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 updated_at
 
   data_type: 'timestamp'
+  is_nullable: 0
+
+=head2 ikmc_project_foreign_id
+
+  data_type: 'integer'
   is_nullable: 1
+
+=head2 mgi_allele_name_prediction
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 40
+
+=head2 allele_type_prediction
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 10
+
+=head2 production_centre_auto_update
+
+  data_type: 'boolean'
+  default_value: true
+  is_nullable: 0
 
 =cut
 
@@ -105,13 +115,21 @@ __PACKAGE__->add_columns(
   "intermediate_vector",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "report_to_public",
-  { data_type => "boolean", default_value => \"true", is_nullable => 0 },
+  { data_type => "boolean", is_nullable => 0 },
   "pipeline_id",
   { data_type => "integer", is_nullable => 1 },
   "created_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
   "updated_at",
-  { data_type => "timestamp", is_nullable => 1 },
+  { data_type => "timestamp", is_nullable => 0 },
+  "ikmc_project_foreign_id",
+  { data_type => "integer", is_nullable => 1 },
+  "mgi_allele_name_prediction",
+  { data_type => "varchar", is_nullable => 1, size => 40 },
+  "allele_type_prediction",
+  { data_type => "varchar", is_nullable => 1, size => 10 },
+  "production_centre_auto_update",
+  { data_type => "boolean", default_value => \"true", is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -141,8 +159,8 @@ __PACKAGE__->set_primary_key("id");
 __PACKAGE__->add_unique_constraint("index_targvec", ["name"]);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:/Q1t/q6I+Qr3k7fvQ7kTug
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ueVNfVuoq2dmcYBapg4+Lw
 
 # NOTE Currently Foreign keys are missing from TargRep tables. Therefore relationships have been defined manually.
 # If Foreign keys are add to this table we may see relationships defined multiple times.

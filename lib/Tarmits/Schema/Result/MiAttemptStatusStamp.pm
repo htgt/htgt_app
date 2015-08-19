@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<mi_attempt_status_stamps>
 
 =cut
@@ -45,7 +33,6 @@ __PACKAGE__->table("mi_attempt_status_stamps");
 =head2 mi_attempt_id
 
   data_type: 'integer'
-  is_foreign_key: 1
   is_nullable: 0
 
 =head2 status_id
@@ -75,7 +62,7 @@ __PACKAGE__->add_columns(
     sequence          => "mi_attempt_status_stamps_id_seq",
   },
   "mi_attempt_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
+  { data_type => "integer", is_nullable => 0 },
   "status_id",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "created_at",
@@ -117,21 +104,6 @@ __PACKAGE__->add_unique_constraint(
 
 =head1 RELATIONS
 
-=head2 mi_attempt
-
-Type: belongs_to
-
-Related object: L<Tarmits::Schema::Result::MiAttempt>
-
-=cut
-
-__PACKAGE__->belongs_to(
-  "mi_attempt",
-  "Tarmits::Schema::Result::MiAttempt",
-  { id => "mi_attempt_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
-);
-
 =head2 status
 
 Type: belongs_to
@@ -144,12 +116,12 @@ __PACKAGE__->belongs_to(
   "status",
   "Tarmits::Schema::Result::MiAttemptStatus",
   { id => "status_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:bFiHbDpEXjlNp77ikbBpig
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mYGBQEOSOl6XDqN3lhsTDA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

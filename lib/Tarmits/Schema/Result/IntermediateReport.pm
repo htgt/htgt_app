@@ -15,18 +15,6 @@ use warnings;
 
 use base 'DBIx::Class::Core';
 
-=head1 COMPONENTS LOADED
-
-=over 4
-
-=item * L<DBIx::Class::InflateColumn::DateTime>
-
-=back
-
-=cut
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 TABLE: C<intermediate_report>
 
 =cut
@@ -64,7 +52,7 @@ __PACKAGE__->table("intermediate_report");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 100
+  size: 255
 
 =head2 gene
 
@@ -104,8 +92,9 @@ __PACKAGE__->table("intermediate_report");
 
 =head2 ikmc_project_id
 
-  data_type: 'integer'
+  data_type: 'varchar'
   is_nullable: 1
+  size: 255
 
 =head2 mutation_sub_type
 
@@ -117,13 +106,13 @@ __PACKAGE__->table("intermediate_report");
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 75
+  size: 255
 
 =head2 genetic_background
 
   data_type: 'varchar'
   is_nullable: 0
-  size: 50
+  size: 255
 
 =head2 assigned_date
 
@@ -286,7 +275,7 @@ __PACKAGE__->add_columns(
   "priority",
   { data_type => "varchar", is_nullable => 1, size => 255 },
   "production_centre",
-  { data_type => "varchar", is_nullable => 0, size => 100 },
+  { data_type => "varchar", is_nullable => 0, size => 255 },
   "gene",
   { data_type => "varchar", is_nullable => 0, size => 75 },
   "mgi_accession_id",
@@ -300,13 +289,13 @@ __PACKAGE__->add_columns(
   "phenotype_attempt_status",
   { data_type => "varchar", is_nullable => 1, size => 50 },
   "ikmc_project_id",
-  { data_type => "integer", is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 255 },
   "mutation_sub_type",
   { data_type => "varchar", is_nullable => 1, size => 100 },
   "allele_symbol",
-  { data_type => "varchar", is_nullable => 0, size => 75 },
+  { data_type => "varchar", is_nullable => 0, size => 255 },
   "genetic_background",
-  { data_type => "varchar", is_nullable => 0, size => 50 },
+  { data_type => "varchar", is_nullable => 0, size => 255 },
   "assigned_date",
   { data_type => "date", is_nullable => 1 },
   "assigned_es_cell_qc_in_progress_date",
@@ -378,8 +367,8 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07022 @ 2013-01-16 12:06:33
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:eByNEsnCk1F+OlwLHtLYMw
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-03-17 16:32:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:R3/RmI+7EqOZPqxPymyA8g
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
