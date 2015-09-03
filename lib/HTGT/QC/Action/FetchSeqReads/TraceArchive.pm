@@ -72,7 +72,7 @@ sub fetch_reads_for_project {
         }
         else{
             my $hacked_id = $bio_seq->id;
-            $hacked_id =~ s/HEPD1023_4/HEPD1024_2/g;
+            $hacked_id =~ s/HEPD01002_1/HEPD1002_1/g;
             $bio_seq->id($hacked_id);
         }
 
