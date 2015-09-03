@@ -469,6 +469,8 @@ function set_htgt_paths {
     export PATH=$PATH:${ORACLE_HOME}
     export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5
 #export PERL5LIB=$PERL5LIB:${ORACLE_HOME}/lib/perl5:/nfs/WWWdev/SHARED_docs/lib/core
+    # HTTP API to file system
+    export FILE_API_URL=http://t87-batch-farm3.internal.sanger.ac.uk:3000/
 
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
