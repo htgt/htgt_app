@@ -473,7 +473,7 @@ function set_htgt_paths {
     export FILE_API_URL=http://t87-batch-farm3.internal.sanger.ac.uk:3000/
 
     # Location of LIMS2 managed sequencing files for use in QC
-    export LIMS2_SEQ_FILE_DIR=/warehouse/team87_wh01/lims2_managed_sequencing_data
+    export LIMS2_SEQ_FILE_DIR=/warehouse/team229_wh01/lims2_managed_sequencing_data
 
 # Sanger authorisation
     export PERL5LIB=$PERL5LIB:/nfs/WWWdev/SHARED_docs/lib/core:/nfs/WWWdev/SANGER_docs/perl:/nfs/WWWdev/SANGER_docs/bin-offline:/nfs/WWWdev/INTWEB_docs/lib/badger:/nfs/WWWdev/CCC_docs/lib/:/software/badger/lib/perl5
