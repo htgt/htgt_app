@@ -1,0 +1,49 @@
+.menu_container {
+background-color:#f5f5ff;
+border: solid 1px #000070;
+font-size:8pt;
+margin:0px;
+}
+.menu_container a{
+text-decoration:none;
+font-size:8pt;
+}
+.menu_container dd a:hover {
+border-bottom:dotted 1px red;
+font-size:8pt;
+}
+.menu_container dt{
+background:#e5e5ff url(/gfx/hash_title.png);
+border-bottom: solid 1px #000070;
+padding:2px;
+font-family:arial,helvetica,sans;
+font-weight:bold;
+font-size:8pt;
+height:auto;
+}
+.menu_container dt p {
+background: url(/gfx/close.gif) top right no-repeat;
+margin: 0px;
+font-size:8pt;
+padding:0px;
+padding-right:18px;
+}
+#first_shadow{
+border-top: solid 2px #d6d6d6;
+}
+#first_no_shadow{
+border-top: none;
+}
+.menu_container dd {
+border-top: dotted 1px #c4c4c8;
+margin:0px;
+padding:2px;
+font-size:8pt;
+color:#666666;
+font-family:arial,helvetica,sans;
+}
+
+#jstooldiv {
+  margin:0px;
+  padding:0px;
+}
