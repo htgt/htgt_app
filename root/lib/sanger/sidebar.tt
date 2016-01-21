@@ -45,10 +45,6 @@
             url     = c.uri_for('/report')
         },
         {
-            text    = 'BioMart',
-            url     = c.uri_for('/biomart')
-        },
-        {
             text    = 'EP Summary',
             url     = c.uri_for('/report/ep_summary')
         },
@@ -151,7 +147,7 @@
             header  = 1,
             edit    = 1,
             eucomm  = 1,
-            url     = c.uri_for('/newqc')            
+            url     = c.uri_for('/newqc')
         },
         {
             text    = 'Latest Runs',
@@ -256,7 +252,7 @@
             url     = c.uri_for('/esdistributionfailures'),
             edit    = 1,
             eucomm  = 1
-        },           
+        },
         ######
         {
             text    = 'Bespoke Allele Tracking',
@@ -296,9 +292,9 @@
             url     = c.uri_for('/mutagenesispredictions'),
             edit    = 1,
             eucomm  = 1
-        },           
+        },
     ];
-    
+
 -%]
 
 [%
@@ -347,7 +343,7 @@
                         [% IF entry.csvurl -%]
                             <span class="sidebar">
                                 <a class="sidebarcsv" href="[% entry.csvurl %]">(csv)</a>
-                                <a href="[% entry.url %]">[% entry.text %]</a> 
+                                <a href="[% entry.url %]">[% entry.text %]</a>
                             </span>
                         [% ELSE %]
                             <a class="sidebar" href="[% entry.url %]">[% entry.text %]</a>
@@ -371,7 +367,7 @@
             $('site_wide_search_results').update('');
             $('gene_search').reset();
         }
-        
+
         function runGeneSearch( page_num, search ) {
             Element.show('gene_search_spinner');
             Element.hide('naked_content');
@@ -383,7 +379,7 @@
                     evalScripts:true,
                     onSuccess: function(request){
                         Element.hide('gene_search_spinner')
-                    }, 
+                    },
                     parameters: $H(
                         {
                             query: search,
@@ -394,7 +390,7 @@
                 }
             );
         }
-        
+
         new Form.Element.Observer(
             'gene_name',
             2,

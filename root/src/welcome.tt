@@ -1,5 +1,5 @@
 <style type="text/css" media="screen">
-    h3, #htgt_search, 
+    h3, #htgt_search,
     #summary_text, #htgt_links { text-align: center; }
     #htgt_search { padding-top: 10px; padding-bottom: 10px; }
     #htgt_links { padding-bottom: 10px; }
@@ -44,7 +44,6 @@
     </div>
     <div class="clearbig"></div>
 <div id="htgt_links">
-    <a class="link" href="[% c.uri_for('/biomart') %]">BioMart (Advanced Query Interface)</a>
     <a class="link" href="[% c.uri_for('/design/designlist/list_designs') %]">Browse for Designs</a>
 </div>
 [% ELSE %]
@@ -85,9 +84,9 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
     [% UNLESS c.user -%]
     Event.observe(window, 'load', function () { sidebar_off(); });
     [% END -%]
-    
+
     Event.observe('gene_search_main_reset', 'click', function() { resetMainGeneSearch(); });
-    
+
     function resetMainGeneSearch() {
         Element.hide('main_spinner');
         Element.show('summary_heading');
@@ -95,7 +94,7 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
         $('search_results').update('');
         $('gene_search_main').reset();
     }
-    
+
     function runMainGeneSearch( page_num, search ) {
         Element.show('main_spinner');
         new Ajax.Updater(
@@ -108,7 +107,7 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
                     Element.hide('main_spinner');
                     Element.hide('summary_heading');
                     Element.hide('summary_table');
-                }, 
+                },
                 parameters: $H({
                     query: search,
                     centre: 1,
@@ -118,7 +117,7 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
             }
         );
     }
-    
+
     new Form.Element.Observer(
         'gene_name_main',
         2,
