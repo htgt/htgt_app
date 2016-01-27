@@ -26,9 +26,9 @@ vibrants
 #7c004f vibrant4	pantone 2612
 */
 
-@import url("/static/bundle/stylesheets/z-menu.css");
+@import url("http://www.sanger.ac.uk/htgt/htgt2/static/bundle/stylesheets/z-menu.css");
 
-body { 
+body {
   margin:           0;
   font-family:      Arial, Helvetica, Sans-serif;
   font-size:        10pt;
@@ -136,7 +136,7 @@ img {
 
 img.img {
   margin: 5px;
-  border: 1px solid #aaaaaa; 
+  border: 1px solid #aaaaaa;
 }
 
 img.img-nb {
@@ -150,7 +150,7 @@ div.figleft, div.figright {
 
 div.left, div.figleft {
   float: left;
-} 
+}
 
 div.right, div.figright {
   float: right;
@@ -163,8 +163,8 @@ div.figleft p, div.figright p {
   font-size:  0.75em;
   border:     1px dotted #aaaaaa;
   padding:    0;
-} 
-        
+}
+
 div.figleft img, div.figright img {
   margin: 0;
   border: 1px solid #aaaaaa;
@@ -181,7 +181,7 @@ div.figleft a, div.figright a {
   text-align: justify;
   padding:    5px;
 }
-		      
+
 /* IMAGES FINISH  */
 
 .banner {
@@ -327,7 +327,7 @@ li.header {
   background-color: #e7edf3;
   color:            #074987;
 }
-  
+
 .tabrow2, table.zebra .tabrow2 {
   background-color: #ffffff;
   color:            #074987;
@@ -349,17 +349,17 @@ table.zebra table .tabrow1 {
   background-color: #f4f8fd;
   color:            #074987;
 }
-  
+
 table.zebra table .tabrow2 {
   background-color: #fff;
   color:            #074987;
 }
 
-table.zebra caption, table.zebra tfoot td { 
+table.zebra caption, table.zebra tfoot td {
   font-size: 0.9em;
 }
 
-table.zebra caption { 
+table.zebra caption {
   background-color: #eee;
   color: #000;
 }
@@ -451,7 +451,7 @@ a.species-project {
 /*** end site search box configuration ***/
 
 .footer {
-  border:           1px solid #074987; 
+  border:           1px solid #074987;
   font-size:        0.9em;
   text-align:       left;
   white-space:      nowrap;
@@ -522,13 +522,13 @@ div.navigator li a {
   display:block;
   margin:0px;
   padding:3px 3px 3px 5px;
-  text-decoration:none; 
+  text-decoration:none;
   _height:10px; /* IE6 hack to get the right heights */
 }
 
 div.navigator li a:hover {
   background-color: #9fc6ee;
-  text-decoration:none; 
+  text-decoration:none;
   color: #074987;
 }
 
@@ -580,12 +580,12 @@ div.navigator2 li a {
   _height:10px; /* IE6 hack to get the right heights */
   margin:0px;
   padding:3px 3px 3px 5px;
-  text-decoration:none; 
+  text-decoration:none;
 }
 
 div.navigator2 li a:hover {
   background-color: #cbdced;
-  text-decoration:none; 
+  text-decoration:none;
   color: #074987;
 }
 
@@ -751,7 +751,7 @@ div.genborder {
   overflow:           visible;
   font-size:          1em;
 }
-                                                                                
+
 div.genborder-banner {
   background-color: #074987;
   color:            #ffffff;
@@ -853,7 +853,7 @@ div.news {
   height:             8em;
   overflow:           visible;
 }
-                                                                                
+
 div.news-banner {
   background-color: #074987;
   color:            #ffffff;
@@ -863,14 +863,14 @@ div.news-banner {
 /*  font-size:        8pt;*/
   font-weight:      bold;
 }
-                                                                                
+
 .news-title {
   color:       #8d0017;
   font-size:   1em;
   font-weight: bold;
   text-align:  left;
 }
-                                                                                
+
 .news-content {
   color:      #2f4f4f;
   /*font-size:  0.8em;*/
@@ -880,7 +880,7 @@ div.news-banner {
 fieldset {
   border:           #83a4c3 dotted 1px;
   background-color: /*#f4f8fd;*/ #ffffff;
-  padding:          0em 0.5em 0.5em 0.5em; 
+  padding:          0em 0.5em 0.5em 0.5em;
   text-align:       left;
   margin:           0px;
 }
@@ -889,7 +889,7 @@ fieldset {
 * html  fieldset {border: #83a4c3 solid 1px;}
         fieldset {border: #83a4c3 dotted 1px;}
 /* end of Holly hack */
-                                          
+
 legend {
   border:           #83a4c3 solid 1px;
   background-color: #f4f8fd;
@@ -915,7 +915,7 @@ legend.info {
 fieldset.news-long {
   border:           #83a4c3 dotted 1px;
   background-color: /*#f4f8fd;*/ #ffffff;
-  padding:          0em 0.5em 0.5em 0.5em; 
+  padding:          0em 0.5em 0.5em 0.5em;
   width:            500px;
   text-align:       left;
   margin:           10px;
@@ -925,7 +925,7 @@ fieldset.news-long {
 * html  fieldset.news-long {border: #83a4c3 solid 1px;}
         fieldset.news-long {border: #83a4c3 dotted 1px;}
 /* end of Holly hack */
-                                          
+
 legend.news-long {
   border:           #83a4c3 solid 1px;
   background-color: #f4f8fd;
@@ -943,7 +943,7 @@ legend.news-long {
 /* end of Holly hack */
 
 fieldset ul, fieldset ol {
-  padding:     0em; 
+  padding:     0em;
   margin:      0.5em 0 0.5em 1.5em;
 }
 
@@ -1036,7 +1036,7 @@ div.seminars {
   height:             100pt;
   overflow:           visible;
 }
-                                                                                
+
 div.seminars-banner {
   background-color: #074987;
   color:            #ffffff;
@@ -1049,7 +1049,7 @@ div.seminars-banner {
 fieldset.seminars {
   border:           #83a4c3 dotted 1px;
   background-color: /*#f4f8fd;*/ #ffffff;
-  padding:          0em 0.5em 0.5em 0.5em; 
+  padding:          0em 0.5em 0.5em 0.5em;
   width:            250px;
   text-align:       left;
   margin:           0px;
@@ -1066,7 +1066,7 @@ a.seminars-title, a.faculty-title {
   font-weight: bold;
   text-align:  left;
 }
-                                                                                
+
 .seminars-content {
   color:      #2f4f4f;
   /*font-size:  0.8em;*/
@@ -1191,7 +1191,7 @@ div.fieldset div.content img {
 
 #nav_bar img {
   vertical-align: middle;
-  margin-top:1px; 
+  margin-top:1px;
   margin-left:3px;
 }
 
@@ -1210,7 +1210,7 @@ div.fieldset div.content img {
 
 #sidebar img.img {
   margin: 0px;
-  border: 0px; 
+  border: 0px;
 }
 
 div#navblock {
@@ -1263,7 +1263,7 @@ div#navblock.collapsed {
   border-top:1px solid #eee;
 }
 
-#collapseFOOT #contact {   
+#collapseFOOT #contact {
   padding:3px;
 }
 
@@ -1279,7 +1279,7 @@ div#navblock.collapsed {
 
 #collapseFOOT #legal {
   padding: 2px 0px 0px 0px;
-  margin: auto;   
+  margin: auto;
   text-align:center;
   width:99%;
 }
@@ -1313,7 +1313,7 @@ div#navblock.collapsed {
 }
 
 div#main {
-/* nothing in here, but I think it has to be here to 
+/* nothing in here, but I think it has to be here to
   allow the collapsed and expanded classes */
   margin-left: 20px;
   padding:     0.5em 1em 1em 1em;
@@ -1322,7 +1322,7 @@ div#main {
 div#main.collapsed {
   margin-left:188px;
 }
-      
+
 div#main.expanded {
   margin-left:20px;
 }
