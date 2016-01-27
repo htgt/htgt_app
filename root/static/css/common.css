@@ -1,4 +1,4 @@
-/* @override 
+/* @override
 	http://gtrap1a.internal.sanger.ac.uk:8002/htgt/static/css/common.css
 	http://gtrap1a.internal.sanger.ac.uk:8002/static/css/common.css
 	http://dev.eucomm.org/htgt/static/css/common.css
@@ -6,7 +6,7 @@
 
 /*
 *
-*   Use this file for CSS rules shared 
+*   Use this file for CSS rules shared
 *	across Sanger and Eucomm
 *
 */
@@ -86,11 +86,11 @@ fieldset.toggleable div {
 }
 
 .option_hidden  {
-  	background: #e7edf3 url('/icons/silk/arrow_down.png') no-repeat 5px center;
+  	background: #e7edf3 url('../bundle/icons/silk/arrow_down.png') no-repeat 5px center;
 }
 
 .option_show  {
-  	background: #e7edf3 url('/icons/silk/arrow_up.png') no-repeat 5px center;
+  	background: #e7edf3 url('../bundle/icons/silk/arrow_up.png') no-repeat 5px center;
 }
 
 .option_hidden:hover, .option_show:hover {

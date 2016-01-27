@@ -1,4 +1,4 @@
-/* @override 
+/* @override
 	http://gtrap1a.internal.sanger.ac.uk:8002/static/css/htgt.css
 	http://gtrap1a.internal.sanger.ac.uk:8002/htgt/static/css/htgt.css
 */
@@ -32,7 +32,7 @@ p {
 
 /*-- Headings --*/
 
-h1, 
+h1,
 h1.title {
 	font-size: 1.5em;
   	text-align: left;
@@ -157,13 +157,13 @@ div.paginatecontainer {
 div.paginatetitle h1, div.paginatetitle input {
   	font-size: 12px;
 }
-             
-div.paginate ul { 
+
+div.paginate ul {
 	list-style: none;
 	padding: 0;
 	margin-top: 6px;
 	margin-bottom: 6px;
-}                  
+}
 
 div.paginate li {
 	display: inline;
@@ -175,12 +175,12 @@ div.paginate li {
 }
 
 div.paginate a,
-div.paginate a:link, 
+div.paginate a:link,
 div.paginate a:visited  {
 	color: #4b6767;
 	text-decoration: none;
 	cursor: pointer;
-	background-color: #e7edf3;     
+	background-color: #e7edf3;
 	padding: 2px 5px;
 	border: 1px solid #ccc;
 }
@@ -200,15 +200,15 @@ div.paginate .current_page a {
 
 /*-- User Messages --*/
 
-div#userMsgs, 
-.message, 
-.error, 
-.warn, 
-.information, 
+div#userMsgs,
+.message,
+.error,
+.warn,
+.information,
 .notloggedin,
 .ordering_info {
   	border: 1px solid #559c29;
-  	background: #bdff92 url('/icons/silk/lightbulb_off.png') no-repeat 5px 5px;
+  	background: #bdff92 url('../bundle/icons/silk/lightbulb_off.png') no-repeat 5px 5px;
   	overflow: hidden;
   	padding: 7px 10px 7px 30px;
   	text-align: left;
@@ -222,7 +222,7 @@ div#userMsgs,
 
 .error {
   	border: 1px solid #ff272e;
-  	background-image: url('/icons/silk/exclamation.png');
+  	background-image: url('../bundle/icons/silk/exclamation.png');
   	background-color: #ff9697;
   	font-weight: bold;
   	color: #740000;
@@ -230,20 +230,20 @@ div#userMsgs,
 
 .warn {
   	border: 1px solid #ffdf33;
-  	background-image: url('/icons/silk/error.png');
+  	background-image: url('../bundle/icons/silk/error.png');
   	background-color: #ffc;
 }
 
 .notloggedin {
 	border: 1px solid #ffdf33;
-	background-image: url('/icons/silk/lock.png');
+	background-image: url('../bundle/icons/silk/lock.png');
 	background-color: #ffc;
 }
 
 div#userMsgs,
 .information {
   	border: 1px solid #074987;
-  	background-image: url('/icons/silk/information.png');
+  	background-image: url('../bundle/icons/silk/information.png');
   	background-color: #9fc6ee;
 }
 
@@ -257,19 +257,19 @@ div#userMsgs {
 
 .success {
 	padding: 2px 0 2px 20px;
-	background: url('/icons/silk/tick.png') left center no-repeat;
+	background: url('../bundle/icons/silk/tick.png') left center no-repeat;
 	color: #156900;
 }
 
 .failure {
 	padding: 2px 0 2px 20px;
-	background: url('/icons/silk/cross.png') left center no-repeat;
+	background: url('../bundle/icons/silk/cross.png') left center no-repeat;
 	color: #740000;
 }
 
 .ordering_info {
 	padding-bottom: 4px;
-	background: #e7edf3 url('/icons/silk/information.png') no-repeat 6px center;
+	background: #e7edf3 url('../bundle/icons/silk/information.png') no-repeat 6px center;
 	border: 1px solid #8baac7;
 	font-size: 0.9em;
 	padding-top: 4px;
@@ -286,7 +286,7 @@ a.add, a.delete, a.exclamation,
 a.plate_link, a.show_more, a.hide_more,
 a.link, a.report, a.document,
 a.pdf, a.word, a.excel, a.text, a.powerpoint {
-  background: url('/icons/silk/add.png') left center no-repeat;
+  background: url('../bundle/icons/silk/add.png') left center no-repeat;
   padding: 2px 0 2px 20px;
   font-size: 0.9em;
   text-decoration: none;
@@ -300,41 +300,41 @@ a.icon_on_right {
 }
 
 a.exclamation {
-	background-image: url('/icons/silk/exclamation.png');
+	background-image: url('../bundle/icons/silk/exclamation.png');
 	color: #740000;
 	text-decoration: underline;
 }
 
-a.delete 		{ background-image: url('/icons/silk/delete.png'); }
-a.plate_link	{ background-image: url('/icons/silk/table_go.png'); }
-a.link 			{ background-image: url('/icons/silk/bullet_go.png'); }
-a.report 		{ background-image: url('/icons/silk/page_go.png'); }
-a.document 		{ background-image: url('/icons/silk/page_white.png'); }
-a.pdf 			{ background-image: url('/icons/silk/page_white_acrobat.png'); }
-a.word 			{ background-image: url('/icons/silk/page_white_word.png'); }
-a.excel 		{ background-image: url('/icons/silk/page_white_excel.png'); }
-a.text 			{ background-image: url('/icons/silk/page_white_text.png'); }
-a.powerpoint 	{ background-image: url('/icons/silk/page_white_powerpoint.png'); }
+a.delete 		{ background-image: url('../bundle/icons/silk/delete.png'); }
+a.plate_link	{ background-image: url('../bundle/icons/silk/table_go.png'); }
+a.link 			{ background-image: url('../bundle/icons/silk/bullet_go.png'); }
+a.report 		{ background-image: url('../bundle/icons/silk/page_go.png'); }
+a.document 		{ background-image: url('../bundle/icons/silk/page_white.png'); }
+a.pdf 			{ background-image: url('../bundle/icons/silk/page_white_acrobat.png'); }
+a.word 			{ background-image: url('../bundle/icons/silk/page_white_word.png'); }
+a.excel 		{ background-image: url('../bundle/icons/silk/page_white_excel.png'); }
+a.text 			{ background-image: url('../bundle/icons/silk/page_white_text.png'); }
+a.powerpoint 	{ background-image: url('../bundle/icons/silk/page_white_powerpoint.png'); }
 
 .breadcrumb {
   font-size: x-small;
 }
 
 a.show_more, a.hide_more { padding: 2px 0 2px 15px; }
-a.show_more { background-image: url('/icons/silk/bullet_arrow_down.png'); }
-a.hide_more { background-image: url('/icons/silk/bullet_arrow_up.png');	}
+a.show_more { background-image: url('../bundle/icons/silk/bullet_arrow_down.png'); }
+a.hide_more { background-image: url('../bundle/icons/silk/bullet_arrow_up.png');	}
 
 div.show_more, div.hide_more {
 	font-size: 0.9em;
 	padding: 2px 0 2px 15px;
-	background: #ccc url('/icons/silk/bullet_arrow_down.png') no-repeat left center;
+	background: #ccc url('../bundle/icons/silk/bullet_arrow_down.png') no-repeat left center;
 	margin: 5px;
 	border: 1px dotted #999;
 	cursor: pointer;
 }
 
 div.hide_more {
-	background-image: url('/icons/silk/bullet_arrow_up.png');
+	background-image: url('../bundle/icons/silk/bullet_arrow_up.png');
 }
 
 /*-- Buttons --*/
@@ -372,31 +372,31 @@ a.button:hover {
     cursor: pointer;
 }
 
-.report_go 			{ background-image: url('/icons/silk/page_go.png'); }
-.csv 	   			{ background-image: url('/icons/silk/page_excel.png'); }
-.sort 	   			{ background-image: url('/icons/silk/table_sort.png'); }
-.print 	   			{ background-image: url('/icons/silk/printer.png'); }
-.platetabletoggle 	{ background-image: url('/icons/silk/table_refresh.png'); }
-.map_plates 		{ background-image: url('/icons/silk/table_relationship.png'); }
-.save 				{ background-image: url('/icons/silk/database_save.png'); }
-.load 				{ background-image: url('/icons/silk/database_lightning.png'); }
-.clean 				{ background-image: url('/icons/silk/delete.png'); }
-.up 				{ background-image: url('/icons/silk/arrow_up.png'); }
-.down 				{ background-image: url('/icons/silk/arrow_down.png'); }
-.refresh 			{ background-image: url('/icons/silk/arrow_refresh.png'); }
-.blank 				{ background-image: url('/icons/silk/shading.png'); }
-.pencil 			{ background-image: url('/icons/silk/pencil.png'); }
-.pencil_go 			{ background-image: url('/icons/silk/pencil_go.png'); }
-.pencil_delete 		{ background-image: url('/icons/silk/pencil_delete.png'); }
-.magnifier_zoom_in 	{ background-image: url('/icons/silk/zoom_in.png'); }
-.magnifier_zoom_out { background-image: url('/icons/silk/zoom_out.png'); }
-.bomb 				{ background-image: url('/icons/silk/bomb.png'); }
-.cog_add 			{ background-image: url('/icons/silk/cog_add.png'); }
-.cog_go 			{ background-image: url('/icons/silk/cog_go.png'); }
-.arrow_left 		{ background-image: url('/icons/silk/control_rewind_blue.png'); }
-.arrow_right 		{ background-image: url('/icons/silk/control_fastforward_blue.png'); }
-.align       		{ background-image: url('/icons/silk/shape_align_center.png'); }
-.find       		{ background-image: url('/icons/silk/magnifier.png'); }
+.report_go 			{ background-image: url('../bundle/icons/silk/page_go.png'); }
+.csv 	   			{ background-image: url('../bundle/icons/silk/page_excel.png'); }
+.sort 	   			{ background-image: url('../bundle/icons/silk/table_sort.png'); }
+.print 	   			{ background-image: url('../bundle/icons/silk/printer.png'); }
+.platetabletoggle 	{ background-image: url('../bundle/icons/silk/table_refresh.png'); }
+.map_plates 		{ background-image: url('../bundle/icons/silk/table_relationship.png'); }
+.save 				{ background-image: url('../bundle/icons/silk/database_save.png'); }
+.load 				{ background-image: url('../bundle/icons/silk/database_lightning.png'); }
+.clean 				{ background-image: url('../bundle/icons/silk/delete.png'); }
+.up 				{ background-image: url('../bundle/icons/silk/arrow_up.png'); }
+.down 				{ background-image: url('../bundle/icons/silk/arrow_down.png'); }
+.refresh 			{ background-image: url('../bundle/icons/silk/arrow_refresh.png'); }
+.blank 				{ background-image: url('../bundle/icons/silk/shading.png'); }
+.pencil 			{ background-image: url('../bundle/icons/silk/pencil.png'); }
+.pencil_go 			{ background-image: url('../bundle/icons/silk/pencil_go.png'); }
+.pencil_delete 		{ background-image: url('../bundle/icons/silk/pencil_delete.png'); }
+.magnifier_zoom_in 	{ background-image: url('../bundle/icons/silk/zoom_in.png'); }
+.magnifier_zoom_out { background-image: url('../bundle/icons/silk/zoom_out.png'); }
+.bomb 				{ background-image: url('../bundle/icons/silk/bomb.png'); }
+.cog_add 			{ background-image: url('../bundle/icons/silk/cog_add.png'); }
+.cog_go 			{ background-image: url('../bundle/icons/silk/cog_go.png'); }
+.arrow_left 		{ background-image: url('../bundle/icons/silk/control_rewind_blue.png'); }
+.arrow_right 		{ background-image: url('../bundle/icons/silk/control_fastforward_blue.png'); }
+.align       		{ background-image: url('../bundle/icons/silk/shape_align_center.png'); }
+.find       		{ background-image: url('../bundle/icons/silk/magnifier.png'); }
 
 /*-- Forms --*/
 
@@ -567,12 +567,12 @@ tr.rowodd {
   background-color: #c2d2e1;
 }
 
-tr, 
+tr,
 tr.roweven {
   background-color: #e7edf3;
 }
 
-thead tr, 
+thead tr,
 tfoot tr,
 th {
   background-color: #ccc;
@@ -596,7 +596,7 @@ table.highlight tbody td.standout:hover {
 table.editable tr th {
   background-repeat: no-repeat;
   background-position: right center;
-  background-image: url('/icons/silk/table_edit.png');
+  background-image: url('../bundle/icons/silk/table_edit.png');
 }
 
 table.editable tr th.noedit {
@@ -742,7 +742,7 @@ a#clear_search_results {
 	margin-top: 10px;
 	margin-bottom: 5px;
 	padding: 5px 5px 5px 25px;
-	background: url('/icons/silk/cross.png') no-repeat 5px center;
+	background: url('../bundle/icons/silk/cross.png') no-repeat 5px center;
 	color: #740000;
 }
 
@@ -797,11 +797,11 @@ form#project_reports_form table th {
 }
 
 #more #search_options a.add {
-	background: #77b459 url('/icons/silk/bullet_toggle_plus.png') no-repeat 0 3px;
+	background: #77b459 url('../bundle/icons/silk/bullet_toggle_plus.png') no-repeat 0 3px;
 }
 
 #more #search_options a.delete {
-	background: #e0493e url('/icons/silk/bullet_toggle_minus.png') no-repeat 0 3px;
+	background: #e0493e url('../bundle/icons/silk/bullet_toggle_minus.png') no-repeat 0 3px;
 }
 
 #more #search_options a:hover {
@@ -867,7 +867,7 @@ table#design_image input {
 /* BEGIN: Submit QC */
 
 input.form-readonly {
-    background-color: #D0D0D0; 
+    background-color: #D0D0D0;
 }
 
 /* END: Submit QC */

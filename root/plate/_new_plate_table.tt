@@ -17,19 +17,19 @@
         <td id="[% well_info.${well}.parent_plate_id %]">[% well_info.${well}.parent_plate %]</td>
         <td id="[% well_info.${well}.parent_well_id %]">[% well_info.${well}.parent_well %]</td>
         <td class="nocol">
-          <a 
-            onClick="makeWellABlank('[% well %]')" 
+          <a
+            onClick="makeWellABlank('[% well %]')"
             title="insert a blank well: ([% well %])"
             style="cursor:pointer;">
-            <img src="/icons/silk/shading.png" alt="blank" />
+            <img src="[% c.uri_for('/static/bundle/icons/silk/shading.png') %]" alt="blank" />
           </a>
         </td>
         <td class="nocol">
-          <a 
-            onClick="deleteSingleFromPlate('[% well %]')" 
+          <a
+            onClick="deleteSingleFromPlate('[% well %]')"
             title="clear this row: [% well %]"
             style="cursor:pointer;">
-            <img src="/icons/silk/delete.png" alt="delete" />
+            <img src="[% c.uri_for('/static/bundle/icons/silk/delete.png') %]" alt="delete" />
           </a>
         </td>
       </tr>

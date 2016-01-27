@@ -18,9 +18,9 @@
         [% SET row = 0 -%]
         [% FOR run IN qctest_runs %]
             [% row = row + 1 -%]
-            
+
             [%# Define what URL prefix to use... -%]
-            [% IF   c.model('ConstructQC').storage.dbh.Name == 'ttrap' 
+            [% IF   c.model('ConstructQC').storage.dbh.Name == 'ttrap'
                  || c.model('ConstructQC').storage.dbh.Name == 'utlt' -%]
                 [% url = 'intwebdev' -%]
             [% ELSIF run.is_public == '1' -%]
@@ -28,10 +28,10 @@
             [% ELSE -%]
                 [% url = 'intweb' -%]
             [% END%]
-            
+
             <tr id="[% run.qctest_run_id %]">
                 <td>
-                    <a href="[% c.uri_for('/qc/construct_list') %]?qcrun_id=[% run.qctest_run_id %]">[% run.qctest_run_id %]</a> 
+                    <a href="[% c.uri_for('/qc/construct_list') %]?qcrun_id=[% run.qctest_run_id %]">[% run.qctest_run_id %]</a>
                     [% IF c.check_user_roles("edit") -%]
                         (<small><a href="[% c.uri_for('/qc/qctest_result_and_primer_list', {qctest_run_id => run.qctest_run_id, display_synvec => 1} ) %]">Synvec</a>,
                         <a href="[% c.uri_for('/qc/results_list', {qctest_run_id => run.qctest_run_id, is_best_for_construct_in_run => 1, show_primers => 1} ) %]">with primers</a></small>)
@@ -45,9 +45,9 @@
                 [% IF c.check_user_roles('edit') %]
                     <td align="center" class="edit">
                         [% IF run.is_public == '1' %]
-                            <img src="/icons/silk/accept.png" alt="public" />
+                            <img src="[% c.uri_for('/static/bundle/icons/silk/accept.png') %]" alt="public" />
                         [% ELSE %]
-                            <img src="/icons/silk/stop.png" alt="not public" />
+                            <img src="[% c.uri_for('/static/bundle/icons/silk/stop.png') %]" alt="not public" />
                         [% END %]
                     </td>
                 [% END %]
@@ -66,7 +66,7 @@
         editable: false
         [% END %]
     });
-    
+
     /* 'is_public' selection choice */
     TableKit.Editable.selectInput('is_public', {}, [
         ['yes','1'],

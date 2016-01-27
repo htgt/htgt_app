@@ -21,14 +21,14 @@
     [% ELSE %]
         <a href="[% c.uri_for('/plate/view') %]?plate_id=[% plate.plate_id %]&show_children=false" class="button pencil_go" id="hide_children">Hide Children</a>
     [% END %]
-    
+
     [% IF c.check_user_roles("edit") AND view_page %]
-        [% IF  plate.type == 'PGD' 
-            || plate.type == 'PGS' 
-            || plate.type == 'PGR' 
-            || plate.type == 'PGG' 
-            || plate.type == 'GR' 
-            || plate.type == 'EPD' 
+        [% IF  plate.type == 'PGD'
+            || plate.type == 'PGS'
+            || plate.type == 'PGR'
+            || plate.type == 'PGG'
+            || plate.type == 'GR'
+            || plate.type == 'EPD'
             || plate.type == 'REPD' %]
             <a id="show_hide_checkboxes_primer" class="button pencil_go" onClick="show_hide_checkboxes('primer');" title="Show/Hide checkboxes for primer data entry">Show checkboxes for primer data</a>
             <a id="show_hide_checkboxes_distribute" class="button pencil_go" onClick="show_hide_checkboxes('distribute');" title="Show/Hide checkboxes for distribute data entry">Show checkboxes for distribute data</a>
@@ -54,7 +54,7 @@
                 <input type="hidden" name="well_id" value='[% well.well_id %]' />
                 [% END %]
                 <input type="radio" name='update' value="" CHECKED/>no change<br/>
-                [% FOR wd2 IN wd %] 
+                [% FOR wd2 IN wd %]
                     <input type="radio" name='update' value='[% wd2.json %]' />
                     [% wd2.clone_name _ ', ' _ wd2.qc_assignment _ ', ' _ wd2.design_instance _ ', run:' _ wd2.qctest_run_id _ ', ' %]
                     <a href=="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = wd2.qctest_result_id }) %]">[% wd2.pass_level %]</a>
@@ -63,12 +63,12 @@
             </span></form>
        [% END %]
     [% END %]
-    
+
 [% END %]
 
 [%# If we've been given a list of hashes in 'wells' use that, else fill up 'wells' from 'well_data' hash, else fill up from well_data related resultset....%]
-[% 
-    IF NOT wells ; 
+[%
+    IF NOT wells ;
         wells = [];
         FOR well IN plate.wells;
             tmp_h = {'well_id' = well.id , 'well_name' = well.well_name }  ;
@@ -82,33 +82,33 @@
             wells.push(tmp_h) ;
         END;
     END;
-    
+
     #remove qctest_result_id from columns if pass_level
-    IF well_data_types.grep('pass_level').size; 
-        well_data_types.unshift('qctest_result_id'); 
+    IF well_data_types.grep('pass_level').size;
+        well_data_types.unshift('qctest_result_id');
         well_data_types = well_data_types.unique.slice(1);
     END;
     #remove target_region_qctest_result_id from columns if target_region_pass_level
-    IF well_data_types.grep('target_region_pass_level').size; 
+    IF well_data_types.grep('target_region_pass_level').size;
         well_data_types.unshift('target_region_qctest_result_id');
         well_data_types = well_data_types.unique.slice(1);
     END;
     #remove three_arm_qctest_result_id from columns if three_arm_pass_level
-    IF well_data_types.grep('three_arm_pass_level').size; 
+    IF well_data_types.grep('three_arm_pass_level').size;
         well_data_types.unshift('three_arm_qctest_result_id');
         well_data_types = well_data_types.unique.slice(1);
     END;
     #remove five_arm_qctest_result_id from columns if five_arm_pass_level
-    IF well_data_types.grep('five_arm_pass_level').size; 
+    IF well_data_types.grep('five_arm_pass_level').size;
         well_data_types.unshift('five_arm_qctest_result_id');
         well_data_types = well_data_types.unique.slice(1);
     END;
-    #remove vector_qc from columns if vector_qc_result 
-    IF well_data_types.grep('vector_qc_result').size; 
+    #remove vector_qc from columns if vector_qc_result
+    IF well_data_types.grep('vector_qc_result').size;
         well_data_types.unshift('vector_qc');
         well_data_types = well_data_types.unique.slice(1);
     END;
-    
+
     #remove computed five arm, three arm and loxp pass levels
     remove_data_types = [
         'computed_five_arm_pass_level',
@@ -119,7 +119,7 @@
         well_data_types.unshift(data_type);
         well_data_types = well_data_types.unique.slice(1);
     END;
-    
+
     #remove the 3'/5'/loxP pass levels for unprivileged users
     IF ( plate.type == 'EPD' || plate.type == 'FP' ) && !c.check_user_roles("edit");
       well_data_types.unshift("3' arm");
@@ -184,7 +184,7 @@
         <tr>
             <th id="well_name" class="sortfirstasc noedit">WELL NAME</th>
             [% FOR data_type IN well_data_types -%]
-            
+
              [% UNLESS data_type.search( '^PCR' ) || data_type.search('^REC') %]
 
                 [% SET edit = 0 %]
@@ -208,11 +208,11 @@
                 [% ELSE %]
                     <th id="[% data_type %]" [% UNLESS edit && view_page %]class="noedit"[% END %]>[% data_type FILTER replace('_',' ') FILTER upper %]</th>
                 [% END %]
-                
+
                 [%END%]
-                
+
             [% END %]
-      
+
             [% IF create_page %]
                 <th class='nocol noedit'></th>
                 <th class='nocol noedit'></th>
@@ -237,10 +237,10 @@
                             [% END %]
                         [% END %]
                     [% END %]
-                    
-                    [% IF data_type == 'potential_QC' -%] 
+
+                    [% IF data_type == 'potential_QC' -%]
                         <td class="[% data_type %]">[% PROCESS potentialqc wd=well.${data_type} -%]</td>
-                    
+
                     [% ELSIF data_type == 'prescreen_run_id' -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for("/newqc/view_run_files/${well.$data_type}", {prescreen => 1}) %]">[% well.${data_type}.substr(0, 8) %]</a></td>
 
@@ -275,22 +275,22 @@
 
                     [% ELSIF data_type == 'pass_level' AND well.qctest_result_id -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.qctest_result_id })  %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'target_region_pass_level' AND well.target_region_qctest_result_id -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.target_region_qctest_result_id })  %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'three_arm_pass_level' AND well.three_arm_qctest_result_id -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.three_arm_qctest_result_id }) %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'five_arm_pass_level' AND well.five_arm_qctest_result_id -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.five_arm_qctest_result_id }) %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'vector_qc_result' AND well.vector_qc -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.vector_qc }) %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'parent_plate' AND well.parent_plate_id -%]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/plate/view') %]?plate_id=[% well.parent_plate_id %]#[% well.parent_well_id %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'parent_well' AND well.parent_plate_id -%]
                         <td class="[% data_type %]">
                         	[% IF well.design_instance_jumps %]
@@ -301,34 +301,34 @@
                                 <a href="[% c.uri_for('/plate/view') %]?plate_id=[% well.parent_plate_id %]#[% well.parent_well_id %]">[% well.${data_type} %]</a>
                             [% END %]
                         </td>
-                    
+
                     [% ELSIF data_type == 'grand_parent_plate' %]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/plate/view') %]?plate_id=[% well.grand_parent_plate_id %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'grand_parent_well' %]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/plate/view') %]?plate_id=[% well.grand_parent_plate_id %]#[% well.grand_parent_well_id %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'otter_id' AND well.${data_type} || data_type == 'ensembl_id' AND well.${data_type} %]
                         <td class="[% data_type %]">[% well.${data_type} FILTER link_ensembl(well.${data_type},'team87_production_constructs') %]</td>
-                    
+
                     [% ELSIF data_type == 'gene_name' AND well.${data_type} %]
                         <td class="[% data_type %]">[% well.${data_type} FILTER link_mgi() %]</td>
-                    
+
                     [% ELSIF data_type == 'gr_qc' AND well.gr_qc_id %]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.gr_qc_id }) %]">[% well.${data_type} %]</a></td>
-                    
+
                     [% ELSIF data_type == 'pgs_pass_level' AND well.pgs_qc_id %]
                         <td class="[% data_type %]"><a href="[% c.uri_for('/qc/qctest_result_view', { qctest_result_id = well.pgs_qc_id }) %]">[% well.${data_type} %]</a></td>
-                    
-                    [% ELSIF data_type == 'child_wells' %]                    
+
+                    [% ELSIF data_type == 'child_wells' %]
                         [% IF c.session.show_children != 'false' %]
                             <td class="[% data_type %]">
-                                
+
                                 [% IF well.child_wells.size == undef %]
                                     -
                                 [%# As three is the magic number, we don't want to show the show/hide button when we don't have anything to show or hide!%]
                                 [% ELSIF well.child_wells.size <= 3 %]
-                                
+
                                     [% FOR child IN well.child_wells %]
                                         <span style="white-space:nowrap">
                                         [%# Add images if the dids parent-child dids don't match %]
@@ -342,9 +342,9 @@
                                         </span>
                                         <br />
                                     [% END %]
-                                
+
                                 [% ELSE %]
-                                
+
                                     [% FOR child IN well.child_wells.slice(0,2) %]
                                         <span>
                                         [% IF child.design_instance_id != child.parent_did %]
@@ -355,7 +355,7 @@
                                         </span>
                                         <br />
                                     [% END %]
-                                    
+
                                     <div id="more_children_[% well.well_id %]" style="display:none;">
                                     [% FOR child IN well.child_wells.slice(3) %]
                                         <span>
@@ -369,11 +369,11 @@
                                     [% END %]
                                     </div>
                                     <a id="more_link_[% well.well_id %]" class="show_more" onClick="show_child_wells('more_children_[% well.well_id %]','more_link_[% well.well_id %]')">show all</a>
-                                
+
                                 [% END %]
                             </td>
                         [% END %]
-                    
+
                     [% ELSIF data_type == 'taqman_assays' %]
                         <td class="[% data_type %]">
                         [% IF well.taqman_assays.size == undef %]
@@ -399,7 +399,7 @@
 
                     [% ELSIF data_type == 'validated_by_annotation' %]
                         <td [% IF well.${data_type} == "no" %]class="warning"[% END %]>[% well.${data_type} %]</td>
-                    
+
                     [% ELSIF data_type == 'already_electroporated' %]
                         <td class="already_electroporated [% IF well.${data_type} && create_page %]warning[% END %]">
                             [% IF well.${data_type} %]
@@ -420,13 +420,13 @@
                                 0
                             [% ELSE %]
                                 [% IF well.${data_type}.items; -%]
-                                    [%  FOREACH pair IN well.pairs; 
+                                    [%  FOREACH pair IN well.pairs;
                                             pair.key _ ':' _ pair.value;
                                             IF loop.last; ELSE; '<br/>'; END;
                                         END %]
                                 [% ELSIF well.${data_type}.size ; FOR wd2 IN well.${data_type} -%]
                                 [%  IF wd2.items; -%]
-                                    [%   FOREACH pair IN wd2.pairs; 
+                                    [%   FOREACH pair IN wd2.pairs;
                                             pair.key _ ':' _ pair.value;
                                             IF loop.last; ELSE; ', '; END;
                                         END %]
@@ -435,22 +435,22 @@
                                 [% END; ELSE; well.${data_type}; END %]
                             [% END %]
                         </td>
-                    
+
                     [% ELSE %]
                         <td class="[% IF edit && view_page %]edit [% END; data_type %]">-</td>
                     [% END %]
                 [% END %]
-                
+
                 [% IF create_page %]
-                    <td class="nocol"> <a href="#" title="Add [% well.well_name %] to new plate" onClick="addSingleToPlate('[% plate.name %]','[% plate.plate_id %]','[% well.well_name %]','[% well.well_id %]'); return false"><img src="/icons/silk/add.png" alt="add" /></a> </td>
-                    <td class="nocol"> <a href="#" title="Add [% well.well_name %] to new plate" onClick="addColumnToPlate('[% plate.name %]','[% plate.plate_id %]','[% well.well_name %]','[% well.well_id %]'); return false"><img src="/icons/silk/table_add.png" alt="add" /></a> </td>
+                    <td class="nocol"> <a href="#" title="Add [% well.well_name %] to new plate" onClick="addSingleToPlate('[% plate.name %]','[% plate.plate_id %]','[% well.well_name %]','[% well.well_id %]'); return false"><img src="[% c.uri_for('/static/bundle/icons/silk/add.png') %]" alt="add" /></a> </td>
+                    <td class="nocol"> <a href="#" title="Add [% well.well_name %] to new plate" onClick="addColumnToPlate('[% plate.name %]','[% plate.plate_id %]','[% well.well_name %]','[% well.well_id %]'); return false"><img src="[% c.uri_for('/static/bundle/icons/silk/table_add.png') %]" alt="add" /></a> </td>
                 [% END %]
                 [% IF c.check_user_roles("edit") and plate.type.match('EP|EPD|REPD|FP') %]
                     <td class="nocol"><a href="[% c.uri_for('/plate/alter_parent_well', { plate_id = plate.plate_id , well_id = well.well_id}) %]" title="Reparent this Well" class="button cog_go"> reparent</a></td>
                 [% END %]
                 [% IF c.check_user_roles("edit") and plate.type.match('PIQ') %]
                     <td class="nocol"><a href="[% c.uri_for('/plate/delete_piq_well', { plate_id = plate.plate_id , well_id = well.well_id}) %]" title="Delete this Well" class="button pencil_delete">delete</a></td>
-                [% END %]                
+                [% END %]
             </tr>
         [% END %]
     [% ELSE %]
@@ -550,7 +550,7 @@
         ['yes','yes'],
         ['no','no']
     ]);
-    
+
     /* Design instance ids  */
     TableKit.Editable.selectInput('design_instance', {}, [
        ['A','a'],
@@ -558,7 +558,7 @@
        ['C','c'],
        ['D','d']
     ]);
-    
+
     /* wendy distrubution ship to location - PIQ plates */
     TableKit.Editable.selectInput('ship_to', {}, [
         ['-','-'],
@@ -577,7 +577,7 @@
         ['4','4'],
         ['Y','Y'],
     ]);
-    
+
     /* PIQ and LOA QC test results */
     [% FOR qc_result_field IN [ 'loa_pass', 'loxp_pass', 'lacz_pass', 'chr1_pass', 'chr8a_pass', 'chr8b_pass', 'chr11a_pass', 'chr11b_pass', 'chry_pass', 'sb_pass', 'loa_qc_result', 'taqman_loxp_qc_result' ] %]
         TableKit.Editable.selectInput('[% qc_result_field %]', {}, [
@@ -596,7 +596,7 @@
         [% END -%]
         ['-','-'],[% targeting_pass_qc_result_selects.join(',') %]
     ]);
-    
+
     /* PIQ well expansion passage */
     [% FOR passage_field IN [ 'passage_serum', 'passage_2i' ] -%]
         TableKit.Editable.selectInput('[% passage_field %]' , {}, [
@@ -607,7 +607,7 @@
             ['-','-'],[% passage_selects.join(',') %]
         ]);
     [% END -%]
-    
+
     /* PIQ well to thaw to */
     [% FOR thaw_field IN [ 'well_to_thaw_to_serum', 'well_to_thaw_to_2i' ] -%]
         TableKit.Editable.selectInput('[% thaw_field %]' , {}, [
@@ -619,7 +619,7 @@
             ['6 well' , '6 well']
         ]);
     [% END -%]
-    
+
     /* thaw_well_size on PIQ plates */
     TableKit.Editable.selectInput('thaw_well_size', {}, [
         ['-','-'],
@@ -630,7 +630,7 @@
         ['12 well', '12 well'],
         ['6 well' , '6 well']
     ]);
-    
+
     /* Add a function for updating the TOTAL_COLONIES value when it gets updated */
     [% IF plate.type == 'EP' AND view_page %]
         function updateTotalCounts() {
@@ -641,9 +641,9 @@
             var total_pos;
             var head_tds = $$('table#wells thead tr th');
             $(head_tds).each( function(item,s) {
-                if      ( $(item).id == 'WHITE_COLONIES' )  { white_pos = s;  } 
-                else if ( $(item).id == 'BLUE_COLONIES' )   { blue_pos  = s;  } 
-                else if ( $(item).id == 'REMAINING_UNSTAINED_COLONIES' )   { ru_pos  = s;  } 
+                if      ( $(item).id == 'WHITE_COLONIES' )  { white_pos = s;  }
+                else if ( $(item).id == 'BLUE_COLONIES' )   { blue_pos  = s;  }
+                else if ( $(item).id == 'REMAINING_UNSTAINED_COLONIES' )   { ru_pos  = s;  }
                 else if ( $(item).id == 'TOTAL_COLONIES' )  { total_pos = s;  }
                 else if ( $(item).id == 'COLONIES_PICKED' ) { picked_pos = s; }
             });
@@ -654,19 +654,19 @@
                 var td = item.getElementsByTagName("td");
 
                 var white_count;
-                if ( td[white_pos].innerHTML != '-' ) { white_count = td[white_pos].innerHTML; } 
+                if ( td[white_pos].innerHTML != '-' ) { white_count = td[white_pos].innerHTML; }
                 else                                  { white_count = 0; }
 
                 var blue_count;
-                if ( td[blue_pos].innerHTML != '-' ) { blue_count = td[blue_pos].innerHTML; } 
+                if ( td[blue_pos].innerHTML != '-' ) { blue_count = td[blue_pos].innerHTML; }
                 else                                 { blue_count = 0; }
 
                 var ru_count;
-                if ( td[ru_pos].innerHTML != '-' ) { ru_count = td[ru_pos].innerHTML; } 
+                if ( td[ru_pos].innerHTML != '-' ) { ru_count = td[ru_pos].innerHTML; }
                 else                               { ru_count = 0; }
 
                 var picked_count;
-                if ( td[picked_pos].innerHTML != '-' ) { picked_count = td[picked_pos].innerHTML; } 
+                if ( td[picked_pos].innerHTML != '-' ) { picked_count = td[picked_pos].innerHTML; }
                 else                                   { picked_count = 0; }
 
                 var total_count = parseInt(white_count) + parseInt(blue_count) + parseInt(ru_count) + parseInt(picked_count);
@@ -676,7 +676,7 @@
 
         Event.observe('wells','click', function() { updateTotalCounts() });
     [% END %]
-    
+
     [% IF c.check_user_roles("edit") AND view_page %]
         /* Function to toggle the visibility of the checkboxes for the primer bands / distribute flags */
         function show_hide_checkboxes (label) {
@@ -687,7 +687,7 @@
                     s.select('span.checkbox_edit').first().toggle();
                 }
             );
-            
+
             // Toggle the text and class of the button
             if ( $('show_hide_checkboxes_'+label).hasClassName('pencil_go') ) {
                 $('show_hide_checkboxes_'+label).removeClassName('pencil_go');
@@ -699,7 +699,7 @@
                 $('show_hide_checkboxes_'+label).update('Show checkboxes for ' + label + ' data');
             }
         }
-    
+
         // Add observers for the checkboxes...
         [% IF plate.type == 'PCS' || plate.type == 'PGD' || plate.type == 'PGS' || plate.type == 'GR' || plate.type == 'GRD' || plate.type == 'EPD' -%]
             [% FOR well IN wells -%]
@@ -741,14 +741,14 @@
         function update_checkbox (well_id, data_type) {
             var data_value;
             if ( $F(well_id + '_' + data_type) == 'on' ) { data_value = 'yes'; }
-            
+
             else                                         { data_value = '-'; }
             update_well_data(well_id, data_type, data_value, well_id + '_' + data_type + '_checkboxcell');
             $(well_id + '_' + data_type + '_checkboxcell').select('span.checkbox_text').first().update(data_value);
         }
 
-        // Function to update a well_data value in the DB given interaction with a static 
-        // form widget (NOT tablekit!!! - we use the same controller method in the backend 
+        // Function to update a well_data value in the DB given interaction with a static
+        // form widget (NOT tablekit!!! - we use the same controller method in the backend
         // but this is outside of the remit of tablekit...)
         function update_well_data (well_id,data_type,data_value,cell) {
             new Ajax.Request(

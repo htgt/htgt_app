@@ -36,9 +36,9 @@
 
     </div> <!-- end of collapseHEAD div -->
      <div id="nav_bar">
-      <a href="mailto:htgt@sanger.ac.uk"><img src="/icons/navigation/email.gif" alt="Contact HTGT support" title="Contact HTGT support" /></a>
-      <a href="?;decor=printable"><img src="/icons/navigation/printer.gif" alt="Printer friendly format" title="Printer friendly format" /></a>
-      <a href="http://www.sanger.ac.uk/shared/news-report/atom/20020211150255"><img src="/icons/navigation/rss.gif" alt="WTSI RSS feed" title="WTSI RSS feed" /></a>
+      <a href="mailto:htgt@sanger.ac.uk"><img src="[% c.uri_for('/static/bundle/icons/navigation/email.gif') %]" alt="Contact HTGT support" title="Contact HTGT support" /></a>
+      <a href="?;decor=printable"><img src="[% c.uri_for('/static/bundle/icons/navigation/printer.gif') %]" alt="Printer friendly format" title="Printer friendly format" /></a>
+      <a href="http://www.sanger.ac.uk/shared/news-report/atom/20020211150255"><img src="[% c.uri_for('/static/bundle/icons/navigation/rss.gif') %]" alt="WTSI RSS feed" title="WTSI RSS feed" /></a>
     </div>
       <div id="navblock" class="collapsed">
         <div id="sidebar" class="collapsed" style="display:none" >
