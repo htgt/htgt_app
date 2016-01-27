@@ -3,10 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
         <title>[% template.title or site.title %]</title>
-        <link rel="icon" href="http://www.sanger.ac.uk/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="http://www.sanger.ac.uk/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="[% c.uri_for('/static/bundle/icons/favicon.ico') %]" type="image/x-icon" />
+        <link rel="shortcut icon" href="[% c.uri_for('/static/bundle/icons/favicon.ico') %]" type="image/x-icon" />
 
-        <link rel="stylesheet" type="text/css" href="http://www.sanger.ac.uk/css/wtsi.css?2007" />
+        <link rel="stylesheet" type="text/css" href="[% c.uri_for('/static/bundle/css/wtsi.css') %]" />
         <link rel="stylesheet" media="screen" type="text/css" href="[% c.uri_for('/static/css/htgt.css') %]" />
 
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/prototype.js') %]"></script>
@@ -18,7 +18,7 @@
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/htgt.js') %]"></script>
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/validation.js') %]"></script>
 
-        <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/zebra.js') %]" ></script>
-        <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/sorttable_v2.js') %]" ></script>
+        <script type="text/javascript" src="[% c.uri_for('/static/bundle/zebra.js') %]" ></script>
+        <script type="text/javascript" src="[% c.uri_for('/static/bundle/sorttable_v2.js') %]" ></script>
     </head>
     <body>

@@ -26,7 +26,7 @@ vibrants
 #7c004f vibrant4	pantone 2612
 */
 
-@import url("/stylesheets/z-menu.css");
+@import url("/static/bundle/stylesheets/z-menu.css");
 
 body { 
   margin:           0;

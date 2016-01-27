@@ -8,13 +8,13 @@
     <meta name="keywords" content="EUCOMM, eucomm, KOMP, komp, gene targeting, informatics, sanger institute, sanger" />
     <meta name="description" content="Team87 - High Throughput Gene Targeting Group part of the EUCOMM and KOMP projects." />
 
-<link rel="stylesheet" type="text/css" href="http://www.sanger.ac.uk/css/wtsi.css?2007" />
+<link rel="stylesheet" type="text/css" href="[% c.uri_for('/static/bundle/css/wtsi.css') %]" />
 <script type="text/javascript" src="[% c.uri_for('/static/javascript/prototype.js') %]" ></script>
  <script type="text/javascript" src="[% c.uri_for('/static/javascript/scriptaculous.js') %]" ></script>
- <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/sidebar.js') %]" ></script>
- <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/toggle.js') %]" ></script>
- <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/urchin.js') %]" ></script>
- <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/zebra.js') %]" ></script>
+ <script type="text/javascript" src="[% c.uri_for('/static/bundle/sidebar.js') %]" ></script>
+ <script type="text/javascript" src="[% c.uri_for('/static/bundle/toggle.js') %]" ></script>
+ <script type="text/javascript" src="[% c.uri_for('/static/bundle/urchin.js') %]" ></script>
+ <script type="text/javascript" src="[% c.uri_for('/static/bundle/zebra.js') %]" ></script>
   <style type="text/css" media="screen, projector">
             /*<![CDATA[*/
                 @import "[% c.uri_for('/static/css/common.css') %]";
@@ -28,21 +28,15 @@
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/platetable.js') %]"></script>
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/htgt.js') %]"></script>
         <script type="text/javascript" src="[% c.uri_for('/static/javascript/validation.js') %]"></script>
-        <script type="text/javascript" src="[% c.uri_for('/static/javascript/bundle/sorttable_v2.js') %]" ></script>
+        <script type="text/javascript" src="[% c.uri_for('/static/bundle/sorttable_v2.js') %]" ></script>
         </head>
   <body >
-    <div id="collapseHEAD" style="background:url(http://www.sanger.ac.uk/header-icons/swoosh/swoosh_mice.png) no-repeat top left;" >
-      <a href="/"><img src="/gfx/blank.gif" width="200" height="60" alt="" /></a>
-      <!--search box start here-->
-      <div id="searchbox">
-        <form action="http://www.sanger.ac.uk/search/s/" method="post">
-          <input id="q">
-          <input type="hidden" value="all" name="domain">
-        </form>
-      </div><!--search box end-->
+    <div id="collapseHEAD" style="background:url([% c.uri_for('/static/bundle/header-icons/swoosh/swoosh_mice.png') %]) no-repeat top left;" >
+<!--      <a href="/"><img src="/gfx/blank.gif" width="200" height="60" alt="" /></a> -->
+
     </div> <!-- end of collapseHEAD div -->
      <div id="nav_bar">
-      <a href="http://www.sanger.ac.uk/feedback/"><img src="/icons/navigation/email.gif" alt="Contact WTSI Webmaster" title="Contact WTSI Webmaster" /></a>
+      <a href="mailto:htgt@sanger.ac.uk"><img src="/icons/navigation/email.gif" alt="Contact HTGT support" title="Contact HTGT support" /></a>
       <a href="?;decor=printable"><img src="/icons/navigation/printer.gif" alt="Printer friendly format" title="Printer friendly format" /></a>
       <a href="http://www.sanger.ac.uk/shared/news-report/atom/20020211150255"><img src="/icons/navigation/rss.gif" alt="WTSI RSS feed" title="WTSI RSS feed" /></a>
     </div>
@@ -50,14 +44,13 @@
         <div id="sidebar" class="collapsed" style="display:none" >
           <div id="navigation">
            <div id="navhead">
-             <img class="img" src="http://www.sanger.ac.uk/gfx/navigator/teams.jpg" title="" alt="" height="40" width="170" />
+             <img class="img" src="[% c.uri_for('/static/bundle/gfx/navigator/teams.jpg') %]" title="" alt="" height="40" width="170" />
              <a href="http://www.sanger.ac.uk/Teams/Team87">Team 87</a>
            </div>
 
           <div class="navigator">
-            <ul><li><a class="sidebar" href="http://www.sanger.ac.uk/Teams/Team87/">Project Overview</a></li>
- <li><a class="sidebar" href="http://www.sanger.ac.uk/Teams/Team87/team.shtml">Team</a></li>
- <li><a class="sidebar" href="http://www.sanger.ac.uk/Teams/Team87/ex.shtml">Ex Team</a></li>
+            <ul><li><a class="sidebar" href="http://www.sanger.ac.uk/science/groups/skarnes-group">Project Overview</a></li>
+ <li><a class="sidebar" href="http://www.sanger.ac.uk/science/groups/skarnes-group">Team</a></li>
  <li><a class="sidebar" href="mailto:info.eucomm@helmholtz-muenchen.de">EUCOMM product enquiries</a></li>
  <li><a class="sidebar" href="mailto:orders@komp.org">KOMP product enquiries</a></li>
  <li><a class="sidebar" href="mailto:htgt@sanger.ac.uk">Website problems</a></li>
@@ -85,8 +78,8 @@
   <div id="navtab" class="collapsed">
      <script type="text/javascript">
         var sidebar_images     = new Array(2);
-        sidebar_images['hide'] = "[% c.uri_for('/static/javascript/bundle/gfx/hide_nav.png') %]";
-        sidebar_images['show'] = "http://www.sanger.ac.uk/gfx/show_nav.png";
+        sidebar_images['hide'] = "[% c.uri_for('/static/bundle/gfx/hide_nav.png') %]";
+        sidebar_images['show'] = "[% c.uri_for('/static/bundle/gfx/show_nav.png') %]";
         var sidebar_string     = "<a href='javascript:toggle()'><img src='"+sidebar_images['show']+"' alt='' title='Show the side bar' id='nav_tab'><\/a>";
         document.write(sidebar_string);
       </script>
