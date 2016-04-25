@@ -51,18 +51,18 @@
     <a class="link" href="[% c.uri_for('/design/designlist/list_designs') %]">Browse for Designs</a>
 </div>
 [% ELSE %]
+[% IF announcements %]
+    <div class="announcements">
+    [% FOREACH high IN announcements.high %]
+        <h3>[% high.message %]</h3>
+    [% END %]
 
-<div class="announcements">
-[% FOREACH high IN announcements.high %]
-<h3>[% high.message %]</h3>
+    [% FOREACH normal IN announcements.normal %]
+        <h3>[% normal.message %]</h3>
+    [% END %]
+    </div>
+    <br>
 [% END %]
-
-[% FOREACH normal IN announcements.normal %]
-<h3>[% normal.message %]</h3>
-[% END %]
-</div>
-<br>
-
 <div id="userMsgs">
 <p>
 The High Throughput Gene Targeting group at the Wellcome Trust Sanger Institute provides informatic
@@ -145,4 +145,17 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
             }
         }
     );
+
+
+    var status;
+    var response;
+    var message;
+
+    function test() {
+        status = '[% status %]';
+        response = '[% response %]';
+        message = '[% announcements.high.0.message %]';
+        console.log("Loaded");
+        console.log(response)
+    }
 </script>

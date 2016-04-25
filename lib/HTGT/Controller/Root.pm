@@ -50,6 +50,11 @@ sub welcome : Global {
     if ($response->is_success) {
         my $message = decode_json $response->decoded_content;
         $c->stash->{announcements} = $message;
+        $c->stash->{status} = "success";
+    }
+    else {
+        $c->stash->{response} = $response;
+        $c->stash->{status} = "fail";
     }
 
     if ( $c->req->base =~ /eucomm/ || $c->req->params->{style} eq 'EUCOMM' ) {
