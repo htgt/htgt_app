@@ -53,13 +53,7 @@
 [% ELSE %]
 [% IF announcements %]
     <div class="announcements">
-    [% FOREACH high IN announcements.high %]
-        <h3>[% high.message %]</h3>
-    [% END %]
-
-    [% FOREACH normal IN announcements.normal %]
-        <h3>[% normal.message %]</h3>
-    [% END %]
+        <h3>HTGT will not be available for 3 days 5pm Friday 26 August to 6am Tuesday 30 August</h3>
     </div>
     <br>
 [% END %]
