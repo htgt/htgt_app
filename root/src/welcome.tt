@@ -22,6 +22,10 @@
         opacity: 1;
         cursor: pointer;
     }
+    div.announcements {
+        border: 2px solid black;
+        background-color: #ffff00;
+    }
 </style>
 
 
@@ -48,6 +52,17 @@
 </div>
 [% ELSE %]
 
+<div class="announcements">
+[% FOREACH high IN announcements.high %]
+<h3>[% high.message %]</h3>
+[% END %]
+
+[% FOREACH normal IN announcements.normal %]
+<h3>[% normal.message %]</h3>
+[% END %]
+</div>
+<br>
+
 <div id="userMsgs">
 <p>
 The High Throughput Gene Targeting group at the Wellcome Trust Sanger Institute provides informatic
@@ -69,10 +84,8 @@ please contact us at <a href="mailto:htgt@sanger.ac.uk">htgt@sanger.ac.uk</a>
 [% END %]
 
 
-
 <div class="clearbig"></div>
 
-<div id="search_results"></div>
 
 <h3 id="summary_heading">Pipeline Summary</h3>
 <div id="summary_table">

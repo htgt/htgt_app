@@ -5,7 +5,8 @@ use warnings;
 use base 'Catalyst::Controller';
 use Net::Domain q(hostfqdn);
 use Socket;
-
+use LWP::UserAgent;
+use JSON;
 #
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
@@ -39,6 +40,17 @@ A redirect for the default home (index) page...
 
 sub welcome : Global {
     my ( $self, $c ) = @_;
+    my $agent = LWP::UserAgent->new;
+    my $url = "http://www.sanger.ac.uk/htgt/lims2/public_api/announcements/?sys=htgt";
+ 
+    my $req = HTTP::Request->new(GET => $url);
+    $req->header('content-type' => 'application/json');
+ 
+    my $response = $agent->request($req);
+    if ($response->is_success) {
+        my $message = decode_json $response->decoded_content;
+        $c->stash->{announcements} = $message;
+    }
 
     if ( $c->req->base =~ /eucomm/ || $c->req->params->{style} eq 'EUCOMM' ) {
         $c->forward('/report/eucomm_main');
