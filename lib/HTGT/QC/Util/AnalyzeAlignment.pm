@@ -24,7 +24,7 @@ sub analyze_alignment {
 
     DEBUG( "analyze_alignment; target: " . $target->display_id
                . ", query: " . $query->display_id
-                   . ", primer: " . $primer );   
+                   . ", primer: " . $primer );
 
     my %result = (
         primer   => $primer,
@@ -38,10 +38,11 @@ sub analyze_alignment {
         if ( $cigar->{target_strand} ne $region->{expected_strand} ) {
             INFO( "Strand mismatch" );
             $result{pass} = 0;
-            last;
-        }            
+            #last;
+        }
         my $start = get_target_pos( $target, %{ $region->{start} } );
         my $end   = get_target_pos( $target, %{ $region->{end} } );
+        DEBUG "Target region coords: $start to $end";
         my $critical_region_length = abs( $start - $end ) + 1;
         my $alignment = alignment_match( $query, $target, $cigar, $start, $end );
         if ( $region->{min_match_pct} ) {
@@ -52,16 +53,16 @@ sub analyze_alignment {
         }
         elsif ( $region->{ensure_no_indel} ) {
                 $alignment->{pass} = ensure_no_indel( $alignment );
-            }            
+            }
         else {
             ERROR( "No pass criteria defined for primer $primer region $region_name" );
         }
-        
+
         INFO( sprintf 'Primer %s, target %s, %d%%', $primer, $region_name, $alignment->{match_pct} );
         $result{alignment}{$region_name} = $alignment;
     }
-    
-    $result{pass} = $profile->is_primer_pass( $primer, $result{alignment} );        
+
+    $result{pass} = $profile->is_primer_pass( $primer, $result{alignment} );
     INFO( "Primer $primer: " . ( $result{pass} ? 'pass' : 'fail' ) );
 
     return \%result;
@@ -93,7 +94,7 @@ sub check_alignment_pass {
         return $alignment->{match_count} >= $length;
     }
     elsif ( my ( $num, $denom ) = $condition =~ m{^(\d+)/(\d+)$} ) {
-        DEBUG( "Checking subequences for minimal match length" );        
+        DEBUG( "Checking subequences for minimal match length" );
         return 0 unless $alignment->{length} >= $denom;
         my $match_str = $alignment->{match_str};
         for my $start_ix ( 0 .. ( $alignment->{length} - $denom ) ) {
@@ -102,7 +103,7 @@ sub check_alignment_pass {
             if ( $sub_match_len >= $num ) {
                 DEBUG( "Got passing substring: $sub_match" );
                 return 1;
-            }               
+            }
         }
         return 0;
     }
@@ -144,7 +145,7 @@ sub feature_name {
         return join q{ }, $feature->get_tag_values( 'note' );
     }
     elsif ( $feature->has_tag( 'label' ) ) {
-        return join q{ }, $feature->get_tag_values( 'label' ); 
+        return join q{ }, $feature->get_tag_values( 'label' );
     }
     else {
         return 'unknown';
@@ -154,7 +155,7 @@ sub feature_name {
 sub get_target_pos {
     my ( $target, %locus ) = @_;
     DEBUG( "get_target_pos: " . pp( \%locus ) );
-    
+
     if ( defined( my $start_offset = delete $locus{start} ) ) {
         my $feature_loc = find_seq_feature_loc( $target, %locus );
         return $feature_loc->start + $start_offset;
@@ -172,11 +173,11 @@ sub find_seq_feature_loc {
 
     for ( values %locus ) {
         if ( ref $_ eq 'HASH' and exists $_->{match} ) {
-            $_ = qr/$_->{match}/          
-        }    
+            $_ = qr/$_->{match}/
+        }
     }
-   
-    HTGT::QC::Util::FindSeqFeature::find_seq_feature_loc( $target, %locus );    
+
+    HTGT::QC::Util::FindSeqFeature::find_seq_feature_loc( $target, %locus );
 }
 
 
