@@ -11,10 +11,6 @@ use HTGT::QC::Util::Alignment qw( alignment_match );
 use HTGT::QC::Util::CigarParser;
 use HTGT::QC::Util::ListFailedRuns;
 use HTGT::QC::Util::ListLatestRuns;
-use HTGT::QC::Util::SubmitQCFarmJob::ESCell;
-use HTGT::QC::Util::SubmitQCFarmJob::Vector;
-use HTGT::QC::Util::SubmitQCFarmJob::ESCellPreScreen;
-use HTGT::QC::Util::KillQCFarmJobs;
 use HTGT::QC::Util::ListTraceProjects;
 use HTGT::Utils::QCTestResults qw( fetch_test_results_for_run );
 use HTGT::Utils::Plate::Create qw( create_plate );
@@ -290,7 +286,7 @@ sub view_run_files :Local :Args(1) {
     if ( $c->request->param( 'prescreen' ) || $c->req->param( 'view' ) eq 'csvdl' ) {
         $config->is_prescreen(1); #either of these parameters means its a prescreen.
     }
-    
+
     my $run_dir = $config->basedir->subdir( $qc_run_id );
 
     $c->stash( qc_run_id => $qc_run_id );
@@ -346,7 +342,7 @@ sub view_run_files :Local :Args(1) {
                 for my $design_id ( sort keys %{ $project } ) {
                     my $cigar = $project->{ $design_id }; # this is HEPD0855_2_A_1a03.p1kLR
                     #columns should be identical to the non csv view (except for blast)
-                    push @results, [ 
+                    push @results, [
                         $cigar->{ plate },
                         $cigar->{ well },
                         $cigar->{ query_primer },
@@ -374,7 +370,7 @@ sub view_run_files :Local :Args(1) {
 
             return;
         }
-        
+
         #if they didnt request a csv then just give them the regular webpage
         $c->stash( projects => \%projects );
 
@@ -395,7 +391,7 @@ sub view_run_files :Local :Args(1) {
         $c->stash( error_msg => "Couldn't find params.yaml file. Directory listing:<br/>$listing" );
     };
 
-    return unless $run; 
+    return unless $run;
 
     my $sequencing_projects = $run->{ sequencing_projects };
     $c->stash( {
@@ -1248,8 +1244,8 @@ sub _suggest_plates {
 
     my @plates;
     if ( defined $search_string and length $search_string > 4 and defined $type ) {
-        @plates = $c->model( 'HTGTDB::Plate' )->search( 
-            { type => $type, name => { like => $search_string . '%' } } 
+        @plates = $c->model( 'HTGTDB::Plate' )->search(
+            { type => $type, name => { like => $search_string . '%' } }
         );
     }
 
@@ -1329,84 +1325,13 @@ sub failed_runs :Local :Args(0) {
 sub submit_es_cell :Local :Args(0) {
     my ( $self, $c ) = @_;
 
-    #note: run type gets determined in _validated_es_cell_params
-
-    #we should perhaps only list valid es cell profiles.
-    $c->stash( profiles => $self->_list_all_profiles );
-
-    #this page displays different things depending on the post parameters
-    #if the method isn't post then they havent submitted a form yet.
-    if( $c->request->method eq 'POST' ) {
-        my $params = $self->_validated_es_cell_params( $c )
-            or return;
-
-        if ( $c->req->param( 'submit_initial_info' ) ) {
-            #stuff to get sequences etc.
-            $c->stash( sequencing_projects => $params->{ sequencing_projects } );
-            $c->stash( template_plate      => $params->{ template_plate } );
-
-            #we dont want to display the form or get active runs on this page
-            return;
-        }
-        elsif ( $c->req->param( 'submit_job' ) ) {
-            unless ( $c->req->param( 'sequencing_projects' ) ) {
-                #do we need to re-stash the sequencing projects?
-                $c->stash( error_msg => "No sequencing projects selected." );
-                return;
-            }
-                
-            $self->_submit_qc_job( $c, $params );
-
-            #we don't return as we want to display the submit page to the user
-        }
-    }
-
-    #if we reach here we're not on the submit_initial_info page,
-    #so get all the active runs.
-
-    my $llr = HTGT::QC::Util::ListLatestRuns->new( { config => HTGT::QC::Config->new } );
-
-    #we are only interested in es cell runs so filter the others out
-    $c->stash( active_es_runs => [ grep { $_->{is_escell} } @{ $llr->get_active_runs() } ] );
+    return;
 }
 
 sub submit :Local :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash( profiles => $self->_list_all_profiles );
-
-    return unless $c->request->method eq 'POST';
-
-    my $params = $self->_validated_submit_params( $c )
-        or return;
-
-    if ( $c->req->param( 'submit_initial_info' ) ) {
-        try {
-            my $plate_map = create_suggested_plate_map(
-                $params->{ sequencing_projects },
-                $c->model( 'HTGTDB' )->schema,
-                "Plate",
-            );
-            $c->stash( plate_map         => $plate_map );
-            $c->stash( plate_map_request => 1 );
-        }
-        catch {
-            $c->stash( error_msg => 'Error creating plate map:' . $_ );
-            return;
-        };
-    }
-    elsif ( $c->req->param('submit_plate_map_info') ) {
-        my $plate_map = $self->_build_plate_map( $c );
-        my $validated_plate_map = $self->_validate_plate_map( $c, $plate_map, $params->{sequencing_projects} );
-        unless ( $validated_plate_map ) {
-            $c->stash( plate_map => $plate_map );
-            $c->stash( plate_map_request => 1 );
-            return;
-        }
-
-        $params->{plate_map} = $validated_plate_map;
-        $self->_submit_qc_job( $c, $params );
-    }
+    return;
 }
 
 sub _submit_es_cell_qc_update {
@@ -1452,178 +1377,7 @@ sub run_cmd {
     return  $output;
 }
 
-sub _submit_qc_job {
-    my ( $self, $c, $params ) = @_;
 
-    $c->log->info( "Submitting QC job " . join(',', @{ $params->{sequencing_projects} } )
-                   . "/$params->{template_plate} ($params->{profile})" );
-
-    my $run_id;
-
-    try {
-        my $config = HTGT::QC::Config->new;
-
-        my %run_params = (
-            config              => $config,
-            profile             => $params->{ profile },
-            template_plate      => $params->{ template_plate },
-            sequencing_projects => $params->{ sequencing_projects },
-            run_type            => $params->{ run_type },
-            persist             => 1
-        );
-
-        #if you add a new run type here make sure to modify the enum in Run.pm
-        #this just maps a run type to the correct class
-        my %run_types = (
-            es_cell   => "ESCell",
-            prescreen => "ESCellPreScreen",
-            vector    => "Vector",
-        );
-
-        die "$params->{ run_type } is not a valid run type."
-            unless exists $run_types{ $params->{ run_type } };
-
-        my $submit_qc_farm_job = "HTGT::QC::Util::SubmitQCFarmJob::" . $run_types{ $params->{ run_type } };
-
-        #add any additional type specific modifications in this if
-        if ( $params->{ run_type } eq "vector" ) {
-            #only vector needs a plate_map. 
-            $run_params{ plate_map } = $params->{ plate_map };
-        } 
-        elsif ( $params->{ run_type } eq "prescreen" ) {
-            #prescreen goes to a diff directory, so notify our config instance that we're prescreen.
-            $run_params{ config }->is_prescreen(1);
-        }
-            
-
-        #run holds all of these parameters together
-        my $run = HTGT::QC::Run->init( %run_params );
-        $run_id = $run->id;
-
-        #this is to allow some flexibility in job memory as some were using more than 2gb
-        my $memory_req = ( $c->request->params->{ 'big_memory' } ) ? 4000 : 2000;
-
-        #now we have all the information required we can actually start the job:
-        $submit_qc_farm_job->new( { qc_run => $run, memory_required => $memory_req } )->run_qc_on_farm();
-
-        $c->log->info( "Submitted QC job $run_id" );
-    }
-    catch {
-        $c->log->error( "QC job submission failed: $_" );
-        $c->stash( error_msg => "QC job submission failed: $_" );
-
-        $run_id = undef; #we get a run id even if submission fails, so get rid of it.
-    };
-
-    if ( $run_id ) {
-        # Blank out the request parameters
-        for my $param_name ( qw( profile template_plate sequencing_project sequencing_projects epd_plate_name ) ) {
-            $c->request->param( $param_name, undef );
-        }
-
-        $c->stash( status_msg => "QC job $run_id submitted to farm for processing" );
-
-        return $run_id;
-    }
-}
-
-sub _validated_es_cell_params {
-    my ( $self, $c ) = @_;
-    my @errors;
-
-    my $epd_plate_name = $self->_clean_input( $c, $c->request->params->{ 'epd_plate_name' }) . '_';
-    my $profile = $self->_clean_input( $c, $c->request->params->{ 'profile' } );
-    my @projects = $c->request->param( 'sequencing_projects' );
-    my $template_plate_name = 'T' . $self->_clean_input( $c, $c->request->params->{ 'epd_plate_name' });
-
-    #if we're on the last step and the array is of length zero, there are none selected.
-    if ( $c->req->param( 'submit_job' ) and not @projects ) {
-        push @errors, "No sequencing projects selected.";
-    }
-
-    #make sure the selected profile is in our list of valid profiles
-    if ( $profile and not any { $_ eq $profile } @{ $self->_list_all_profiles } ) {
-        push @errors, "Please select a profile name from the drop-down menu";
-    }
-
-    my $epd_plates = $c->model( 'HTGTDB::Plate' )->search({ 
-        'me.name' => { like => "$epd_plate_name%" } 
-    });
-
-    #make sure the EPD plate is valid. a resultset in numeric context returns the count
-    if ( $epd_plates == 0 ) {
-        push @errors, "Please select a valid EPD plate";
-    }
-    elsif ( $c->model( 'HTGTDB::Plate' )->search( { name => $template_plate_name, type => 'VTP' } ) == 0 ) {
-        #get ep plates as an array instead of resultset object
-        my @ep_plates = $epd_plates->related_resultset( 'wells' )
-                                   ->related_resultset( 'parent_well' )
-                                   ->related_resultset( 'plate' )
-                                   ->search( 
-                                        { 'plate.type' => 'EP' }, 
-                                        { distinct => 1 } 
-                                    );
-        
-        #make sure we got an ep plate
-        if ( @ep_plates ) {
-            #create template plate_data
-            my @parent_wells;
-            #get the parents of every plate we found
-            for my $ep_plate ( @ep_plates ) {
-                my @parents = $ep_plate->wells->search( 
-                    {},
-                    { order_by => { -asc => 'well_name' } } 
-                );
-
-                push @parent_wells, map { [ $ep_plate->name, $_->well_name ] } @parents;
-            }
-
-            #create the template plate if it doesn't exist
-            create_plate( 
-                $c->model( 'HTGTDB' )->schema, 
-                plate_name => $template_plate_name, 
-                plate_type => 'VTP', 
-                plate_data => [ @parent_wells ], 
-                created_by => $c->user->id 
-            );
-        }
-        else {
-            push @errors, "EPD plate has no parent plates";
-        }
-    }
-
-    if ( @errors ) {
-        $c->stash( error_msg => join '<br />', @errors );
-        return;
-    }
-
-    #everything was successful, so build the params hash and return it
-
-    #r2r-only profile signifies a prescreen run.
-    my $run_type = ( $profile eq 'r2r-only-es-cell' ) ? 'prescreen' : 'es_cell';
-
-    my %params = (
-        epd_plate_name => $epd_plate_name,
-        profile        => $profile,
-        template_plate => $template_plate_name, #inferred template plate
-        run_type       => $run_type,
-    );
-
-    if ( @projects ) {
-        $c->log->info("Ungrouping ES Cell plates");
-        #if we've got projects the user has selected them, so we need to ungroup
-        @projects = $self->ungroup_es_cell_plates( $epd_plate_name, @projects );
-    }
-    else {
-        $c->log->info("Grouping ES Cell plates");
-        #if we don't have any projects then fetch any sequencing projects for this plate
-        @projects = $self->get_grouped_es_cell_plates( $epd_plate_name );
-    }
-
-    $params{ sequencing_projects } = \@projects;
-
-    return \%params;
-}
 
 #remove trailing letters from plates and return an array of the results
 sub get_grouped_es_cell_plates {
@@ -1654,7 +1408,7 @@ sub ungroup_es_cell_plates {
     for my $project ( @selected_projects ) {
         #find any projects with the same start as our selected projects,
         #so for HEPD0848_1 we expect HEPD0848_1_A, HEPD0848_1_B, etc.
-        #we do $project_ to remove projects that have been mislabelled and 
+        #we do $project_ to remove projects that have been mislabelled and
         #don't have a trailing letter
         push @ungrouped, sort grep { $_ =~ /^${project}_/ } @all_projects;
     }
