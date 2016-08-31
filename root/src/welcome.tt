@@ -51,10 +51,6 @@
     <a class="link" href="[% c.uri_for('/design/designlist/list_designs') %]">Browse for Designs</a>
 </div>
 [% ELSE %]
-    <div class="announcements">
-        <h3>HTGT will not be available for 3 days 5pm Friday 26 August to 6am Tuesday 30 August</h3>
-    </div>
-    <br>
 <div id="userMsgs">
 <p>
 The High Throughput Gene Targeting group at the Wellcome Trust Sanger Institute provides informatic
