@@ -34,7 +34,10 @@
 [% END %]
 
 <h3>High Throughput Gene Targeting (htgt2)</h3>
-
+<div class="announcements">
+     <h3>HTGT will be going read-only on the 31st of January. If you have any questions please contact us at htgt@sanger.ac.uk</h3>
+</div>
+<br>
 [% IF c.check_user_roles("edit") %]
     <div id="htgt_search">
         <form id="gene_search_main" method="get" action="[% c.uri_for('/report/gene_search') %]">
