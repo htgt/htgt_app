@@ -358,8 +358,8 @@ Get resultset of features which have a validated feature data type - the "valid"
 sub validated_features {
     my $d = shift;
     return $d->features->search(
-        { q(feature_data.feature_data_type.description) => q(validated) },
-        { join => { q(feature_data) => q(feature_data_type) }, distinct => 1 }
+        { 'feature_data_type.description' => 'validated' },
+        { join => { feature_data => 'feature_data_type' }, distinct => 1 }
     );
 }
 
