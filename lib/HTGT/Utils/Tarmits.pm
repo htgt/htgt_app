@@ -120,10 +120,35 @@ sub request {
     my $meta = __PACKAGE__->meta;
 
     foreach my $key ( qw( allele targeting_vector es_cell genbank_file distribution_qc ) ) {
+#        $meta->add_method(
+#            "find_$key" => sub {
+#                my ( $self, $params ) = @_;
+#                return $self->request( 'GET', sprintf( 'targ_rep/%ss.json', $key ), $params );
+#            }
+#        );
+
         $meta->add_method(
             "find_$key" => sub {
                 my ( $self, $params ) = @_;
-                return $self->request( 'GET', sprintf( 'targ_rep/%ss.json', $key ), $params );
+
+                my $user = $self->username;
+                my $passw = $self->password;
+                my @query = keys %$params;
+                my $value = $params->{$query[0]};
+                my $url = sprintf("%starg_rep/%ss.json?%s=%s", $self->base_url, $key, $query[0], $value);
+                my $arr_resp = [];
+
+                my $sys_call = `curl --silent -u $user:$passw $url 2>&1`;
+
+                if ($sys_call) {
+                    my @arr1 = split /^\[/, $sys_call;
+                    my @arr2 = split /\]$/, $arr1[1];
+
+                    my $json_resp = JSON::decode_json($arr2[0]);
+
+                    $arr_resp->[0] = $json_resp;
+                }
+                return $arr_resp;
             }
         );
 
