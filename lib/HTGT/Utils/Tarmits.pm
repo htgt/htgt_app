@@ -10,6 +10,7 @@ use namespace::autoclean;
 use JSON;
 use Readonly;
 require URI;
+use Carp::Assert;
 
 with qw( MooseX::SimpleConfig MooseX::Log::Log4perl );
 
@@ -137,6 +138,20 @@ sub request {
                 my $value = $params->{$query[0]};
                 my $url = sprintf("%starg_rep/%ss.json?%s=%s", $self->base_url, $key, $query[0], $value);
                 my $arr_resp = [];
+
+                if ($key =~ /genbank_file/) {
+                    if ($params->{what} =~ 'escell_clone') {
+                        $url = sprintf("https://www.i-dcc.org/imits/targ_rep/alleles/%s/escell-clone-genbank-file", $params->{allele_id});
+                    } elsif ($params->{what} =~ 'targeting_vector') {
+                        $url = sprintf("https://www.i-dcc.org/imits/targ_rep/alleles/%s/targeting-vector-genbank-file", $params->{allele_id});
+                    }
+                    my $sys_call = `curl --silent -u $user:$passw $url 2>&1`;
+                    my @dehtml = split "<pre>", $sys_call;
+                    my @genbank = split "//", $dehtml[1];
+
+                    assert($genbank[0] =~ 'ORIGIN');
+                    return $genbank[0];
+                }
 
                 my $sys_call = `curl --silent -u $user:$passw $url 2>&1`;
 

@@ -75,17 +75,17 @@ sub _allele_id {
 sub _fetch_seq_for_allele {
     my ( $allele_id, $what ) = @_;
 
-    my $gbk = targ_rep->find_genbank_file( { allele_id => $allele_id } );
+    my $gbk = targ_rep->find_genbank_file( { allele_id => $allele_id, what => $what } );
 
-    confess "failed to retrieve GenBank file for allele $allele_id"
-        unless defined $gbk
-            and ref($gbk) eq 'ARRAY'
-                and @{$gbk} == 1
-                    and $gbk->[0]->{escell_clone};
+#    confess "failed to retrieve GenBank file for allele $allele_id"
+#        unless defined $gbk
+#            and ref($gbk) eq 'ARRAY'
+#                and @{$gbk} == 1
+#                    and $gbk->[0]->{escell_clone};
 
     return Bio::SeqIO->new(
         -format => 'genbank',
-        -fh     => IO::String->new( $gbk->[0]->{$what} )
+        -fh     => IO::String->new( $gbk )#IO::String->new( $gbk->[0]->{$what} )
     )->next_seq;
 }
 
