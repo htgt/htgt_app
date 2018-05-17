@@ -22,7 +22,7 @@ Catalyst Controller.
 
 sub index : Private {
     my ( $self, $c ) = @_;
-    $c->response->redirect( $c->uri_for('/') );
+    $c->response->redirect( $c->secure_uri_for('/') );
 }
 
 =head2 _suggest_gene_names

@@ -20,7 +20,7 @@ has 'martservice' => (
     is      => 'ro',
     isa     => 'HTGT::BioMart::URI',
     coerce  => 1,
-    default => sub { URI->new( 'http://www.sanger.ac.uk/htgt/biomart/martservice' ) }, 
+    default => sub { URI->new( 'https://www.sanger.ac.uk/htgt/biomart/martservice' ) }, 
 );
 
 has 'dataset' => (

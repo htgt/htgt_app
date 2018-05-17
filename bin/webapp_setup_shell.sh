@@ -223,6 +223,10 @@ function htgt_devel {
 }
 
 function htgt_webapp {
+    export HTGT_HTTPS_DOMAIN='htgt2.internal.sanger.ac.uk';
+    export HTGT_HTTP_DOMAIN='htgt2.internal.sanger.ac.uk'; 
+    export WGE_ENABLE_HTTPS=1;
+
     if [[  "$1"   ]] ; then
         HTGT_PORT=$1
     elif [[ "$HTGT_WEBAPP_SERVER_PORT"  ]] ; then

@@ -11,7 +11,7 @@ with 'MooseX::Log::Log4perl';
 has proxy => (
     is       => 'ro',
     isa      => 'Str',
-    default  => 'http://services.informatics.jax.org/mgiws'
+    default  => 'https://services.informatics.jax.org/mgiws'
 );
 
 has timeout => (
@@ -120,8 +120,8 @@ sub _create_request {
     my $request
         = SOAP::Data->name( 'batchMarkerRequest' =>
             \SOAP::Data->value( $requestorEmail, $idSet, $returnSet ) )
-        ->attr( { 'xmlns:bt' => 'http://ws.mgi.jax.org/xsd/batchType' } )
-        ->prefix('req')->uri('http://ws.mgi.jax.org/xsd/request');
+        ->attr( { 'xmlns:bt' => 'https://ws.mgi.jax.org/xsd/batchType' } )
+        ->prefix('req')->uri('https://ws.mgi.jax.org/xsd/request');
 
     return ($request,$soap);
 }

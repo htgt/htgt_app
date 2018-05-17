@@ -33,7 +33,7 @@ sub link_qctest_result_id {
     #http://www.sanger.ac.uk/cgi-bin/teams/team87/qc/qctest_view.cgi?id=62885
     return sub {
         if ( $qc_id =~ /\d+/ and $pass_text =~ /\w+/ ) {
-            my $link = "<a href='http://www.sanger.ac.uk/cgi-bin/teams/team87/qc/qctest_view.cgi?id=$qc_id'>$pass_text</a>";
+            my $link = "<a href='https://www.sanger.ac.uk/cgi-bin/teams/team87/qc/qctest_view.cgi?id=$qc_id'>$pass_text</a>";
             return( $link );
         }
         else {
@@ -56,7 +56,7 @@ sub link_mgi {
     my ( $context ) = @_;
     return sub {
         my $string = shift;
-        $string =~ s|(\S+)|<a href='http://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=$1&selectedQuery=Genes+and+Markers'>$1</a>|g;
+        $string =~ s|(\S+)|<a href='https://www.informatics.jax.org/javawi2/servlet/WIFetch?page=searchTool&query=$1&selectedQuery=Genes+and+Markers'>$1</a>|g;
         return($string);
     }
 }
@@ -72,7 +72,7 @@ sub link_plate_name {
     return sub {
         my $string = shift;
         if ( $string =~ /^\d+$/ ) {
-            my $link = "<a href='http://www.sanger.ac.uk/htgt/plate/view?plate_name=$string'>$string</a>";
+            my $link = "<a href='https://www.sanger.ac.uk/htgt/plate/view?plate_name=$string'>$string</a>";
             return ( $link );
         }
         else {
@@ -93,7 +93,7 @@ sub link_design {
         my $string = shift;
         $string =~ s/\s+//g;
         if ( $string =~ /^\d+$/ ) {
-            my $link = "<a href='http://www.sanger.ac.uk/htgt/design/designlist/list_designs?design_id=". $string . "&submit_search=Get\%designs'>$string</a>";
+            my $link = "<a href='https://www.sanger.ac.uk/htgt/design/designlist/list_designs?design_id=". $string . "&submit_search=Get\%designs'>$string</a>";
             return( $link );
         }
         else {
@@ -113,7 +113,7 @@ sub link_well {
     
     return sub {
         if ( $well_id =~ /\d+/ and $well_name =~ /\w+/ ) {
-            my $link = "<a href='http://www.sanger.ac.uk/htgt/plate/view?well_id=$well_id#$well_id'>$well_name</a>";
+            my $link = "<a href='https://www.sanger.ac.uk/htgt/plate/view?well_id=$well_id#$well_id'>$well_name</a>";
             return( $link );
         }
         else {
@@ -135,14 +135,14 @@ sub link_ensembl {
     my ( $context, $text, @das ) = @_;
 
     my $das_source = {
-        team87_production_constructs => ';add_das_source=(name=team87_production_constructs+url=http://das.ensembl.org/das+dsn=team87_production_constructs+type=ensembl_location_toplevel+active=1)',
-        KO_vectors                   => ';add_das_source=(name=KO_vectors+url=http://das.sanger.ac.uk/das+dsn=KO_vectors+type=ensembl_location_toplevel+active=1)',
+        team87_production_constructs => ';add_das_source=(name=team87_production_constructs+url=https://das.ensembl.org/das+dsn=team87_production_constructs+type=ensembl_location_toplevel+active=1)',
+        KO_vectors                   => ';add_das_source=(name=KO_vectors+url=https://das.sanger.ac.uk/das+dsn=KO_vectors+type=ensembl_location_toplevel+active=1)',
     };
 
     return sub {
         $text = shift if !defined $text;
         if ( $text =~ /OTTMUS|ENSMUS/i ) {
-            my $link = 'http://www.ensembl.org/Mus_musculus/contigview?gene=' . uc($text);
+            my $link = 'https://www.ensembl.org/Mus_musculus/contigview?gene=' . uc($text);
 
             foreach ( @das ) {
                 $link .= $das_source->{$_};

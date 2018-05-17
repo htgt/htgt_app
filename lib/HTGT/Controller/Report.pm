@@ -1705,8 +1705,8 @@ sub get_mig_microinjection_info : Local {
   
   $xml->startTag(
     'mig_mir_info',
-    'xmlns:xsi'                     => 'http://www.w3.org/2001/XMLSchema-instance',
-    'xsi:noNamespaceSchemaLocation' => 'http://migsrvdev.internal.sanger.ac.uk:8080/MouseGeneticsCentral/docs/mig-mir-info.xsd'
+    'xmlns:xsi'                     => 'https://www.w3.org/2001/XMLSchema-instance',
+    'xsi:noNamespaceSchemaLocation' => 'https://migsrvdev.internal.sanger.ac.uk:8080/MouseGeneticsCentral/docs/mig-mir-info.xsd'
   );
 
   if ( ! $epd_id ) {

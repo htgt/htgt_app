@@ -26,6 +26,7 @@ use Catalyst qw/
   Prototype
   LogUtils
   Cache
+  RequireSSL
   /;
 
 extends 'Catalyst';
@@ -52,6 +53,16 @@ else {
 
 __PACKAGE__->config(
     name           => 'HTGT',
+    require_ssl    => {
+        https => $ENV{HTGT_HTTPS_DOMAIN} || 'www.sanger.ac.uk',
+        http  => $ENV{HTGT_HTTP_DOMAIN} || 'www.sanger.ac.uk',
+        remain_in_ssl => 1,
+        no_cache => 0,
+        detach_on_redirect => 0,
+        disabled => $ENV{HTGT_ENABLE_HTTPS} ? 0 : 1,
+    },
+    enable_catalyst_header => 1,
+    using_frontend_proxy => 1,
     authentication => {
         default_realm => 'ssso',
         realms        => {
@@ -118,6 +129,26 @@ __PACKAGE__->config(
 
 # Start the application
 __PACKAGE__->setup;
+
+after uri_for => sub {
+    my ($self, $path, @args) = @_;
+
+    my $base = $self->req->base;
+    $base =~ s/^http:/https:/;
+    $self->req->base(URI->new($base));
+    $self->req->secure(1);
+
+    return;
+};
+
+sub secure_uri_for {
+    my ($self, @args) = @_;
+
+    my $uri = $self->uri_for(@args);
+    $uri->scheme('https');
+
+    return $uri;
+}
 
 =head1 NAME
 

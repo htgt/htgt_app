@@ -21,6 +21,25 @@ HTGT::Controller::Root - Root Controller for HTGT
 
 =cut
 
+=head2 begin
+
+Enforce HTTPS
+
+=cut 
+
+sub begin : Private {
+    my ( $self, $c ) = @_;
+
+    my $base = $c->req->base;
+    $base =~ s/^http:/https:/;
+    $c->req->base(URI->new($base));
+    $c->req->secure(1);
+
+    $c->require_ssl;
+
+    return;
+}
+
 =head2 index
 
 Redirect to our welcome home page
@@ -29,7 +48,7 @@ Redirect to our welcome home page
 
 sub index : Private {
     my ( $self, $c ) = @_;
-    $c->response->redirect( $c->uri_for('/welcome') );
+    $c->response->redirect( $c->secure_uri_for('/welcome') );
 }
 
 =head2 welcome
@@ -41,7 +60,7 @@ A redirect for the default home (index) page...
 sub welcome : Global {
     my ( $self, $c ) = @_;
     my $agent = LWP::UserAgent->new;
-    my $url = "http://www.sanger.ac.uk/htgt/lims2/public_api/announcements/?sys=htgt";
+    my $url = "https://www.sanger.ac.uk/htgt/lims2/public_api/announcements/?sys=htgt";
  
     my $req = HTTP::Request->new(GET => $url);
     $req->header('content-type' => 'application/json');
@@ -119,7 +138,7 @@ Forwards to /biomart/martview
 
 sub biomart : Local {
     my ( $self, $c ) = @_;
-    $c->response->redirect('http://www.sanger.ac.uk/htgt/biomart/martview');
+    $c->response->redirect('https://www.sanger.ac.uk/htgt/biomart/martview');
 }
 
 =head2 access denied
@@ -338,7 +357,7 @@ work for development off www.sanger and wwwdev.sanger
 
 sub redirectToSanger : Path('/icons') Path('/gfx') {
     my ( $self, $c ) = @_;
-    $c->response->redirect( "http://www.sanger.ac.uk/" . $c->req->path );
+    $c->response->redirect( "https://www.sanger.ac.uk/" . $c->req->path );
 }
 
 =head2 redirectToSelf

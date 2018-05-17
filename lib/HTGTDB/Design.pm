@@ -431,7 +431,7 @@ sub _add_design_annotation_to_seq {
             -database   => "HTGT",
             -authority  => "sanger.ac.uk",
             -primary_id => "design_id=" . $d->design_id,
-            -url => "http://www.sanger.ac.uk/htgt/design/designedit/refresh_design?design_id="
+            -url => "https://www.sanger.ac.uk/htgt/design/designedit/refresh_design?design_id="
               . $d->design_id
         )
     );

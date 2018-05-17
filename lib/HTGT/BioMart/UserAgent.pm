@@ -20,7 +20,7 @@ has 'proxy' => (
     is      => 'ro',
     isa     => 'HTGT::BioMart::URI',
     coerce  => 1,
-    default => sub { URI->new( 'http://wwwcache.sanger.ac.uk:3128/' ) },
+    default => sub { URI->new( 'https://wwwcache.sanger.ac.uk:3128/' ) },
 );
 
 has 'timeout' => (

@@ -163,7 +163,7 @@ sub get_allele_list{
 sub create_redmine_ticket{
     my ( $self, $allele ) = @_;
 
-    my $mgi_link = 'http://www.informatics.jax.org/marker/' . $allele->{mgi_accession_id};
+    my $mgi_link = 'https://www.informatics.jax.org/marker/' . $allele->{mgi_accession_id};
 
     my $issue;
     $issue->{subject} = $allele->{marker_symbol};

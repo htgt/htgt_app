@@ -39,7 +39,7 @@ sub index :Path :Args(0) {
     $c->logout;
 
     if ( $redirect_to_sanger_logout ) {
-        $c->response->redirect( 'http://www.sanger.ac.uk/logout' );
+        $c->response->redirect( 'https://www.sanger.ac.uk/htgt/lims2/logout' );
     }
     else {
         $c->response->redirect( $c->uri_for( '/welcome' ) );            
